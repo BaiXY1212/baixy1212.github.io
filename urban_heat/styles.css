@@ -1,0 +1,430 @@
+/* ===== Base ===== */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", "Arial", sans-serif;
+  scroll-behavior: smooth;
+  background-color: #000;
+  color: #333;
+  overflow-x: hidden;
+}
+
+/* ===== NAVIGATION BAR ===== */
+#nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 58px;
+  background: rgba(25, 25, 25, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 60px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+}
+
+/* --- Left navigation --- */
+#nav ul {
+  list-style: none;
+  display: flex;
+  gap: 45px;
+  margin: 0;
+  padding: 0;
+}
+
+#nav ul li a {
+  color: #f4f1e0;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.25s ease;
+}
+
+#nav ul li a:hover {
+  color: #ffdb78;
+  border-bottom: 2px solid #ffdb78;
+  transform: translateY(-1px);
+}
+
+#nav ul li a.active {
+  color: #ffffff;
+  border-bottom: 2px solid #fff;
+}
+
+/* --- Top right city selector --- */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f9f1db;
+  font-size: 14px;
+  z-index: 1100;
+  margin-left: auto;
+  margin-right: 70px;
+}
+
+.nav-right select {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff7e3;
+  border: 1px solid #e5d6a2;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  max-width: 150px;
+}
+
+.nav-right select:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #fff;
+}
+
+/* ===== HERO SECTION ===== */
+#banner {
+  position: relative;
+  text-align: center;
+  height: 100vh;
+  background: url('australia_temp_map.png') center center / cover no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff7e3;
+  overflow: hidden;
+}
+/* iOS Safari compatibility handling: Disable fixed background */
+@supports (-webkit-overflow-scrolling: touch) {
+  #banner {
+    background-attachment: scroll;
+  }
+}
+
+/* Blackout overlay (soft gradient) --- */
+#banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.45) 50%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  z-index: 0;
+}
+
+/* --- Text layer --- */
+#banner .inner {
+  position: relative;
+  z-index: 1;
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+/* ===== HERO TITLE ===== */
+#banner h2 {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff8dc;
+  margin-bottom: 35px;
+  opacity: 0;
+  animation: fadeIn 1.8s ease forwards, shimmer 6s ease-in-out infinite;
+  text-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 210, 130, 0.4),
+    0 0 70px rgba(255, 180, 80, 0.25);
+  letter-spacing: 0.6px;
+  filter: drop-shadow(0 0 10px rgba(255, 160, 60, 0.35));
+}
+
+/* ===== HERO TEXT ===== */
+#banner p {
+  font-size: 17.5px;
+  color: #f5f5f5;
+  max-width: 780px;
+  margin: 10px auto 15px;
+  line-height: 1.8;
+  opacity: 0;
+  animation: fadeIn 1.8s ease forwards;
+  animation-delay: 0.4s;
+  text-align: center;
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.55),
+    0 0 15px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.3px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%, 100% { text-shadow: 0 3px 12px rgba(0,0,0,0.6), 0 0 40px rgba(255,210,130,0.4); }
+  50% { text-shadow: 0 3px 18px rgba(0,0,0,0.8), 0 0 60px rgba(255,180,80,0.55); }
+}
+
+/* ===== SECTIONS ===== */
+.section {
+  padding: 90px 6%;
+  text-align: center;
+  transition: background 1s ease;
+}
+
+.section h3 {
+  font-size: 34px;
+  margin-bottom: 25px;
+  color: #222;
+}
+
+.chart-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.chart {
+  flex: 1 1 48%;
+  min-width: 520px;
+  background-color: #fffaf0;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+  transition: transform 0.3s;
+  padding-bottom: 10px; 
+}
+
+.chart:hover {
+  transform: scale(1.02);
+}
+
+/* ===== SECTION 1 — Heatwaves Amplified ===== */
+#section1 {
+  background: #fffaf0;
+  padding: 100px 6%;
+  text-align: center;
+  position: relative;
+}
+
+/* ===== Map Container ===== */
+#map-container {
+  width: 100%;
+  max-width: 900px;
+  height: 560px;
+  margin: 0 auto 25px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== FIXED: Map Toggle Buttons (Scoped to #vis_1a) ===== */
+#vis_1a .toggle-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+#vis_1a .toggle-btn {
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  background: #fff;  /* Default is white (not selected) */
+  color: #333;
+  font-family: "Poppins", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 16px;
+  margin: 0 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+#vis_1a .toggle-btn:hover {
+  background: #f8f8f8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Yellow indicates that the style is selected (ensuring the style has the highest priority) */
+#vis_1a .toggle-btn.active {
+  background: #ffdb78 !important;
+  color: #000 !important;
+  border-color: #e0b93a !important;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  transform: scale(1.05);
+}
+
+/* ===== Legend ===== */
+.legend text {
+  font-size: 12px;
+  fill: #333;
+}
+.legend rect {
+  stroke: #ccc;
+  stroke-width: 0.5px;
+}
+
+/* ===== Tooltip ===== */
+.tooltipMap {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  pointer-events: none;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ===== FORCE FIX: ensure map toggle works ===== */
+#vis_1a button.toggle-btn.active,
+#vis_1a .toggle-container .toggle-btn.active {
+  background-color: #ffdb78 !important;
+  color: #000 !important;
+  border-color: #e0b93a !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18) !important;
+  transform: scale(1.05);
+}
+
+/* ===== SECTION 3 — Cooling Power Controller ===== */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-family: Poppins, Arial, sans-serif;
+}
+
+#year-slider {
+  width: 280px;
+  accent-color: #007aff; 
+}
+
+#play-btn {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+#play-btn:hover {
+  background: #f0f0f0;
+}
+
+#year-label {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.text-box {
+  max-width: 900px;
+  margin: 35px auto 10px;
+  font-size: 18px;
+  color: #444;
+  line-height: 1.7;
+}
+
+/* Background Color Gradient (Warm → Cool) */
+.heatwave { background-color: #fbe3c0; }
+.anatomy  { background-color: #e8e8e8; }
+.cooling  { background-color: #e7f4e4; }
+
+/* ===== Tooltip for Part 3 (NDVI–LST Scatter) ===== */
+.tooltipA {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-family: "Poppins", Arial, sans-serif;
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* ===== FOOTER ===== */
+#footer {
+  background: #333;
+  color: #ccc;
+  text-align: center;
+  padding: 40px 15px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ===== Universal Responsive Chart Layout (for Section 1–3) ===== */
+/* Desktop: Two columns side-by-side + equal height alignment */
+.chart-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;   /* Force two cards to have the same height */
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.chart {
+  flex: 1 1 48%;
+  min-width: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Internal SVG centering correction (applies to all sections) */
+.chart svg {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Flat panel view: Stacked arrangement, but maintaining uniform card width and spacing */
+@media (max-width: 1199px) and (min-width: 768px) {
+  .chart-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chart {
+    width: 90%;
+    max-width: 900px;
+    min-width: unset;
+    margin-bottom: 28px;
+  }
+}
+
+/* Mobile View: Full Width Flow + Slight Padding */
+@media (max-width: 767px) {
+  .chart-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .chart {
+    width: 95%;
+    min-width: unset;
+    margin: 0 auto 20px;
+  }
+}
+

@@ -1,0 +1,51 @@
+[
+  {
+    "city_code":"1GSYD",
+    "Extreme":5.01376,
+    "Normal":2.31427,
+    "city_name":"Greater Sydney",
+    "delta_suhi":2.69949
+  },
+  {
+    "city_code":"2GMEL",
+    "Extreme":5.44435,
+    "Normal":2.13603,
+    "city_name":"Greater Melbourne",
+    "delta_suhi":3.30832
+  },
+  {
+    "city_code":"3GBRI",
+    "Extreme":3.43899,
+    "Normal":1.65274,
+    "city_name":"Greater Brisbane",
+    "delta_suhi":1.78625
+  },
+  {
+    "city_code":"4GADE",
+    "Extreme":3.28735,
+    "Normal":1.12064,
+    "city_name":"Greater Adelaide",
+    "delta_suhi":2.16671
+  },
+  {
+    "city_code":"5GPER",
+    "Extreme":2.10034,
+    "Normal":0.42897,
+    "city_name":"Greater Perth",
+    "delta_suhi":1.67137
+  },
+  {
+    "city_code":"7GDAR",
+    "Extreme":1.68341,
+    "Normal":0.56027,
+    "city_name":"Greater Darwin",
+    "delta_suhi":1.12314
+  },
+  {
+    "city_code":"8ACTE",
+    "Extreme":4.90152,
+    "Normal":2.34106,
+    "city_name":"Australian Capital Territory",
+    "delta_suhi":2.56046
+  }
+]

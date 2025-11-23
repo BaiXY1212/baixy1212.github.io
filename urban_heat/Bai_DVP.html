@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>Urban Ovens: How Australian Cities Breathe, Burn, and Cool</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="landing is-preload">
+
+  <!-- ===== NAV BAR ===== -->
+  <nav id="nav">
+    <ul>
+      <li><a href="#section1">Heatwaves Amplified</a></li>
+      <li><a href="#section2">Anatomy of a Hot City</a></li>
+      <li><a href="#section3">Cooling Power of Green</a></li>
+    </ul>
+    <div class="nav-right">
+      <label for="city-select">City:</label>
+      <select id="city-select">
+        <option value="Greater Sydney">Greater Sydney</option>
+        <option value="Greater Melbourne">Greater Melbourne</option>
+        <option value="Greater Brisbane">Greater Brisbane</option>
+        <option value="Greater Adelaide">Greater Adelaide</option>
+        <option value="Greater Perth">Greater Perth</option>
+        <option value="Greater Darwin">Greater Darwin</option>
+        <option value="Australian Capital Territory">ACT</option>
+      </select>
+    </div>
+  </nav>
+
+  <!-- ===== HERO COVER (Merged Intro) ===== -->
+  <section id="banner">
+    <div class="inner">
+      <h2>Urban Ovens:<br>How Australian Cities Breathe, Burn, and Cool</h2>
+      <p>
+        On a summer’s day, the streets of Melbourne shimmer while the parks stay surprisingly cool.<br>
+        What creates these hidden temperature borders within our cities?<br><br>
+        This data story takes you on a journey through ten years of satellite records,
+        revealing how urban design quietly shapes the heat we feel — and how nature can help us cool down again.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- ===== SECTION 1: Heatwaves ===== -->
+<section id="section1" class="section heatwave">
+  <h3>Heatwaves Turn Up the Dial</h3>
+
+  <!-- Opening Context -->
+  <div class="text-above">
+    <p>
+      <b>Australia is heating up faster than ever.</b><br>
+      With extreme heatwaves striking more often, urban surfaces across the nation absorb and radiate unprecedented warmth.
+      This section visualises the surface temperature response of Australia’s seven major capitals — showing how ordinary warmth transforms into severe heat stress,
+      revealing the growing thermal vulnerability of our urban cores when the weather turns extreme.
+    </p>
+
+    <p><b>How to Explore</b><br>
+      • Toggle between <b>Normal</b> and <b>Extreme</b> to reveal how heatwaves reshape each city’s surface temperature pattern.<br>
+      • Click a city on the <b>Dumbbell chart</b> to focus on its local profile — this action also updates all subsequent visuals across the story.<br>
+      • You can also change the city anytime using the global selector in the top-right corner.
+    </p>
+  </div>
+
+  <!-- Visuals -->
+  <div class="chart-row">
+    <div class="chart" id="vis_1a"></div>
+    <div class="chart" id="vis_1b"></div>
+  </div>
+
+  <!-- Key Insight & Transition -->
+  <div class="text-below">
+    <p><b>Key Insight</b><br>
+      Switching from Normal to Extreme conditions unveils a striking surge in surface heat.
+      The maps make this visible at a glance — cooler tones contract, and hot zones spread outward as the temperature climbs.
+      The Dumbbell chart quantifies this escalation: across every capital, the mean land-surface temperature jumps sharply under heatwave conditions.
+      Yet the extent of this intensification differs from city to city — a clue that deeper structural forces are shaping the heat we feel.
+    </p>
+
+    <p>
+      <b>What we see here is the symptom</b> — an abrupt spike in urban heat.
+      But <b>what causes</b> certain parts of the city to heat so much faster than others?
+      The next section digs deeper into the city’s surface itself, analysing how different land-use types and urban forms shape these temperature patterns and drive the intensity of heat build-up.
+    </p>
+  </div>
+</section>
+
+
+  <!-- ===== SECTION 2: Anatomy of a Hot City ===== -->
+<section id="section2" class="section anatomy">
+  <h3>The Anatomy of a Hot City</h3>
+  <!-- Opening Context -->
+  <div class="text-above">
+    <p>
+      <b>The anatomy of heat is written in the city itself.</b><br>
+      If heatwaves expose our cities’ thermal vulnerability, this section dissects the <i>structures</i> that create it.
+      Each urban landscape — from dense commercial grids to suburban sprawl — interacts differently with sunlight, vegetation, and materials.
+      By comparing <b>land-use types</b> and their average surface temperatures, we can trace how <i>urban form translates directly into heat</i>.
+    </p>
+
+    <p><b>How to Explore</b><br>
+      • The city displayed here follows your selection from the Dumbbell chart or global menu above.<br>
+      • Hover over a land-use category (on either chart) to see its thermal signature and trigger the linked highlighting.<br>
+      • In the Sankey Diagram (right), compare the <b>thickness of the lines</b> — they represent the <b>magnitude of each land-use type's thermal impact</b>, revealing exactly how urban structure contributes to the city's heat zones.
+    </p>
+  </div>
+
+  <!-- Visuals -->
+  <div class="chart-row">
+    <div class="chart" id="vis_2a"></div>
+    <div class="chart" id="vis_2b"></div>
+  </div>
+
+  <!-- Key Insight & Transition -->
+  <div class="text-below">
+    <p><b>Key Insight</b><br>
+      The pattern is clear: <b>built-up zones dominate the city’s heat anatomy</b>.
+      Industrial and commercial areas emit the most heat, while vegetated and water surfaces stay comparatively cool — 
+      a thermal contrast of more than 10 °C in some cities.
+      This difference shows that urban heat is not random; it is <i>engineered</i> by the density, materials, and spatial layout of our built environment.
+    </p>
+
+    <p>
+      Yet these patterns also reveal opportunity.
+      Cities with higher proportions of open or green land — such as Canberra and Darwin — display more balanced thermal profiles,
+      suggesting that <b>urban composition itself can moderate heat build-up</b>.
+    </p>
+
+    <p>
+      <b>What if we could harness that balance deliberately?</b><br>
+      The next section explores the <i>cooling power of green</i> — showing how vegetation density reshapes surface temperatures
+      and offers a path to urban resilience.
+    </p>
+  </div>
+</section>
+
+  <!-- ===== SECTION 3: Cooling Power ===== -->
+
+<section id="section3" class="section cooling">
+  <h3>The Cooling Power of Green</h3>
+
+  <!-- Opening Context -->
+  <div class="text-above">
+    <p>
+      <b>If heatwaves reveal our cities’ vulnerability, vegetation shows their capacity to heal.</b><br>
+      Having seen how urban form intensifies heat, we now turn to nature — the element that can be designed, planted, and scaled.
+      Unlike water bodies, which are largely fixed, green infrastructure is a controllable force in city planning — 
+      a living tool to rebalance urban temperature and restore comfort.
+    </p>
+
+    <p>
+      To understand this power, we trace the relationship between NDVI (vegetation density) and LST (land surface temperature)
+      across a decade of satellite records.  
+      As greenness rises, temperature falls — a pattern that repeats city after city.  
+      Each point on the scatterplot marks a month; each slope tells the same promise: <b>more leaves, less heat</b>.
+    </p>
+
+    <p><b>How to Explore</b><br>
+      • The city displayed here follows your selection from the Dumbbell chart or global menu above.<br>
+      • The left chart visualises the correlation between NDVI (greenness) and LST (surface temperature) for each city.<br>
+      • The right chart animates this balance through time, showing how drought, development, or re-greening reshape each city’s thermal rhythm.<br>
+      • Use the Play button or slider to follow how vegetation loss and recovery bend the temperature curve decade by decade.
+    </p>
+  </div>
+
+  <!-- Visuals -->
+  <div class="chart-row">
+    <div class="chart" id="vis_3a"></div>
+    <div class="chart">
+      <div id="vis_3b"></div>
+      <div id="controls" class="controls">
+        <button id="play-btn">▶️ Play</button>
+        <input type="range" id="year-slider" min="0" max="10" value="0" step="1">
+        <span id="year-label">2014</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Insight & Strategic Outlook -->
+  <div class="text-below">
+    <p><b>Key Insight</b><br>
+      The data speak softly but clearly — <b> where vegetation thrives, surface heat retreats</b>.
+      Within each city, NDVI and LST move in opposite directions:
+      where vegetation thrives, surface heat retreats.  
+      This cooling effect extends beyond parks into surrounding suburbs, 
+      proving that urban greenery is not cosmetic, but systemic.
+    </p>
+
+    <p>
+      Yearly patterns reinforce this: cities investing in green corridors — like Canberra or Darwin — 
+      show milder peaks in surface temperature, while those with dense urban infill face steeper climbs.
+      The thermal rhythm of a city is not destiny — it is design.
+    </p>
+
+    <p>
+      <b>Strategic Outlook</b><br>
+      Cooling is no longer just a climate goal — it’s a planning choice.
+      When streets are shaded, courtyards greened, and rooftops revived, the city’s microclimate transforms.  
+      The lesson across all three chapters is simple but urgent:  
+      <i>we built the heat, and we can unbuild it — leaf by leaf, block by block.</i>
+    </p>
+  </div>
+</section>
+
+  <!-- ===== FOOTER ===== -->
+      <footer id="footer">
+  <p style="text-align:center; color:#ddd; font-size:13px; line-height:1.6;">
+    <strong>Data Sources:</strong><br>
+    1. <strong>Greater Capital City Statistical Areas (GCCSA)</strong> — Australian Bureau of Statistics (ABS), ASGS Edition 3 (2021).<br>
+    <em>Description:</em> Official geospatial boundaries for Australia's capital cities, used to define each city's analysis region.<br>
+    <a href="https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files" target="_blank" style="color:#ffdd66;">ABS Digital Boundary Files</a><br><br>
+
+    2. <strong>Mesh Blocks</strong> — Australian Bureau of Statistics (ABS), ASGS Edition 3 (2021).<br>
+    <em>Description:</em> Detailed geospatial polygons (~368,000) classified by primary land-use type, used to calculate land-use-specific temperatures.<br>
+    <a href="https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files" target="_blank" style="color:#ffdd66;">ABS Digital Boundary Files</a><br><br>
+
+    3. <strong>MODIS Land Surface Temperature (LST)</strong> and <strong>Vegetation Index (NDVI)</strong> — Google Earth Engine (NASA LP DAAC).<br>
+    <em>Description:</em> MOD11A2 V6.1 (LST) and MOD13Q1 V6.1 (NDVI) provide monthly surface heat and vegetation greenness (2014–2024).<br>
+    <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD11A2" target="_blank" style="color:#ffdd66;">MOD11A2 – LST</a> |
+    <a href="https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13Q1" target="_blank" style="color:#ffdd66;">MOD13Q1 – NDVI</a><br><br>
+
+    4. <strong>ERA5-Land Hourly Climate Reanalysis</strong> — Google Earth Engine (ECMWF / Copernicus Climate Change Service).<br>
+    <em>Description:</em> Hourly reanalysis providing 2m air temperature used to identify extreme heatwave events.<br>
+    <a href="https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_HOURLY" target="_blank" style="color:#ffdd66;">ERA5-Land Dataset</a><br><br>
+
+    <strong>Visualization and storytelling by Bai Xueyi (2025).</strong>
+  </p>
+</footer>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <script src="js/part1.js"></script>
+  <script src="js/part2.js"></script>
+  <script src="js/part3.js"></script>
+
+
+  <!-- Scroll Active -->
+  <script>
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll("#nav ul li a");
+    window.addEventListener("scroll", () => {
+      let current = "";
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        if (pageYOffset >= sectionTop - 100) current = section.getAttribute("id");
+      });
+      navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href").includes(current)) link.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
+
