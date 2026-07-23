@@ -1,6 +1,7 @@
 ---
 layout: archive
 title: "CV"
+published: false
 permalink: /cv-json/
 author_profile: false
 redirect_from:
