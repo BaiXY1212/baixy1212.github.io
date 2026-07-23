@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>博士生时间管理与成就系统</title>
+    <title>Life Dashboard · Bai Xueyi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
@@ -97,23 +97,28 @@
 </head>
 
 <body class="bg-bglight text-textmain font-sans min-h-screen pb-20">
-    <div class="mb-6 soft-card p-4 border-2 border-primary/30 bg-blue-50/30">
-        <details>
-            <summary class="cursor-pointer font-bold text-primary flex items-center justify-between">
-                <span><i class="fa fa-refresh mr-2"></i>多端同步设置 (墨尔本/悉尼)</span>
-                <span id="sync-status" class="text-xs text-textmuted">本地模式</span>
-            </summary>
-            <div class="mt-4 flex flex-wrap gap-3">
-                <input type="password" id="gh-token" placeholder="GitHub Token" class="flex-1 px-4 py-2 border rounded-lg text-sm outline-none" />
-                <input type="text" id="gist-id" placeholder="Gist ID (首次留空)" class="flex-1 px-4 py-2 border rounded-lg text-sm outline-none" />
-                <button id="btn-manual-sync-down" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm">下载云端数据</button>
-            </div>
-        </details>
-    </div>
-
     <div class="container mx-auto px-4 py-8 max-w-[1200px]">
+        <div class="mb-6 soft-card p-4 border border-primary/30 bg-blue-50/40">
+            <details>
+                <summary class="cursor-pointer font-bold text-primary flex items-center justify-between gap-4">
+                    <span><i class="fa fa-shield mr-2"></i>数据与隐私</span>
+                    <span id="backup-status" class="text-xs text-textmuted whitespace-nowrap">仅保存在此设备</span>
+                </summary>
+                <div class="mt-4">
+                    <p class="text-sm text-textmuted leading-relaxed mb-4">你的记录保存在当前浏览器中，不会自动上传。建议定期导出 JSON 备份；在另一台设备导入即可迁移数据。</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button id="btn-export-data" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm"><i class="fa fa-download mr-2"></i>导出备份</button>
+                        <button id="btn-import-data" class="bg-white text-primary border border-primary/40 px-4 py-2 rounded-lg text-sm font-bold shadow-sm"><i class="fa fa-upload mr-2"></i>导入备份</button>
+                        <input type="file" id="file-import-data" accept="application/json,.json" class="hidden" />
+                        <a href="/" class="bg-white text-gray-600 border border-gray-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm"><i class="fa fa-arrow-left mr-2"></i>返回个人网站</a>
+                    </div>
+                </div>
+            </details>
+        </div>
+
         <header class="mb-10 text-center">
-            <h1 class="text-4xl font-extrabold text-primary mb-3 drop-shadow-sm tracking-wide">PhD Workspace & Time Flow</h1>
+            <h1 class="text-4xl font-extrabold text-primary mb-3 drop-shadow-sm tracking-wide">Life Dashboard</h1>
+            <p class="text-sm text-textmuted mb-3">A calm workspace for focus, habits and reflection.</p>
             <p class="text-textmuted font-medium bg-white inline-block px-6 py-2 rounded-full shadow-sm border border-gray-100" id="current-date-time">正在加载时间...</p>
         </header>
 
@@ -835,102 +840,73 @@
             ensureDateDataExists(getTodayStr());
         }
 
-        function loadSyncConfig() {
-            const tokenInput = document.getElementById('gh-token');
-            const gistInput = document.getElementById('gist-id');
-            if (!tokenInput || !gistInput) return;
-
-            const t = localStorage.getItem('sync_token');
-            const g = localStorage.getItem('sync_gist_id');
-            if (t) tokenInput.value = t;
-            if (g) gistInput.value = g;
-
-            tokenInput.addEventListener('change', e => localStorage.setItem('sync_token', e.target.value));
-            gistInput.addEventListener('change', e => localStorage.setItem('sync_gist_id', e.target.value));
+        function removeLegacySyncCredentials() {
+            localStorage.removeItem('sync_token');
+            localStorage.removeItem('sync_gist_id');
         }
 
-        async function manualSyncDown() {
-            const token = document.getElementById('gh-token')?.value?.trim();
-            const gistId = document.getElementById('gist-id')?.value?.trim();
+        function getBackupPayload() {
+            const data = {};
+            DATA_KEYS.forEach(k => {
+                data[k] = D[k];
+            });
+            return {
+                format: 'baixy-life-dashboard',
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                data
+            };
+        }
 
-            if (!token || !gistId) {
-                alert('请填入 Token 和 Gist ID');
-                return;
-            }
+        function exportData() {
+            ensureRootData();
+            const blob = new Blob([JSON.stringify(getBackupPayload(), null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = `life-dashboard-${getTodayStr()}.json`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+
+            const backupStatus = document.getElementById('backup-status');
+            if (backupStatus) backupStatus.textContent = '备份已导出';
+        }
+
+        async function importData(file) {
+            if (!file) return;
 
             try {
-                const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-                    headers: { Authorization: `token ${token}` }
-                });
+                const parsed = JSON.parse(await file.text());
+                const imported = parsed?.data && typeof parsed.data === 'object' ? parsed.data : parsed;
+                const keysFound = DATA_KEYS.filter(k => imported[k] !== undefined);
 
-                if (!res.ok) throw new Error('fetch failed');
+                if (keysFound.length === 0) throw new Error('invalid backup');
+                if (!confirm(`将导入 ${keysFound.length} 类数据并覆盖此设备上的对应记录，是否继续？`)) return;
 
-                const data = await res.json();
-                const fileContent = data?.files?.['phd_data.json']?.content;
-                if (!fileContent) throw new Error('missing phd_data.json');
-
-                const remoteD = JSON.parse(fileContent);
-
-                DATA_KEYS.forEach(k => {
-                    if (remoteD[k] !== undefined) {
-                        D[k] = remoteD[k];
-                        localStorage.setItem(k, JSON.stringify(D[k]));
-                    }
+                keysFound.forEach(k => {
+                    D[k] = imported[k];
+                    localStorage.setItem(k, JSON.stringify(imported[k]));
                 });
 
                 ensureDateDataExists(getTodayStr());
-                alert('同步成功，即将刷新！');
+                alert('备份导入成功，页面将刷新。');
                 location.reload();
-            } catch (e) {
-                alert('同步失败，请检查设置');
+            } catch {
+                alert('无法导入：请选择由 Life Dashboard 导出的 JSON 备份。');
             }
         }
 
-        async function saveData() {
+        function saveData() {
             ensureRootData();
             DATA_KEYS.forEach(k => localStorage.setItem(k, JSON.stringify(D[k])));
 
             checkAchievements();
             updateSidebar();
 
-            const token = document.getElementById('gh-token')?.value?.trim();
-            const gistId = document.getElementById('gist-id')?.value?.trim();
-            const syncStatus = document.getElementById('sync-status');
-
-            if (!token || !syncStatus) return;
-
-            const payload = {};
-            DATA_KEYS.forEach(k => {
-                payload[k] = D[k];
-            });
-
-            syncStatus.textContent = '正在云端同步...';
-
-            try {
-                const url = gistId ? `https://api.github.com/gists/${gistId}` : 'https://api.github.com/gists';
-                const method = gistId ? 'PATCH' : 'POST';
-
-                const res = await fetch(url, {
-                    method,
-                    headers: { Authorization: `token ${token}` },
-                    body: JSON.stringify({
-                        files: { 'phd_data.json': { content: JSON.stringify(payload) } }
-                    })
-                });
-
-                const result = await res.json();
-
-                if (!res.ok) throw new Error('sync failed');
-
-                if (result.id && !gistId) {
-                    document.getElementById('gist-id').value = result.id;
-                    localStorage.setItem('sync_gist_id', result.id);
-                }
-
-                syncStatus.textContent = `同步成功 ${new Date().toLocaleTimeString()}`;
-            } catch {
-                syncStatus.textContent = '同步失败';
-            }
+            const backupStatus = document.getElementById('backup-status');
+            if (backupStatus) backupStatus.textContent = `已保存到此设备 ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         }
 
         // ================= 顶部时间 =================
@@ -1908,12 +1884,19 @@
 
         // ================= 启动 =================
         document.addEventListener('DOMContentLoaded', () => {
+            removeLegacySyncCredentials();
             initData();
-            loadSyncConfig();
             updateTimeLoop();
             setInterval(updateTimeLoop, 60000);
 
-            document.getElementById('btn-manual-sync-down')?.addEventListener('click', manualSyncDown);
+            document.getElementById('btn-export-data')?.addEventListener('click', exportData);
+            document.getElementById('btn-import-data')?.addEventListener('click', () => {
+                document.getElementById('file-import-data')?.click();
+            });
+            document.getElementById('file-import-data')?.addEventListener('change', event => {
+                importData(event.target.files?.[0]);
+                event.target.value = '';
+            });
 
             initNavigation();
             initCheckin();

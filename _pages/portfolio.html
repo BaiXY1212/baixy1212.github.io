@@ -1,14 +1,22 @@
 ---
 layout: archive
-title: "Portfolio"
+title: "Research & Projects"
 permalink: /portfolio/
-author_profile: true
+author_profile: false
 ---
 
-{% include base_path %}
+<p class="portfolio-intro">A working collection of research questions, conceptual frameworks and small digital tools. These projects are shown at their current stage—without presenting work in progress as finished research.</p>
 
-
-{% for post in site.portfolio %}
-  {% include archive-single.html %}
-{% endfor %}
-
+<div class="portfolio-list">
+  {% assign projects = site.portfolio | sort: "order" %}
+  {% for project in projects %}
+    <article class="portfolio-item">
+      <div class="portfolio-item__meta">{{ project.project_type }} · {{ project.status }}</div>
+      <div>
+        <h2><a href="{{ project.url }}">{{ project.title }}</a></h2>
+        <p>{{ project.summary }}</p>
+      </div>
+      <a class="portfolio-item__arrow" href="{{ project.url }}" aria-label="Read {{ project.title }}">↗</a>
+    </article>
+  {% endfor %}
+</div>

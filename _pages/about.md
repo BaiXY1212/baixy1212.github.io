@@ -1,56 +1,97 @@
 ---
+layout: home
 permalink: /
-title: "Academic Pages is a ready-to-fork GitHub Pages template for academic personal websites"
-author_profile: true
-redirect_from: 
+title: "Bai Xueyi"
+excerpt: "Research, data and digital experiences for more accessible and meaningful cultural participation."
+author_profile: false
+redirect_from:
   - /about/
   - /about.html
 ---
 
-This is the front page of a website that is powered by the [Academic Pages template](https://github.com/academicpages/academicpages.github.io) and hosted on GitHub pages. [GitHub pages](https://pages.github.com) is a free service in which websites are built and hosted from code and data stored in a GitHub repository, automatically updating when a new commit is made to the repository. This template was forked from the [Minimal Mistakes Jekyll Theme](https://mmistakes.github.io/minimal-mistakes/) created by Michael Rose, and then extended to support the kinds of content that academics have: publications, talks, teaching, a portfolio, blog posts, and a dynamically-generated CV. Incidentally, these same features make it a great template for anyone that needs to show off a professional template!
+<section class="home-hero" aria-labelledby="intro-title">
+  <div class="hero-copy">
+    <p class="eyebrow">Research · Data · Digital Experience</p>
+    <h1 id="intro-title">Making complex ideas<br><span>more human.</span></h1>
+    <p class="hero-lede">Hi, I’m Bai Xueyi. I explore how research, data and thoughtfully designed tools can make cultural experiences more accessible, meaningful and easier to understand.</p>
+    <div class="hero-actions">
+      <a class="button button--primary" href="/portfolio/">Explore my work <span aria-hidden="true">↗</span></a>
+      <a class="button button--quiet" href="/tracker.html">Open Life Dashboard</a>
+    </div>
+  </div>
 
- You can fork [this template](https://github.com/academicpages/academicpages.github.io) right now, modify the configuration and Markdown files, add your own PDFs and other content, and have your own site for free, with no ads!
+  <aside class="now-card" aria-label="Current focus">
+    <div class="now-card__top">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>Current focus</span>
+    </div>
+    <ol class="focus-list">
+      <li><span>01</span><strong>Accessible museum experiences</strong></li>
+      <li><span>02</span><strong>Meaningful engagement</strong></li>
+      <li><span>03</span><strong>Digital heritage &amp; quantitative methods</strong></li>
+      <li><span>04</span><strong>Personal systems for sustainable progress</strong></li>
+    </ol>
+  </aside>
+</section>
 
-A data-driven personal website
-======
-Like many other Jekyll-based GitHub Pages templates, Academic Pages makes you separate the website's content from its form. The content & metadata of your website are in structured Markdown files, while various other files constitute the theme, specifying how to transform that content & metadata into HTML pages. You keep these various Markdown (.md), YAML (.yml), HTML, and CSS files in a public GitHub repository. Each time you commit and push an update to the repository, the [GitHub pages](https://pages.github.com/) service creates static HTML pages based on these files, which are hosted on GitHub's servers free of charge.
+<section class="home-section" aria-labelledby="selected-work">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Selected work</p>
+      <h2 id="selected-work">Questions I’m exploring</h2>
+    </div>
+    <a class="text-link" href="/portfolio/">View all projects <span aria-hidden="true">→</span></a>
+  </div>
 
-Many of the features of dynamic content management systems (like Wordpress) can be achieved in this fashion, using a fraction of the computational resources and with far less vulnerability to hacking and DDoSing. You can also modify the theme to your heart's content without touching the content of your site. If you get to a point where you've broken something in Jekyll/HTML/CSS beyond repair, your Markdown files describing your talks, publications, etc. are safe. You can rollback the changes or even delete the repository and start over - just be sure to save the Markdown files! You can also write scripts that process the structured data on the site, such as [this one](https://github.com/academicpages/academicpages.github.io/blob/master/talkmap.ipynb) that analyzes metadata in pages about talks to display [a map of every location you've given a talk](https://academicpages.github.io/talkmap.html).
+  <div class="project-grid">
+    <a class="project-card project-card--blue" href="/portfolio/museum-accessibility/">
+      <span class="project-number">01 / Accessibility</span>
+      <h3>Designing museum experiences with blind and low-vision visitors</h3>
+      <p>Exploring how access, interpretation and participation can become part of the experience—not an afterthought.</p>
+      <span class="project-arrow" aria-hidden="true">↗</span>
+    </a>
 
-For those users that need more advanced functionality, the template also supports the following popular tools:
-- [MathJax](https://www.mathjax.org/) for mathematical equations
-- [Mermaid](https://mermaid.js.org/) for diagraming
-- [Plotly](https://plotly.com/javascript/) for plotting
+    <a class="project-card project-card--sand" href="/portfolio/meaningful-engagement/">
+      <span class="project-number">02 / Framework</span>
+      <h3>What makes engagement genuinely meaningful?</h3>
+      <p>Developing a clearer language for experiences that create agency, connection and lasting value.</p>
+      <span class="project-arrow" aria-hidden="true">↗</span>
+    </a>
 
-Getting started
-======
-1. Register a GitHub account if you don't have one and confirm your e-mail (required!)
-1. Fork [this template](https://github.com/academicpages/academicpages.github.io) by clicking the "Use this template" button in the top right. 
-1. Go to the repository's settings (rightmost item in the tabs that start with "Code", should be below "Unwatch"). Rename the repository "[your GitHub username].github.io", which will also be your website's URL.
-1. Set site-wide configuration and create content & metadata (see below -- also see [this set of diffs](https://archive.is/3TPas) showing what files were changed to set up [an example site](https://getorg-testacct.github.io) for a user with the username "getorg-testacct")
-1. Upload any files (like PDFs, .zip files, etc.) to the files/ directory. They will appear at https://[your GitHub username].github.io/files/example.pdf.  
-1. Check status by going to the repository settings, in the "GitHub pages" section
+    <a class="project-card project-card--sage" href="/portfolio/digital-heritage-sem/">
+      <span class="project-number">03 / Research methods</span>
+      <h3>Connecting digital heritage experiences with evidence</h3>
+      <p>Using structured models and quantitative methods to understand how people engage with digital heritage.</p>
+      <span class="project-arrow" aria-hidden="true">↗</span>
+    </a>
+  </div>
+</section>
 
-Site-wide configuration
-------
-The main configuration file for the site is in the base directory in [_config.yml](https://github.com/academicpages/academicpages.github.io/blob/master/_config.yml), which defines the content in the sidebars and other site-wide features. You will need to replace the default variables with ones about yourself and your site's github repository. The configuration file for the top menu is in [_data/navigation.yml](https://github.com/academicpages/academicpages.github.io/blob/master/_data/navigation.yml). For example, if you don't have a portfolio or blog posts, you can remove those items from that navigation.yml file to remove them from the header. 
+<section class="home-section approach-section" aria-labelledby="how-i-work">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Approach</p>
+      <h2 id="how-i-work">Research that moves between people, evidence and making.</h2>
+    </div>
+  </div>
+  <div class="approach-grid">
+    <div><span>Listen</span><p>Start with lived experience, context and the questions that matter.</p></div>
+    <div><span>Make sense</span><p>Turn complex material into useful concepts, evidence and structure.</p></div>
+    <div><span>Prototype</span><p>Make ideas tangible through visualisation, interfaces and small experiments.</p></div>
+    <div><span>Reflect</span><p>Review what worked, adjust the system and keep only what adds value.</p></div>
+  </div>
+</section>
 
-Create content & metadata
-------
-For site content, there is one Markdown file for each type of content, which are stored in directories like _publications, _talks, _posts, _teaching, or _pages. For example, each talk is a Markdown file in the [_talks directory](https://github.com/academicpages/academicpages.github.io/tree/master/_talks). At the top of each Markdown file is structured data in YAML about the talk, which the theme will parse to do lots of cool stuff. The same structured data about a talk is used to generate the list of talks on the [Talks page](https://academicpages.github.io/talks), each [individual page](https://academicpages.github.io/talks/2012-03-01-talk-1) for specific talks, the talks section for the [CV page](https://academicpages.github.io/cv), and the [map of places you've given a talk](https://academicpages.github.io/talkmap.html) (if you run this [python file](https://github.com/academicpages/academicpages.github.io/blob/master/talkmap.py) or [Jupyter notebook](https://github.com/academicpages/academicpages.github.io/blob/master/talkmap.ipynb), which creates the HTML for the map based on the contents of the _talks directory).
+<section class="dashboard-callout" aria-labelledby="dashboard-title">
+  <div>
+    <p class="eyebrow">Personal Systems Lab</p>
+    <h2 id="dashboard-title">Progress should feel sustainable.</h2>
+    <p>The Life Dashboard is a private-by-default browser tool for focus, habits, reflection and personal data review.</p>
+  </div>
+  <a class="button button--light" href="/tracker.html">Try the dashboard <span aria-hidden="true">→</span></a>
+</section>
 
-**Markdown generator**
-
-The repository includes [a set of Jupyter notebooks](https://github.com/academicpages/academicpages.github.io/tree/master/markdown_generator
-) that converts a CSV containing structured data about talks or presentations into individual Markdown files that will be properly formatted for the Academic Pages template. The sample CSVs in that directory are the ones I used to create my own personal website at stuartgeiger.com. My usual workflow is that I keep a spreadsheet of my publications and talks, then run the code in these notebooks to generate the Markdown files, then commit and push them to the GitHub repository.
-
-How to edit your site's GitHub repository
-------
-Many people use a git client to create files on their local computer and then push them to GitHub's servers. If you are not familiar with git, you can directly edit these configuration and Markdown files directly in the github.com interface. Navigate to a file (like [this one](https://github.com/academicpages/academicpages.github.io/blob/master/_talks/2012-03-01-talk-1.md) and click the pencil icon in the top right of the content preview (to the right of the "Raw | Blame | History" buttons). You can delete a file by clicking the trashcan icon to the right of the pencil icon. You can also create new files or upload files by navigating to a directory and clicking the "Create new file" or "Upload files" buttons. 
-
-Example: editing a Markdown file for a talk
-![Editing a Markdown file for a talk](/images/editing-talk.png)
-
-For more info
-------
-More info about configuring Academic Pages can be found in [the guide](https://academicpages.github.io/markdown/), the [growing wiki](https://github.com/academicpages/academicpages.github.io/wiki), and you can always [ask a question on GitHub](https://github.com/academicpages/academicpages.github.io/discussions). The [guides for the Minimal Mistakes theme](https://mmistakes.github.io/minimal-mistakes/docs/configuration/) (which this theme was forked from) might also be helpful.
+<footer class="home-signoff">
+  <p>Curious about the work or building something adjacent?</p>
+  <a href="https://github.com/BaiXY1212">Find me on GitHub <span aria-hidden="true">↗</span></a>
+</footer>
