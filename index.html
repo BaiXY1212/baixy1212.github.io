@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="light">
+<html lang="en" dir="auto" data-theme="dark">
 
 <head>
 	<meta name="generator" content="Hugo 0.152.2"><meta charset="utf-8">
@@ -8,15 +8,11 @@
 <meta name="robots" content="index, follow">
 <title>Bai Xueyi</title>
 
-<meta name="description" content="Exploring the world through Data &amp; Design.">
-<meta name="author" content="">
+<meta name="description" content="Bai Xueyi explores data science, human-computer interaction, accessibility, and multisensory cultural experiences.">
+<meta name="author" content="Bai Xueyi">
 <link rel="canonical" href="https://baixy1212.github.io/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://baixy1212.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://baixy1212.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://baixy1212.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://baixy1212.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://baixy1212.github.io/safari-pinned-tab.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" type="application/rss+xml" href="https://baixy1212.github.io/index.xml" title="rss">
@@ -31,28 +27,31 @@
     </style>
 </noscript>
 <script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.querySelector("html").dataset.theme = 'dark';
+    const savedTheme = localStorage.getItem("pref-theme");
+    if (savedTheme) {
+        document.documentElement.dataset.theme = savedTheme;
     }
 
 </script><link rel="stylesheet" href="/css/custom.css"><meta property="og:url" content="https://baixy1212.github.io/">
   <meta property="og:site_name" content="Bai Xueyi">
   <meta property="og:title" content="Welcome">
-  <meta property="og:description" content=" Hi, I&#39;m Bai Xueyi. I am a Data Science master&#39;s student at Monash University, blending the rigor of mathematics with the empathy of human-computer interaction. Currently, I am exploring how to make museum experiences more accessible for the visually impaired using data and sound. I believe technology should be as warm as it is smart. GitHub • Email ">
+  <meta property="og:description" content="Bai Xueyi explores data science, human-computer interaction, accessibility, and multisensory cultural experiences.">
   <meta property="og:locale" content="zh-cn">
   <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Welcome">
-<meta name="twitter:description" content="Exploring the world through Data &amp; Design.">
+<meta name="twitter:description" content="Data science, human-computer interaction, accessibility, and multisensory cultural experiences.">
+<meta name="twitter:image" content="https://baixy1212.github.io/my-profile.jpg">
+<meta property="og:image" content="https://baixy1212.github.io/my-profile.jpg">
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "Person",
   "name": "Bai Xueyi",
   "url": "https://baixy1212.github.io/",
   "description": "Exploring the world through Data \u0026 Design.",
-  "logo": "https://baixy1212.github.io/favicon.ico",
+  "image": "https://baixy1212.github.io/my-profile.jpg",
   "sameAs": [
       "https://github.com/baixy1212", "mailto:xbai0024@student.monash.edu"
   ]
@@ -99,6 +98,11 @@
                 </a>
             </li>
             <li>
+                <a href="https://baixy1212.github.io/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://baixy1212.github.io/life/" title="Life">
                     <span>Life</span>
                 </a>
@@ -108,13 +112,19 @@
                     <span>Likes</span>
                 </a>
             </li>
+            <li>
+                <a class="nav-dashboard" href="https://baixy1212.github.io/tracker.html" title="Life Dashboard">
+                    <span>Dashboard</span>
+                </a>
+            </li>
         </ul>
     </nav>
 </header>
 <main class="main"><div class="profile">
     <div class="profile_inner">
-        <img draggable="false" src="https://baixy1212.github.io/my-profile.jpg" alt="profile image" title=""
+        <img draggable="false" src="https://baixy1212.github.io/my-profile.jpg" alt="Bai Xueyi at Sydney Harbour at night" title=""
             height="150" width="150" />
+        <p class="home-kicker">Data Science · HCI · Accessible Culture</p>
         <h1>Hi, I&rsquo;m Bai Xueyi.</h1>
         <span>I’m a data science student who loves exploring how people experience the world through technology.
 <br><br>
@@ -139,14 +149,52 @@ I’m building a path toward human–computer interaction, with wide interests i
 </svg>
     </a>
 </div>
+        <div class="home-actions" aria-label="Featured links">
+            <a class="home-action home-action-primary" href="/projects/">Explore my projects</a>
+            <a class="home-action" href="/tracker.html">Open Life Dashboard</a>
+        </div>
 
     </div>
 </div>
 
+<section class="home-section" aria-labelledby="current-directions">
+    <div class="home-section-heading">
+        <p class="section-label">CURRENT DIRECTIONS</p>
+        <h2 id="current-directions">Questions I’m growing into.</h2>
+        <p>I’m connecting my quantitative background with human-centred research, while keeping room for small experiments and personal reflection.</p>
+    </div>
+    <div class="home-direction-grid">
+        <a class="home-direction-card" href="/projects/#museum-accessibility">
+            <span>01 · Accessibility</span>
+            <h3>Museum experiences beyond the visual</h3>
+            <p>Exploring sound, touch and participation with blind and low-vision visitors.</p>
+        </a>
+        <a class="home-direction-card" href="/projects/#meaningful-engagement">
+            <span>02 · HCI</span>
+            <h3>Meaningful engagement</h3>
+            <p>Asking what makes an interactive cultural experience genuinely valuable.</p>
+        </a>
+        <a class="home-direction-card" href="/projects/#data-and-heritage">
+            <span>03 · Data</span>
+            <h3>Digital heritage and evidence</h3>
+            <p>Using modelling and visualisation to make complex cultural questions clearer.</p>
+        </a>
+    </div>
+</section>
+
+<section class="home-dashboard-callout" aria-labelledby="dashboard-heading">
+    <div>
+        <p class="section-label">PERSONAL SYSTEMS LAB</p>
+        <h2 id="dashboard-heading">A calmer way to notice progress.</h2>
+        <p>My browser-based workspace for focus, habits, reflection and lightweight personal data review.</p>
+    </div>
+    <a href="/tracker.html">Open dashboard →</a>
+</section>
+
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://baixy1212.github.io/">Bai Xueyi</a></span> · 
+        <span>&copy; 2026 <a href="https://baixy1212.github.io/">Bai Xueyi</a></span>
 
     <span>
         Powered by

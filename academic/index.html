@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto" data-theme="light">
+<html lang="en" dir="auto" data-theme="dark">
 
 <head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,11 +21,7 @@ Master of Data Science — Monash University
 <meta name="author" content="">
 <link rel="canonical" href="https://baixy1212.github.io/academic/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://baixy1212.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://baixy1212.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://baixy1212.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://baixy1212.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://baixy1212.github.io/safari-pinned-tab.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 <link rel="alternate" hreflang="en" href="https://baixy1212.github.io/academic/">
@@ -39,8 +35,9 @@ Master of Data Science — Monash University
     </style>
 </noscript>
 <script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.querySelector("html").dataset.theme = 'dark';
+    const savedTheme = localStorage.getItem("pref-theme");
+    if (savedTheme) {
+        document.documentElement.dataset.theme = savedTheme;
     }
 
 </script><link rel="stylesheet" href="/css/custom.css"><meta property="og:url" content="https://baixy1212.github.io/academic/">
@@ -106,7 +103,6 @@ Master of Data Science — Monash University
     "name": "Bai Xueyi",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://baixy1212.github.io/favicon.ico"
     }
   }
 }
@@ -152,6 +148,11 @@ Master of Data Science — Monash University
                 </a>
             </li>
             <li>
+                <a href="https://baixy1212.github.io/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://baixy1212.github.io/life/" title="Life">
                     <span>Life</span>
                 </a>
@@ -159,6 +160,11 @@ Master of Data Science — Monash University
             <li>
                 <a href="https://baixy1212.github.io/likes/" title="Likes">
                     <span>Likes</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-dashboard" href="https://baixy1212.github.io/tracker.html" title="Life Dashboard">
+                    <span>Dashboard</span>
                 </a>
             </li>
         </ul>
@@ -477,7 +483,7 @@ Interpretable, culturally-aware AI systems that support meaningful human experie
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="https://baixy1212.github.io/">Bai Xueyi</a></span> · 
+        <span>&copy; 2026 <a href="https://baixy1212.github.io/">Bai Xueyi</a></span>
 
     <span>
         Powered by
