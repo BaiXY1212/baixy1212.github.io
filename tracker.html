@@ -285,12 +285,12 @@
                         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                             <div>
                                 <h3 class="font-black text-blue-700 flex items-center"><i class="fa fa-google mr-2"></i>Google Calendar · 全部日历</h3>
-                                <p class="text-xs text-textmuted mt-1">读取主日历、其他个人日历、共享日历及订阅日历；Dashboard 不会修改 Google 中的任何事项。</p>
+                                <p class="text-xs text-textmuted mt-1">自动读取今天起未来 90 天的全部日历事项；Dashboard 不会修改 Google 中的任何事项。</p>
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <span id="google-calendar-status" class="text-xs font-bold text-textmuted">尚未连接</span>
                                 <button id="btn-google-connect" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm"><i class="fa fa-link mr-1"></i>连接 Google Calendar</button>
-                                <button id="btn-google-sync" class="bg-white text-blue-700 border border-blue-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hidden"><i class="fa fa-refresh mr-1"></i>同步当前日期</button>
+                                <button id="btn-google-sync" class="bg-white text-blue-700 border border-blue-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hidden"><i class="fa fa-refresh mr-1"></i>同步未来 90 天</button>
                                 <button id="btn-google-disconnect" class="text-textmuted hover:text-danger px-2 py-2 text-sm font-bold hidden">断开</button>
                             </div>
                         </div>
@@ -620,6 +620,8 @@
 
         const GOOGLE_CLIENT_ID_KEY = 'googleCalendarClientId';
         const GOOGLE_CACHE_KEY = 'googleCalendarCache';
+        const GOOGLE_SESSION_TOKEN_KEY = 'googleCalendarSessionToken';
+        const GOOGLE_SYNC_DAYS = 90;
         const GOOGLE_CALENDAR_SCOPE = [
             'https://www.googleapis.com/auth/calendar.events.readonly',
             'https://www.googleapis.com/auth/calendar.calendarlist.readonly'
@@ -1283,8 +1285,12 @@
                         return;
                     }
                     googleAccessToken = response.access_token;
+                    sessionStorage.setItem(GOOGLE_SESSION_TOKEN_KEY, JSON.stringify({
+                        accessToken: response.access_token,
+                        expiresAt: Date.now() + Math.max(0, Number(response.expires_in || 3600) - 60) * 1000
+                    }));
                     updateGoogleCalendarControls();
-                    await syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
+                    await syncGoogleCalendarRange();
                 },
                 error_callback: () => setGoogleCalendarStatus('授权窗口已关闭或无法打开', 'error')
             });
@@ -1299,6 +1305,32 @@
 
         function formatLocalTime(date) {
             return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function getGoogleSyncDates(startDateStr = getTodayStr(), days = GOOGLE_SYNC_DAYS) {
+            const [year, month, day] = startDateStr.split('-').map(Number);
+            return Array.from({ length: days }, (_, index) => {
+                const date = new Date(year, month - 1, day + index);
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            });
+        }
+
+        function getGoogleEventDates(event, rangeDates) {
+            if (event.start?.date) {
+                const start = event.start.date;
+                const endExclusive = event.end?.date || start;
+                return rangeDates.filter(dateStr => dateStr >= start && dateStr < endExclusive);
+            }
+
+            const eventStart = new Date(event.start?.dateTime);
+            const eventEnd = new Date(event.end?.dateTime);
+            if (Number.isNaN(eventStart.getTime()) || Number.isNaN(eventEnd.getTime())) return [];
+            return rangeDates.filter(dateStr => {
+                const dayStart = new Date(`${dateStr}T00:00:00`);
+                const dayEnd = new Date(dayStart);
+                dayEnd.setDate(dayEnd.getDate() + 1);
+                return eventStart < dayEnd && eventEnd > dayStart;
+            });
         }
 
         function normalizeGoogleEvent(event, dateStr, calendar) {
@@ -1374,13 +1406,13 @@
             return calendars;
         }
 
-        async function fetchGoogleEventsForCalendar(calendar, dateStr) {
+        async function fetchGoogleEventsForCalendar(calendar, startDateStr, days = GOOGLE_SYNC_DAYS) {
             const events = [];
             let pageToken = '';
             do {
                 const query = new URLSearchParams({
-                    timeMin: getDateBoundary(dateStr),
-                    timeMax: getDateBoundary(dateStr, 1),
+                    timeMin: getDateBoundary(startDateStr),
+                    timeMax: getDateBoundary(startDateStr, days),
                     singleEvents: 'true',
                     orderBy: 'startTime',
                     showDeleted: 'false',
@@ -1392,42 +1424,62 @@
                 events.push(...(payload.items || []));
                 pageToken = payload.nextPageToken || '';
             } while (pageToken);
-            return events
-                .filter(event => event.status !== 'cancelled')
-                .map(event => normalizeGoogleEvent(event, dateStr, calendar))
-                .filter(Boolean);
+            return events.filter(event => event.status !== 'cancelled');
         }
 
-        async function syncGoogleCalendarForDate(dateStr) {
+        async function syncGoogleCalendarRange() {
             if (!googleAccessToken) {
                 setGoogleCalendarStatus('请先连接 Google Calendar');
                 return;
             }
 
-            setGoogleCalendarStatus('正在同步…');
+            const startDateStr = getTodayStr();
+            const rangeDates = getGoogleSyncDates(startDateStr);
+            setGoogleCalendarStatus('正在同步未来 90 天…');
             try {
                 const calendars = await fetchAllGoogleCalendars();
                 const results = await Promise.allSettled(
-                    calendars.map(calendar => fetchGoogleEventsForCalendar(calendar, dateStr))
+                    calendars.map(calendar => fetchGoogleEventsForCalendar(calendar, startDateStr))
                 );
                 const failed = results.filter(result => result.status === 'rejected');
                 const authFailure = failed.find(result => result.reason?.authExpired);
                 if (authFailure) throw authFailure.reason;
 
-                googleCalendarCache[dateStr] = results
-                    .filter(result => result.status === 'fulfilled')
-                    .flatMap(result => result.value)
-                    .sort((a, b) => {
+                const failedCalendarIds = new Set(
+                    results.map((result, index) => result.status === 'rejected' ? calendars[index].id : null).filter(Boolean)
+                );
+                rangeDates.forEach(dateStr => {
+                    googleCalendarCache[dateStr] = (googleCalendarCache[dateStr] || [])
+                        .filter(event => failedCalendarIds.has(event.googleCalendarId));
+                });
+
+                let syncedEventCount = 0;
+                results.forEach((result, index) => {
+                    if (result.status !== 'fulfilled') return;
+                    const calendar = calendars[index];
+                    syncedEventCount += result.value.length;
+                    result.value.forEach(event => {
+                        getGoogleEventDates(event, rangeDates).forEach(dateStr => {
+                            const normalized = normalizeGoogleEvent(event, dateStr, calendar);
+                            if (normalized) googleCalendarCache[dateStr].push(normalized);
+                        });
+                    });
+                });
+
+                rangeDates.forEach(dateStr => {
+                    googleCalendarCache[dateStr].sort((a, b) => {
                         if (a.allDay !== b.allDay) return a.allDay ? -1 : 1;
                         return (a.start || '').localeCompare(b.start || '');
                     });
+                });
                 localStorage.setItem(GOOGLE_CACHE_KEY, JSON.stringify(googleCalendarCache));
                 const partial = failed.length ? `，${failed.length} 个日历暂时无法读取` : '';
-                setGoogleCalendarStatus(`已同步 ${googleCalendarCache[dateStr].length} 项 · ${calendars.length} 个日历${partial} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, failed.length ? 'muted' : 'ok');
-                renderTimeBlocksCalendar(dateStr);
+                setGoogleCalendarStatus(`已同步未来 90 天 · ${syncedEventCount} 项 · ${calendars.length} 个日历${partial} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, failed.length ? 'muted' : 'ok');
+                renderTimeBlocksCalendar(document.getElementById('block-date-picker')?.value || startDateStr);
             } catch (error) {
                 if (error.authExpired) {
                     googleAccessToken = null;
+                    sessionStorage.removeItem(GOOGLE_SESSION_TOKEN_KEY);
                     updateGoogleCalendarControls();
                     setGoogleCalendarStatus('授权已过期，请重新连接', 'error');
                     return;
@@ -1443,6 +1495,7 @@
             googleAccessToken = null;
             googleTokenClient = null;
             googleCalendarCache = {};
+            sessionStorage.removeItem(GOOGLE_SESSION_TOKEN_KEY);
             localStorage.removeItem(GOOGLE_CACHE_KEY);
             updateGoogleCalendarControls();
             setGoogleCalendarStatus('已断开，缓存行程已清除');
@@ -1469,24 +1522,27 @@
                 googleTokenClient.requestAccessToken();
             });
             document.getElementById('btn-google-sync')?.addEventListener('click', () => {
-                syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
+                syncGoogleCalendarRange();
             });
             document.getElementById('btn-google-disconnect')?.addEventListener('click', disconnectGoogleCalendar);
 
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden && googleAccessToken) {
-                    syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
+                    syncGoogleCalendarRange();
                 }
             });
-            setInterval(() => {
-                if (googleAccessToken && !document.hidden) {
-                    syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
-                }
-            }, 5 * 60 * 1000);
 
             updateGoogleCalendarControls();
+            const savedSession = safeJSONParse(sessionStorage.getItem(GOOGLE_SESSION_TOKEN_KEY), null);
+            if (savedSession?.accessToken && savedSession.expiresAt > Date.now()) {
+                googleAccessToken = savedSession.accessToken;
+                updateGoogleCalendarControls();
+                syncGoogleCalendarRange();
+            } else {
+                sessionStorage.removeItem(GOOGLE_SESSION_TOKEN_KEY);
+            }
             const cachedDates = Object.keys(googleCalendarCache);
-            setGoogleCalendarStatus(cachedDates.length ? `显示上次同步缓存 · ${cachedDates.length} 天` : '尚未连接');
+            if (!googleAccessToken) setGoogleCalendarStatus(cachedDates.length ? `显示上次同步缓存 · ${cachedDates.length} 天` : '尚未连接');
         }
 
         function getDurationMinutes(start, end) {
@@ -1627,7 +1683,6 @@
             dp.value = getTodayStr();
             dp.addEventListener('change', e => {
                 renderTimeBlocksCalendar(e.target.value);
-                if (googleAccessToken) syncGoogleCalendarForDate(e.target.value);
             });
 
             document.getElementById('btn-add-block')?.addEventListener('click', () => {
