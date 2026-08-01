@@ -287,6 +287,7 @@
                             <div class="md:col-span-2"><input type="time" id="tb-end" class="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm font-bold" /></div>
                             <div class="md:col-span-2">
                                 <select id="tb-cat" class="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary outline-none font-bold text-sm">
+                                    <option value="focus">🎯 专注</option>
                                     <option value="study">📖 学习</option>
                                     <option value="work">🧪 科研</option>
                                     <option value="play">🎮 娱乐</option>
@@ -324,6 +325,19 @@
                                 <div id="todo-list-container" class="space-y-2 max-h-[250px] overflow-y-auto pr-2"></div>
                             </div>
 
+                            <div class="bg-secondary/5 p-5 rounded-2xl border border-secondary/20">
+                                <div class="mb-4">
+                                    <h3 class="text-lg font-bold text-textmain flex items-center"><i class="fa fa-inbox text-secondary mr-2"></i>长期待办</h3>
+                                    <p class="text-xs text-textmuted mt-1 leading-relaxed">暂不安排到今天、但未来仍需完成的事项。内容不会每日重置。</p>
+                                </div>
+                                <div class="flex gap-2 mb-4">
+                                    <input type="text" id="new-long-term-todo-input" placeholder="记录一项长期待办..." class="flex-1 min-w-0 px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
+                                    <button id="btn-add-long-term-todo" class="bg-secondary text-white px-4 py-2 rounded-lg font-bold shadow-sm whitespace-nowrap">新增</button>
+                                </div>
+                                <div id="long-term-todo-list-container" class="space-y-2 max-h-[320px] overflow-y-auto pr-2"></div>
+                                <div id="long-term-todo-empty" class="text-center text-textmuted text-sm font-bold py-5 hidden">长期待办池还是空的</div>
+                            </div>
+
                             <div id="current-task-container" class="bg-white border-2 border-secondary rounded-2xl p-6 hidden shadow-[0_0_20px_rgba(187,174,204,0.3)]">
                                 <div class="flex flex-col items-center text-center">
                                     <span class="text-xs font-bold text-secondary bg-secondary/10 px-3 py-1 rounded-full uppercase tracking-wider mb-3">● 正在心流状态</span>
@@ -334,7 +348,7 @@
                             </div>
 
                             <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                                <h3 class="text-sm font-bold text-textmain mb-3 flex items-center"><i class="fa fa-pencil-square-o text-secondary mr-2"></i>手动补录专注记录</h3>
+                                <h3 class="text-sm font-bold text-textmain mb-3 flex items-center"><i class="fa fa-pencil-square-o text-secondary mr-2"></i>添加今日专注日程</h3>
                                 <input type="text" id="manual-name" placeholder="任务名称 (可从上方清单快捷带入)" class="w-full px-4 py-2 mb-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
                                 <div class="flex gap-3 mb-4">
                                     <div class="flex-1">
@@ -346,17 +360,17 @@
                                         <input type="time" id="manual-end" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none text-sm font-bold focus:ring-2 focus:ring-secondary" />
                                     </div>
                                 </div>
-                                <button id="btn-manual-log" class="w-full bg-gray-100 text-textmain hover:bg-secondary hover:text-white py-2 rounded-lg font-bold transition-colors">添加到日程表</button>
+                                <button id="btn-manual-log" class="w-full bg-gray-100 text-textmain hover:bg-secondary hover:text-white py-2 rounded-lg font-bold transition-colors">加入今日日程</button>
                             </div>
                         </div>
 
                         <div class="lg:col-span-7">
                             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm min-h-full">
                                 <h3 class="text-xl font-black text-textmain mb-6 flex items-center border-b border-gray-50 pb-4">
-                                    <i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注日程表
+                                    <i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注与日程
                                 </h3>
                                 <div id="today-tasks-timeline" class="relative border-l-2 border-secondary/20 ml-4 pl-6 space-y-6"></div>
-                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今日暂无专注记录，快去开启心流吧！</div>
+                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今日暂无日程，可从左侧或时间日历添加。</div>
                             </div>
                         </div>
                     </div>
@@ -539,7 +553,8 @@
             'habitRecords',
             'unlockedAchievements',
             'sleepData',
-            'todoData'
+            'todoData',
+            'longTermTodos'
         ];
 
         const getTodayStr = (offset = 0) => {
@@ -561,6 +576,15 @@
             }
         }
 
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
         let D = {};
         let currentTask = null;
         let taskTimer = null;
@@ -576,6 +600,13 @@
         };
 
         const CAT_MAP = {
+            focus: {
+                label: '专注',
+                border: 'border-secondary',
+                bgSoft: 'bg-secondary/20',
+                text: 'text-secondary',
+                buttonText: 'text-secondary'
+            },
             study: {
                 label: '学习',
                 border: 'border-primary',
@@ -720,7 +751,7 @@
                     0,
                     ...Object.values(d.timeBlocks).map(arr =>
                         arr
-                            .filter(b => ['study', 'work'].includes(b.category))
+                            .filter(b => ['focus', 'study', 'work'].includes(b.category))
                             .reduce((s, b) => {
                                 const [sh, sm] = b.start.split(':').map(Number);
                                 const [eh, em] = b.end.split(':').map(Number);
@@ -802,6 +833,7 @@
             if (!Array.isArray(D.unlockedAchievements)) D.unlockedAchievements = [];
             if (!D.sleepData || typeof D.sleepData !== 'object') D.sleepData = {};
             if (!D.todoData || typeof D.todoData !== 'object') D.todoData = {};
+            if (!Array.isArray(D.longTermTodos)) D.longTermTodos = [];
         }
 
         function ensureDateDataExists(dateStr) {
@@ -837,6 +869,10 @@
             D.unlockedAchievements = safeJSONParse(localStorage.getItem('unlockedAchievements'), []);
             D.sleepData = safeJSONParse(localStorage.getItem('sleepData'), {});
             D.todoData = safeJSONParse(localStorage.getItem('todoData'), {});
+            D.longTermTodos = safeJSONParse(localStorage.getItem('longTermTodos'), []);
+            ensureRootData();
+            migrateFocusRecordsToSchedule();
+            localStorage.setItem('timeBlocks', JSON.stringify(D.timeBlocks));
             ensureDateDataExists(getTodayStr());
         }
 
@@ -852,7 +888,7 @@
             });
             return {
                 format: 'baixy-life-dashboard',
-                version: 1,
+                version: 2,
                 exportedAt: new Date().toISOString(),
                 data
             };
@@ -989,6 +1025,11 @@
                     this.className = NAV_ACTIVE_CLASSES[sec];
 
                     if (sec === 'hourly') renderTimeBlocksCalendar(document.getElementById('block-date-picker').value);
+                    if (sec === 'tasks') {
+                        renderTodos();
+                        renderLongTermTodos();
+                        renderTodayTasksTimeline();
+                    }
                     if (sec === 'stats') document.querySelector('.stats-period-btn.bg-white')?.click();
                     if (sec === 'achievements') renderAchievements();
                     if (sec === 'checkin') renderCheckinCalendar();
@@ -1166,6 +1207,139 @@
         }
 
         // ================= 时间日历 =================
+        function getDurationMinutes(start, end) {
+            const [sh, sm] = start.split(':').map(Number);
+            const [eh, em] = end.split(':').map(Number);
+            let duration = eh * 60 + em - (sh * 60 + sm);
+            if (duration < 0) duration += 1440;
+            return duration;
+        }
+
+        function migrateFocusRecordsToSchedule() {
+            ensureRootData();
+            Object.entries(D.taskData).forEach(([date, tasks]) => {
+                if (!Array.isArray(tasks)) return;
+                if (!Array.isArray(D.timeBlocks[date])) D.timeBlocks[date] = [];
+
+                tasks.forEach(task => {
+                    let block = D.timeBlocks[date].find(item => item.taskId === task.id);
+                    if (!block) {
+                        block = D.timeBlocks[date].find(item =>
+                            item.start === task.startTime &&
+                            item.end === task.endTime &&
+                            item.desc === task.name
+                        );
+                    }
+
+                    if (block) {
+                        block.taskId = task.id;
+                        block.source = block.source || 'focus';
+                        return;
+                    }
+
+                    D.timeBlocks[date].push({
+                        id: `schedule_${task.id}`,
+                        start: task.startTime,
+                        end: task.endTime,
+                        category: 'focus',
+                        desc: task.name,
+                        source: 'focus',
+                        taskId: task.id
+                    });
+                });
+            });
+        }
+
+        function addFocusRecordAndSchedule(date, name, start, end, duration) {
+            ensureDateDataExists(date);
+            const taskId = `t_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+            const scheduleId = `b_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
+            D.taskData[date].push({
+                id: taskId,
+                name,
+                startTime: start,
+                endTime: end,
+                duration
+            });
+            D.taskData[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+            D.timeBlocks[date].push({
+                id: scheduleId,
+                start,
+                end,
+                category: 'focus',
+                desc: name,
+                source: 'focus',
+                taskId
+            });
+            D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
+        }
+
+        function refreshScheduleViews(date) {
+            const pickerDate = document.getElementById('block-date-picker')?.value;
+            if (pickerDate === date) renderTimeBlocksCalendar(date);
+            if (date === getTodayStr()) renderTodayTasksTimeline();
+        }
+
+        function editScheduleItem(date, id) {
+            ensureDateDataExists(date);
+            const item = D.timeBlocks[date].find(block => block.id === id);
+            if (!item) return;
+
+            const desc = prompt('事项名称', item.desc);
+            if (desc === null) return;
+            const cleanDesc = desc.trim();
+            if (!cleanDesc) {
+                alert('事项名称不能为空');
+                return;
+            }
+
+            const start = prompt('开始时间（HH:MM）', item.start);
+            if (start === null) return;
+            const end = prompt('结束时间（HH:MM）', item.end);
+            if (end === null) return;
+            const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
+            if (!timePattern.test(start) || !timePattern.test(end)) {
+                alert('请使用 HH:MM 格式，例如 09:30');
+                return;
+            }
+
+            item.desc = cleanDesc;
+            item.start = start;
+            item.end = end;
+
+            if (item.taskId) {
+                const linkedTask = D.taskData[date]?.find(task => task.id === item.taskId);
+                if (linkedTask) {
+                    linkedTask.name = cleanDesc;
+                    linkedTask.startTime = start;
+                    linkedTask.endTime = end;
+                    linkedTask.duration = getDurationMinutes(start, end);
+                    D.taskData[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
+                }
+            }
+
+            D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
+            saveData();
+            refreshScheduleViews(date);
+        }
+
+        function deleteScheduleItem(date, id) {
+            ensureDateDataExists(date);
+            const item = D.timeBlocks[date].find(block => block.id === id);
+            if (!item) return;
+
+            D.timeBlocks[date] = D.timeBlocks[date].filter(block => block.id !== id);
+            if (item.taskId) {
+                D.taskData[date] = D.taskData[date].filter(task => task.id !== item.taskId);
+            }
+
+            saveData();
+            refreshScheduleViews(date);
+            updateCheckinUI();
+        }
+
         function initTimeBlocksCalendar() {
             const dp = document.getElementById('block-date-picker');
             dp.value = getTodayStr();
@@ -1191,10 +1365,11 @@
                     category: cat,
                     desc
                 });
+                D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
 
                 document.getElementById('tb-desc').value = '';
                 saveData();
-                renderTimeBlocksCalendar(date);
+                refreshScheduleViews(date);
             });
 
             renderTimeBlocksCalendar(dp.value);
@@ -1241,29 +1416,33 @@
                     <div class="flex items-center truncate leading-none">
                         <span class="text-[10px] font-black ${conf.text} mr-1">${conf.label}</span>
                         <span class="text-[9px] text-gray-600 font-bold mr-1">${b.start}-${b.end}</span>
-                        <span class="text-[10px] font-bold text-textmain truncate">${b.desc}</span>
+                        <span class="text-[10px] font-bold text-textmain truncate">${escapeHtml(b.desc)}</span>
                     </div>
-                    <button class="delete-block ${conf.buttonText} hover:text-danger opacity-0 group-hover:opacity-100 p-0 text-xs" data-id="${b.id}">
-                        <i class="fa fa-trash"></i>
-                    </button>
+                    <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                        <button class="edit-block ${conf.buttonText} hover:text-textmain p-0 text-xs" data-id="${b.id}" title="编辑"><i class="fa fa-pencil"></i></button>
+                        <button class="delete-block ${conf.buttonText} hover:text-danger p-0 text-xs" data-id="${b.id}" title="删除"><i class="fa fa-trash"></i></button>
+                    </div>
                 `;
                 items.appendChild(div);
+            });
+
+            items.querySelectorAll('.edit-block').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    editScheduleItem(dateStr, this.getAttribute('data-id'));
+                });
             });
 
             items.querySelectorAll('.delete-block').forEach(btn => {
                 btn.addEventListener('click', function () {
                     if (!confirm('删除此时段记录？')) return;
-                    const id = this.getAttribute('data-id');
-                    D.timeBlocks[dateStr] = D.timeBlocks[dateStr].filter(x => x.id !== id);
-                    saveData();
-                    renderTimeBlocksCalendar(dateStr);
+                    deleteScheduleItem(dateStr, this.getAttribute('data-id'));
                 });
             });
         }
 
         // ================= 专注任务 =================
         function initTasks() {
-            document.getElementById('btn-add-todo')?.addEventListener('click', () => {
+            const addTodayTodo = () => {
                 const input = document.getElementById('new-todo-input');
                 const name = input.value.trim();
                 if (!name) return;
@@ -1275,6 +1454,32 @@
                 input.value = '';
                 saveData();
                 renderTodos();
+            };
+
+            document.getElementById('btn-add-todo')?.addEventListener('click', addTodayTodo);
+            document.getElementById('new-todo-input')?.addEventListener('keydown', event => {
+                if (event.key === 'Enter') addTodayTodo();
+            });
+
+            const addLongTermTodo = () => {
+                const input = document.getElementById('new-long-term-todo-input');
+                const name = input.value.trim();
+                if (!name) return;
+
+                D.longTermTodos.push({
+                    id: `ltd_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+                    name,
+                    done: false,
+                    createdAt: new Date().toISOString()
+                });
+                input.value = '';
+                saveData();
+                renderLongTermTodos();
+            };
+
+            document.getElementById('btn-add-long-term-todo')?.addEventListener('click', addLongTermTodo);
+            document.getElementById('new-long-term-todo-input')?.addEventListener('keydown', event => {
+                if (event.key === 'Enter') addLongTermTodo();
             });
 
             document.getElementById('end-task')?.addEventListener('click', () => {
@@ -1284,15 +1489,13 @@
                 const t = getTodayStr();
                 ensureDateDataExists(t);
 
-                D.taskData[t].push({
-                    id: `t_${Date.now()}`,
-                    name: currentTask.name,
-                    startTime: currentTask.startTime,
-                    endTime: getTimeStr(),
-                    duration: Math.floor((Date.now() - currentTask.startTimestamp) / 60000)
-                });
-
-                D.taskData[t].sort((a, b) => a.startTime.localeCompare(b.startTime));
+                addFocusRecordAndSchedule(
+                    t,
+                    currentTask.name,
+                    currentTask.startTime,
+                    getTimeStr(),
+                    Math.floor((Date.now() - currentTask.startTimestamp) / 60000)
+                );
                 currentTask = null;
                 document.getElementById('current-task-container').classList.add('hidden');
 
@@ -1311,23 +1514,9 @@
                     return;
                 }
 
-                let [sh, sm] = start.split(':').map(Number);
-                let [eh, em] = end.split(':').map(Number);
-                let duration = eh * 60 + em - (sh * 60 + sm);
-                if (duration < 0) duration += 1440;
-
                 const t = getTodayStr();
                 ensureDateDataExists(t);
-
-                D.taskData[t].push({
-                    id: `t_${Date.now()}`,
-                    name,
-                    startTime: start,
-                    endTime: end,
-                    duration
-                });
-
-                D.taskData[t].sort((a, b) => a.startTime.localeCompare(b.startTime));
+                addFocusRecordAndSchedule(t, name, start, end, getDurationMinutes(start, end));
 
                 document.getElementById('manual-name').value = '';
                 document.getElementById('manual-start').value = '';
@@ -1339,6 +1528,7 @@
             });
 
             renderTodos();
+            renderLongTermTodos();
             renderTodayTasksTimeline();
         }
 
@@ -1367,6 +1557,93 @@
             }, 1000);
         }
 
+        function renderLongTermTodos() {
+            const container = document.getElementById('long-term-todo-list-container');
+            const empty = document.getElementById('long-term-todo-empty');
+            if (!container || !empty) return;
+
+            ensureRootData();
+            container.innerHTML = '';
+            empty.classList.toggle('hidden', D.longTermTodos.length > 0);
+            const todayItems = D.todoData[getTodayStr()] || [];
+
+            D.longTermTodos.forEach(item => {
+                const alreadyToday = todayItems.some(todo => todo.sourceLongTermId === item.id);
+                const addDisabled = alreadyToday || item.done;
+                const addLabel = item.done ? '已完成' : alreadyToday ? '已加入' : '加入今日';
+                const div = document.createElement('div');
+                div.className = 'bg-white p-3 rounded-xl border border-gray-100 shadow-sm group';
+                div.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <label class="flex items-start cursor-pointer flex-1 min-w-0">
+                            <input type="checkbox" class="long-term-chk peer appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary transition-all cursor-pointer mr-3 mt-0.5 flex-shrink-0" ${item.done ? 'checked' : ''} data-id="${item.id}">
+                            <span class="font-bold text-sm text-textmain peer-checked:line-through peer-checked:text-gray-400 break-words transition-all">${escapeHtml(item.name)}</span>
+                        </label>
+                        <div class="flex items-center gap-1 flex-shrink-0">
+                            <button class="long-term-today px-2.5 h-7 rounded-lg text-xs font-bold transition-colors ${addDisabled ? 'bg-gray-100 text-gray-400 cursor-default' : 'bg-secondary/10 text-secondary hover:bg-secondary hover:text-white'}" data-id="${item.id}" ${addDisabled ? 'disabled' : ''}>${addLabel}</button>
+                            <button class="edit-long-term text-gray-400 hover:text-white hover:bg-gray-500 w-7 h-7 rounded-lg flex items-center justify-center transition-colors" data-id="${item.id}" title="编辑"><i class="fa fa-pencil text-xs"></i></button>
+                            <button class="delete-long-term text-danger hover:text-white hover:bg-danger w-7 h-7 rounded-lg flex items-center justify-center transition-colors" data-id="${item.id}" title="删除"><i class="fa fa-trash text-xs"></i></button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            container.querySelectorAll('.long-term-chk').forEach(chk => {
+                chk.addEventListener('change', function () {
+                    const item = D.longTermTodos.find(todo => todo.id === this.getAttribute('data-id'));
+                    if (!item) return;
+                    item.done = this.checked;
+                    saveData();
+                    renderLongTermTodos();
+                });
+            });
+
+            container.querySelectorAll('.long-term-today').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const item = D.longTermTodos.find(todo => todo.id === this.getAttribute('data-id'));
+                    if (!item) return;
+                    const today = getTodayStr();
+                    ensureDateDataExists(today);
+                    if (D.todoData[today].some(todo => todo.sourceLongTermId === item.id)) return;
+
+                    D.todoData[today].push({
+                        id: `td_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+                        name: item.name,
+                        done: false,
+                        sourceLongTermId: item.id
+                    });
+                    saveData();
+                    renderTodos();
+                    renderLongTermTodos();
+                });
+            });
+
+            container.querySelectorAll('.edit-long-term').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const item = D.longTermTodos.find(todo => todo.id === this.getAttribute('data-id'));
+                    if (!item) return;
+                    const nextName = prompt('编辑长期待办', item.name);
+                    if (nextName === null) return;
+                    const cleanName = nextName.trim();
+                    if (!cleanName) return;
+                    item.name = cleanName;
+                    saveData();
+                    renderLongTermTodos();
+                });
+            });
+
+            container.querySelectorAll('.delete-long-term').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    if (!confirm('删除这项长期待办？已加入今日的副本不会被删除。')) return;
+                    const id = this.getAttribute('data-id');
+                    D.longTermTodos = D.longTermTodos.filter(todo => todo.id !== id);
+                    saveData();
+                    renderLongTermTodos();
+                });
+            });
+        }
+
         function renderTodos() {
             const container = document.getElementById('todo-list-container');
             const t = getTodayStr();
@@ -1380,7 +1657,7 @@
                 div.innerHTML = `
                     <label class="flex items-center cursor-pointer flex-1 truncate mr-2">
                         <input type="checkbox" class="todo-chk peer appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary transition-all cursor-pointer mr-3 flex-shrink-0" ${td.done ? 'checked' : ''} data-id="${td.id}">
-                        <span class="font-bold text-sm text-textmain peer-checked:line-through peer-checked:text-gray-400 truncate transition-all" title="${td.name}">${td.name}</span>
+                        <span class="font-bold text-sm text-textmain peer-checked:line-through peer-checked:text-gray-400 truncate transition-all" title="${escapeHtml(td.name)}">${escapeHtml(td.name)}</span>
                     </label>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                         <button class="todo-play text-secondary hover:text-white hover:bg-secondary w-7 h-7 rounded-lg flex items-center justify-center transition-colors" data-id="${td.id}" title="开始专注"><i class="fa fa-play text-xs"></i></button>
@@ -1428,6 +1705,7 @@
                     D.todoData[getTodayStr()] = D.todoData[getTodayStr()].filter(x => x.id !== id);
                     saveData();
                     renderTodos();
+                    renderLongTermTodos();
                 });
             });
         }
@@ -1435,42 +1713,50 @@
         function renderTodayTasksTimeline() {
             const tl = document.getElementById('today-tasks-timeline');
             const emptyMsg = document.getElementById('empty-timeline-msg');
-            const tasks = D.taskData[getTodayStr()] || [];
+            const today = getTodayStr();
+            ensureDateDataExists(today);
+            const schedule = [...D.timeBlocks[today]].sort((a, b) => a.start.localeCompare(b.start));
 
             tl.innerHTML = '';
 
-            if (tasks.length === 0) {
+            if (schedule.length === 0) {
                 emptyMsg.classList.remove('hidden');
             } else {
                 emptyMsg.classList.add('hidden');
 
-                tasks.forEach(t => {
+                schedule.forEach(item => {
+                    const conf = CAT_MAP[item.category] || CAT_MAP.study;
+                    const duration = getDurationMinutes(item.start, item.end);
                     const div = document.createElement('div');
                     div.className = 'relative group';
                     div.innerHTML = `
                         <div class="absolute -left-[33px] bg-secondary w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm mt-1.5 z-10 group-hover:scale-125 transition-transform"></div>
-                        <div class="bg-gray-50 hover:bg-white p-4 rounded-xl border border-gray-100 shadow-sm transition-colors relative">
-                            <div class="text-xs font-bold text-textmuted mb-1 flex items-center">
-                                <i class="fa fa-clock-o mr-1 text-secondary/70"></i> ${t.startTime} - ${t.endTime}
-                                <span class="ml-3 text-secondary bg-secondary/10 px-2 py-0.5 rounded">${Math.floor(t.duration / 60)}h ${t.duration % 60}m</span>
+                        <div class="bg-gray-50 hover:bg-white p-4 pr-20 rounded-xl border border-gray-100 shadow-sm transition-colors relative">
+                            <div class="text-xs font-bold text-textmuted mb-1 flex flex-wrap items-center gap-2">
+                                <span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${item.start} - ${item.end}</span>
+                                <span class="${conf.text} ${conf.bgSoft} px-2 py-0.5 rounded">${conf.label}</span>
+                                <span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">${Math.floor(duration / 60)}h ${duration % 60}m</span>
                             </div>
-                            <div class="font-black text-textmain">${t.name}</div>
-                            <button class="delete-task absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-danger opacity-0 group-hover:opacity-100 p-2 transition-opacity" data-id="${t.id}">
-                                <i class="fa fa-trash"></i>
-                            </button>
+                            <div class="font-black text-textmain break-words">${escapeHtml(item.desc)}</div>
+                            <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                <button class="edit-schedule text-gray-400 hover:text-white hover:bg-gray-500 w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="编辑"><i class="fa fa-pencil"></i></button>
+                                <button class="delete-schedule text-gray-400 hover:text-white hover:bg-danger w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="删除"><i class="fa fa-trash"></i></button>
+                            </div>
                         </div>
                     `;
                     tl.appendChild(div);
                 });
 
-                tl.querySelectorAll('.delete-task').forEach(btn => {
+                tl.querySelectorAll('.edit-schedule').forEach(btn => {
                     btn.addEventListener('click', function () {
-                        if (!confirm('删除此专注记录？')) return;
-                        const id = this.getAttribute('data-id');
-                        D.taskData[getTodayStr()] = D.taskData[getTodayStr()].filter(x => x.id !== id);
-                        saveData();
-                        renderTodayTasksTimeline();
-                        updateCheckinUI();
+                        editScheduleItem(today, this.getAttribute('data-id'));
+                    });
+                });
+
+                tl.querySelectorAll('.delete-schedule').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        if (!confirm('删除这项今日日程？时间日历中也会同步删除。')) return;
+                        deleteScheduleItem(today, this.getAttribute('data-id'));
                     });
                 });
             }
@@ -1912,5 +2198,3 @@
     </script>
 </body>
 </html>
-
-<!-- trigger master pages rebuild -->
