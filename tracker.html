@@ -616,6 +616,7 @@
         let currentCalDate = new Date();
         let googleTokenClient = null;
         let googleAccessToken = null;
+        let googleSyncInProgress = false;
         let googleCalendarCache = safeJSONParse(localStorage.getItem('googleCalendarCache'), {});
 
         const GOOGLE_CLIENT_ID_KEY = 'googleCalendarClientId';
@@ -1374,17 +1375,34 @@
             };
         }
 
-        async function fetchGoogleJson(url) {
-            const response = await fetch(url, {
-                headers: { Authorization: `Bearer ${googleAccessToken}` }
-            });
-            if (response.status === 401) {
-                const error = new Error('AUTH_EXPIRED');
-                error.authExpired = true;
+        async function fetchGoogleJson(url, timeoutMs = 20000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const response = await fetch(url, {
+                    headers: { Authorization: `Bearer ${googleAccessToken}` },
+                    signal: controller.signal
+                });
+                if (response.status === 401) {
+                    const error = new Error('AUTH_EXPIRED');
+                    error.authExpired = true;
+                    throw error;
+                }
+                if (!response.ok) {
+                    let detail = '';
+                    try {
+                        const payload = await response.json();
+                        detail = payload?.error?.message || '';
+                    } catch {}
+                    throw new Error(detail || `HTTP ${response.status}`);
+                }
+                return response.json();
+            } catch (error) {
+                if (error.name === 'AbortError') throw new Error('请求超时');
                 throw error;
+            } finally {
+                clearTimeout(timeoutId);
             }
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
         }
 
         async function fetchAllGoogleCalendars() {
@@ -1432,39 +1450,60 @@
                 setGoogleCalendarStatus('请先连接 Google Calendar');
                 return;
             }
+            if (googleSyncInProgress) return;
 
+            googleSyncInProgress = true;
+            const syncButton = document.getElementById('btn-google-sync');
+            if (syncButton) syncButton.disabled = true;
             const startDateStr = getTodayStr();
             const rangeDates = getGoogleSyncDates(startDateStr);
             setGoogleCalendarStatus('正在同步未来 90 天…');
             try {
                 const calendars = await fetchAllGoogleCalendars();
-                const results = await Promise.allSettled(
-                    calendars.map(calendar => fetchGoogleEventsForCalendar(calendar, startDateStr))
-                );
-                const failed = results.filter(result => result.status === 'rejected');
-                const authFailure = failed.find(result => result.reason?.authExpired);
-                if (authFailure) throw authFailure.reason;
-
-                const failedCalendarIds = new Set(
-                    results.map((result, index) => result.status === 'rejected' ? calendars[index].id : null).filter(Boolean)
-                );
+                const activeCalendarIds = new Set(calendars.map(calendar => calendar.id));
                 rangeDates.forEach(dateStr => {
                     googleCalendarCache[dateStr] = (googleCalendarCache[dateStr] || [])
-                        .filter(event => failedCalendarIds.has(event.googleCalendarId));
+                        .filter(event => activeCalendarIds.has(event.googleCalendarId));
                 });
 
                 let syncedEventCount = 0;
-                results.forEach((result, index) => {
-                    if (result.status !== 'fulfilled') return;
-                    const calendar = calendars[index];
-                    syncedEventCount += result.value.length;
-                    result.value.forEach(event => {
-                        getGoogleEventDates(event, rangeDates).forEach(dateStr => {
-                            const normalized = normalizeGoogleEvent(event, dateStr, calendar);
-                            if (normalized) googleCalendarCache[dateStr].push(normalized);
+                let completedCalendarCount = 0;
+                const failures = [];
+                let nextCalendarIndex = 0;
+                const currentViewDate = document.getElementById('block-date-picker')?.value || startDateStr;
+
+                const syncCalendar = async calendar => {
+                    try {
+                        const events = await fetchGoogleEventsForCalendar(calendar, startDateStr);
+                        rangeDates.forEach(dateStr => {
+                            googleCalendarCache[dateStr] = googleCalendarCache[dateStr]
+                                .filter(event => event.googleCalendarId !== calendar.id);
                         });
-                    });
-                });
+                        syncedEventCount += events.length;
+                        events.forEach(event => {
+                            getGoogleEventDates(event, rangeDates).forEach(dateStr => {
+                                const normalized = normalizeGoogleEvent(event, dateStr, calendar);
+                                if (normalized) googleCalendarCache[dateStr].push(normalized);
+                            });
+                        });
+                        localStorage.setItem(GOOGLE_CACHE_KEY, JSON.stringify(googleCalendarCache));
+                        renderTimeBlocksCalendar(currentViewDate);
+                    } catch (error) {
+                        if (error.authExpired) throw error;
+                        failures.push({ calendar: calendar.summaryOverride || calendar.summary || calendar.id, message: error.message });
+                    } finally {
+                        completedCalendarCount += 1;
+                        setGoogleCalendarStatus(`正在同步 ${completedCalendarCount}/${calendars.length} 个日历 · 已读取 ${syncedEventCount} 项…`);
+                    }
+                };
+
+                const worker = async () => {
+                    while (nextCalendarIndex < calendars.length) {
+                        const index = nextCalendarIndex++;
+                        await syncCalendar(calendars[index]);
+                    }
+                };
+                await Promise.all(Array.from({ length: Math.min(4, calendars.length) }, worker));
 
                 rangeDates.forEach(dateStr => {
                     googleCalendarCache[dateStr].sort((a, b) => {
@@ -1473,8 +1512,8 @@
                     });
                 });
                 localStorage.setItem(GOOGLE_CACHE_KEY, JSON.stringify(googleCalendarCache));
-                const partial = failed.length ? `，${failed.length} 个日历暂时无法读取` : '';
-                setGoogleCalendarStatus(`已同步未来 90 天 · ${syncedEventCount} 项 · ${calendars.length} 个日历${partial} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, failed.length ? 'muted' : 'ok');
+                const partial = failures.length ? `，${failures.length} 个日历暂时无法读取` : '';
+                setGoogleCalendarStatus(`已同步未来 90 天 · ${syncedEventCount} 项 · ${calendars.length} 个日历${partial} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, failures.length ? 'muted' : 'ok');
                 renderTimeBlocksCalendar(document.getElementById('block-date-picker')?.value || startDateStr);
             } catch (error) {
                 if (error.authExpired) {
@@ -1485,6 +1524,9 @@
                     return;
                 }
                 setGoogleCalendarStatus(`同步失败：${error.message}`, 'error');
+            } finally {
+                googleSyncInProgress = false;
+                if (syncButton) syncButton.disabled = false;
             }
         }
 
