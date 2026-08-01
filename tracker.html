@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
         tailwind.config = {
@@ -280,6 +281,29 @@
                         <input type="date" id="block-date-picker" class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-bold text-textmain outline-none cursor-pointer" />
                     </div>
 
+                    <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-5 mb-6">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            <div>
+                                <h3 class="font-black text-blue-700 flex items-center"><i class="fa fa-google mr-2"></i>Google Calendar · 正式行程</h3>
+                                <p class="text-xs text-textmuted mt-1">仅从 Google Calendar 读取；Dashboard 不会新增、修改或删除 Google 行程。</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span id="google-calendar-status" class="text-xs font-bold text-textmuted">尚未连接</span>
+                                <button id="btn-google-connect" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm"><i class="fa fa-link mr-1"></i>连接 Google Calendar</button>
+                                <button id="btn-google-sync" class="bg-white text-blue-700 border border-blue-200 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hidden"><i class="fa fa-refresh mr-1"></i>同步当前日期</button>
+                                <button id="btn-google-disconnect" class="text-textmuted hover:text-danger px-2 py-2 text-sm font-bold hidden">断开</button>
+                            </div>
+                        </div>
+                        <details class="mt-4 border-t border-blue-100 pt-3">
+                            <summary class="cursor-pointer text-xs font-bold text-blue-700">首次连接设置</summary>
+                            <div class="mt-3 flex flex-col md:flex-row gap-2">
+                                <input id="google-client-id" type="text" autocomplete="off" placeholder="Google OAuth Web Client ID" class="flex-1 min-w-0 px-3 py-2 bg-white border border-blue-200 rounded-lg outline-none text-sm" />
+                                <button id="btn-save-google-client" class="bg-white text-blue-700 border border-blue-200 px-4 py-2 rounded-lg text-sm font-bold">保存 Client ID</button>
+                            </div>
+                            <p class="text-[11px] text-textmuted mt-2 leading-relaxed">需要在 Google Cloud 中启用 Calendar API，并为 Web OAuth Client 添加授权来源 <span class="font-mono">https://baixy1212.github.io</span>。这里只保存公开的 Client ID，不保存 Client Secret 或 Google 密码。</p>
+                        </details>
+                    </div>
+
                     <div class="bg-primary/5 border border-primary/20 rounded-2xl p-5 mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
                             <div class="md:col-span-2"><input type="time" id="tb-start" class="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm font-bold" /></div>
@@ -301,6 +325,7 @@
                         </div>
                     </div>
 
+                    <div id="google-all-day-events" class="hidden mb-3 space-y-2"></div>
                     <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-y-auto relative p-2 shadow-inner" style="height: 600px;">
                         <div id="blocks-calendar-container" class="relative w-full" style="height: 576px;">
                             <div id="blocks-grid" class="absolute inset-0 pointer-events-none"></div>
@@ -589,6 +614,13 @@
         let currentTask = null;
         let taskTimer = null;
         let currentCalDate = new Date();
+        let googleTokenClient = null;
+        let googleAccessToken = null;
+        let googleCalendarCache = safeJSONParse(localStorage.getItem('googleCalendarCache'), {});
+
+        const GOOGLE_CLIENT_ID_KEY = 'googleCalendarClientId';
+        const GOOGLE_CACHE_KEY = 'googleCalendarCache';
+        const GOOGLE_CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar.events.readonly';
 
         let charts = {
             rate: null,
@@ -600,6 +632,13 @@
         };
 
         const CAT_MAP = {
+            google: {
+                label: 'Google 日历',
+                border: 'border-blue-500',
+                bgSoft: 'bg-blue-100/90',
+                text: 'text-blue-700',
+                buttonText: 'text-blue-700'
+            },
             focus: {
                 label: '专注',
                 border: 'border-secondary',
@@ -1207,6 +1246,186 @@
         }
 
         // ================= 时间日历 =================
+        function setGoogleCalendarStatus(message, tone = 'muted') {
+            const el = document.getElementById('google-calendar-status');
+            if (!el) return;
+            el.textContent = message;
+            el.className = `text-xs font-bold ${tone === 'error' ? 'text-danger' : tone === 'ok' ? 'text-blue-700' : 'text-textmuted'}`;
+        }
+
+        function updateGoogleCalendarControls() {
+            const connected = Boolean(googleAccessToken);
+            document.getElementById('btn-google-connect')?.classList.toggle('hidden', connected);
+            document.getElementById('btn-google-sync')?.classList.toggle('hidden', !connected);
+            document.getElementById('btn-google-disconnect')?.classList.toggle('hidden', !connected);
+        }
+
+        function initializeGoogleTokenClient() {
+            const clientId = localStorage.getItem(GOOGLE_CLIENT_ID_KEY)?.trim();
+            if (!clientId) {
+                setGoogleCalendarStatus('请先填写 OAuth Client ID');
+                return false;
+            }
+            if (!window.google?.accounts?.oauth2) {
+                setGoogleCalendarStatus('Google 授权组件仍在加载，请稍后重试');
+                return false;
+            }
+
+            googleTokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: clientId,
+                scope: GOOGLE_CALENDAR_SCOPE,
+                callback: async response => {
+                    if (response.error) {
+                        setGoogleCalendarStatus(`连接失败：${response.error}`, 'error');
+                        return;
+                    }
+                    googleAccessToken = response.access_token;
+                    updateGoogleCalendarControls();
+                    await syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
+                },
+                error_callback: () => setGoogleCalendarStatus('授权窗口已关闭或无法打开', 'error')
+            });
+            return true;
+        }
+
+        function getDateBoundary(dateStr, dayOffset = 0) {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            const date = new Date(year, month - 1, day + dayOffset, 0, 0, 0, 0);
+            return date.toISOString();
+        }
+
+        function formatLocalTime(date) {
+            return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function normalizeGoogleEvent(event, dateStr) {
+            const isAllDay = Boolean(event.start?.date);
+            if (isAllDay) {
+                return {
+                    id: `g_${event.id}`,
+                    googleEventId: event.id,
+                    desc: event.summary || '未命名正式行程',
+                    allDay: true,
+                    source: 'google',
+                    htmlLink: event.htmlLink || '',
+                    location: event.location || ''
+                };
+            }
+
+            const startDate = new Date(event.start?.dateTime);
+            const endDate = new Date(event.end?.dateTime);
+            if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) return null;
+
+            const dayStart = new Date(`${dateStr}T00:00:00`);
+            const dayEnd = new Date(`${dateStr}T23:59:00`);
+            return {
+                id: `g_${event.id}`,
+                googleEventId: event.id,
+                start: formatLocalTime(startDate < dayStart ? dayStart : startDate),
+                end: formatLocalTime(endDate > dayEnd ? dayEnd : endDate),
+                category: 'google',
+                desc: event.summary || '未命名正式行程',
+                allDay: false,
+                source: 'google',
+                htmlLink: event.htmlLink || '',
+                location: event.location || ''
+            };
+        }
+
+        async function syncGoogleCalendarForDate(dateStr) {
+            if (!googleAccessToken) {
+                setGoogleCalendarStatus('请先连接 Google Calendar');
+                return;
+            }
+
+            setGoogleCalendarStatus('正在同步…');
+            const query = new URLSearchParams({
+                timeMin: getDateBoundary(dateStr),
+                timeMax: getDateBoundary(dateStr, 1),
+                singleEvents: 'true',
+                orderBy: 'startTime',
+                showDeleted: 'false',
+                maxResults: '2500'
+            });
+
+            try {
+                const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?${query}`, {
+                    headers: { Authorization: `Bearer ${googleAccessToken}` }
+                });
+                if (response.status === 401) {
+                    googleAccessToken = null;
+                    updateGoogleCalendarControls();
+                    setGoogleCalendarStatus('授权已过期，请重新连接', 'error');
+                    return;
+                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const payload = await response.json();
+                googleCalendarCache[dateStr] = (payload.items || [])
+                    .filter(event => event.status !== 'cancelled')
+                    .map(event => normalizeGoogleEvent(event, dateStr))
+                    .filter(Boolean);
+                localStorage.setItem(GOOGLE_CACHE_KEY, JSON.stringify(googleCalendarCache));
+                setGoogleCalendarStatus(`已同步 ${googleCalendarCache[dateStr].length} 项 · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, 'ok');
+                renderTimeBlocksCalendar(dateStr);
+            } catch (error) {
+                setGoogleCalendarStatus(`同步失败：${error.message}`, 'error');
+            }
+        }
+
+        function disconnectGoogleCalendar() {
+            if (googleAccessToken && window.google?.accounts?.oauth2) {
+                google.accounts.oauth2.revoke(googleAccessToken, () => {});
+            }
+            googleAccessToken = null;
+            googleTokenClient = null;
+            googleCalendarCache = {};
+            localStorage.removeItem(GOOGLE_CACHE_KEY);
+            updateGoogleCalendarControls();
+            setGoogleCalendarStatus('已断开，缓存行程已清除');
+            renderTimeBlocksCalendar(document.getElementById('block-date-picker')?.value || getTodayStr());
+        }
+
+        function initGoogleCalendarSync() {
+            const clientInput = document.getElementById('google-client-id');
+            if (clientInput) clientInput.value = localStorage.getItem(GOOGLE_CLIENT_ID_KEY) || '';
+
+            document.getElementById('btn-save-google-client')?.addEventListener('click', () => {
+                const clientId = clientInput?.value.trim() || '';
+                if (!clientId.endsWith('.apps.googleusercontent.com')) {
+                    setGoogleCalendarStatus('Client ID 格式不正确', 'error');
+                    return;
+                }
+                localStorage.setItem(GOOGLE_CLIENT_ID_KEY, clientId);
+                googleTokenClient = null;
+                setGoogleCalendarStatus('Client ID 已保存，可开始连接', 'ok');
+            });
+
+            document.getElementById('btn-google-connect')?.addEventListener('click', () => {
+                if (!googleTokenClient && !initializeGoogleTokenClient()) return;
+                googleTokenClient.requestAccessToken();
+            });
+            document.getElementById('btn-google-sync')?.addEventListener('click', () => {
+                syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
+            });
+            document.getElementById('btn-google-disconnect')?.addEventListener('click', disconnectGoogleCalendar);
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && googleAccessToken) {
+                    syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
+                }
+            });
+            setInterval(() => {
+                if (googleAccessToken && !document.hidden) {
+                    syncGoogleCalendarForDate(document.getElementById('block-date-picker')?.value || getTodayStr());
+                }
+            }, 5 * 60 * 1000);
+
+            updateGoogleCalendarControls();
+            const cachedDates = Object.keys(googleCalendarCache);
+            setGoogleCalendarStatus(cachedDates.length ? `显示上次同步缓存 · ${cachedDates.length} 天` : '尚未连接');
+        }
+
         function getDurationMinutes(start, end) {
             const [sh, sm] = start.split(':').map(Number);
             const [eh, em] = end.split(':').map(Number);
@@ -1343,7 +1562,10 @@
         function initTimeBlocksCalendar() {
             const dp = document.getElementById('block-date-picker');
             dp.value = getTodayStr();
-            dp.addEventListener('change', e => renderTimeBlocksCalendar(e.target.value));
+            dp.addEventListener('change', e => {
+                renderTimeBlocksCalendar(e.target.value);
+                if (googleAccessToken) syncGoogleCalendarForDate(e.target.value);
+            });
 
             document.getElementById('btn-add-block')?.addEventListener('click', () => {
                 const date = dp.value;
@@ -1379,10 +1601,29 @@
             ensureDateDataExists(dateStr);
             const grid = document.getElementById('blocks-grid');
             const items = document.getElementById('blocks-items');
-            if (!grid || !items) return;
+            const allDayContainer = document.getElementById('google-all-day-events');
+            if (!grid || !items || !allDayContainer) return;
 
             grid.innerHTML = '';
             items.innerHTML = '';
+            allDayContainer.innerHTML = '';
+
+            const googleEvents = Array.isArray(googleCalendarCache[dateStr]) ? googleCalendarCache[dateStr] : [];
+            const allDayEvents = googleEvents.filter(event => event.allDay);
+            allDayContainer.classList.toggle('hidden', allDayEvents.length === 0);
+            allDayEvents.forEach(event => {
+                const div = document.createElement('div');
+                div.className = 'bg-blue-50 border border-blue-200 border-l-4 border-l-blue-500 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2';
+                div.innerHTML = `
+                    <div class="min-w-0">
+                        <div class="text-[10px] font-black text-blue-700 uppercase tracking-wider mb-1">Google 日历 · 全天正式行程</div>
+                        <div class="font-bold text-textmain break-words">${escapeHtml(event.desc)}</div>
+                        ${event.location ? `<div class="text-xs text-textmuted mt-1"><i class="fa fa-map-marker mr-1"></i>${escapeHtml(event.location)}</div>` : ''}
+                    </div>
+                    ${event.htmlLink ? `<a href="${escapeHtml(event.htmlLink)}" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-blue-700 whitespace-nowrap">在 Google 查看 <i class="fa fa-external-link ml-1"></i></a>` : ''}
+                `;
+                allDayContainer.appendChild(div);
+            });
 
             const pxPerH = 24;
             for (let i = 0; i <= 24; i++) {
@@ -1393,7 +1634,12 @@
                 `;
             }
 
-            (D.timeBlocks[dateStr] || []).forEach(b => {
+            const visibleBlocks = [
+                ...(D.timeBlocks[dateStr] || []).map(block => ({ ...block, readOnly: false })),
+                ...googleEvents.filter(event => !event.allDay).map(event => ({ ...event, readOnly: true }))
+            ];
+
+            visibleBlocks.forEach(b => {
                 const conf = CAT_MAP[b.category] || CAT_MAP.study;
                 let [sh, sm] = b.start.split(':').map(Number);
                 let [eh, em] = b.end.split(':').map(Number);
@@ -1408,7 +1654,7 @@
                 if (height < 20) height = 20;
 
                 const div = document.createElement('div');
-                div.className = `absolute left-0 right-0 rounded p-1 border-l-4 ${conf.border} ${conf.bgSoft} overflow-hidden shadow-sm hover:shadow-md hover:z-20 transition-all group flex justify-between items-start`;
+                div.className = `absolute left-0 right-0 rounded p-1 border-l-4 ${conf.border} ${conf.bgSoft} overflow-hidden shadow-sm hover:shadow-md hover:z-20 transition-all group flex justify-between items-start ${b.readOnly ? 'ring-1 ring-blue-200 z-10' : ''}`;
                 div.style.top = `${top}px`;
                 div.style.height = `${height}px`;
 
@@ -1418,10 +1664,12 @@
                         <span class="text-[9px] text-gray-600 font-bold mr-1">${b.start}-${b.end}</span>
                         <span class="text-[10px] font-bold text-textmain truncate">${escapeHtml(b.desc)}</span>
                     </div>
-                    <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                        <button class="edit-block ${conf.buttonText} hover:text-textmain p-0 text-xs" data-id="${b.id}" title="编辑"><i class="fa fa-pencil"></i></button>
-                        <button class="delete-block ${conf.buttonText} hover:text-danger p-0 text-xs" data-id="${b.id}" title="删除"><i class="fa fa-trash"></i></button>
-                    </div>
+                    ${b.readOnly
+                        ? `<div class="flex items-center gap-1 text-[9px] font-black text-blue-700 whitespace-nowrap ml-1"><i class="fa fa-lock"></i><span>只读</span>${b.htmlLink ? `<a href="${escapeHtml(b.htmlLink)}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-900" title="在 Google Calendar 查看"><i class="fa fa-external-link"></i></a>` : ''}</div>`
+                        : `<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <button class="edit-block ${conf.buttonText} hover:text-textmain p-0 text-xs" data-id="${b.id}" title="编辑"><i class="fa fa-pencil"></i></button>
+                            <button class="delete-block ${conf.buttonText} hover:text-danger p-0 text-xs" data-id="${b.id}" title="删除"><i class="fa fa-trash"></i></button>
+                        </div>`}
                 `;
                 items.appendChild(div);
             });
@@ -2186,6 +2434,7 @@
 
             initNavigation();
             initCheckin();
+            initGoogleCalendarSync();
             initTimeBlocksCalendar();
             initTasks();
             initHabits();
