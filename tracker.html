@@ -302,6 +302,13 @@
                             </div>
                             <p class="text-[11px] text-textmuted mt-2 leading-relaxed">需要在 Google Cloud 中启用 Calendar API，并为 Web OAuth Client 添加授权来源 <span class="font-mono">https://baixy1212.github.io</span>。这里只保存公开的 Client ID，不保存 Client Secret 或 Google 密码。</p>
                         </details>
+                        <div id="google-upcoming-events" class="hidden mt-4 border-t border-blue-100 pt-4">
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <h4 class="text-sm font-black text-blue-700">未来 Google 事项</h4>
+                                <span class="text-[11px] text-textmuted">点击事项跳转到对应日期</span>
+                            </div>
+                            <div id="google-upcoming-events-list" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+                        </div>
                     </div>
 
                     <div class="bg-primary/5 border border-primary/20 rounded-2xl p-5 mb-6">
@@ -326,6 +333,7 @@
                     </div>
 
                     <div id="google-all-day-events" class="hidden mb-3 space-y-2"></div>
+                    <div id="google-selected-date-note" class="hidden mb-3 px-4 py-3 bg-blue-50/60 border border-blue-100 rounded-xl text-sm font-bold text-blue-700"></div>
                     <div class="bg-gray-50 rounded-2xl border border-gray-200 overflow-y-auto relative p-2 shadow-inner" style="height: 600px;">
                         <div id="blocks-calendar-container" class="relative w-full" style="height: 576px;">
                             <div id="blocks-grid" class="absolute inset-0 pointer-events-none"></div>
@@ -1595,6 +1603,75 @@
             return duration;
         }
 
+        function renderGoogleCalendarOverview(selectedDate) {
+            const section = document.getElementById('google-upcoming-events');
+            const list = document.getElementById('google-upcoming-events-list');
+            const dateNote = document.getElementById('google-selected-date-note');
+            if (!section || !list || !dateNote) return;
+
+            const today = getTodayStr();
+            const upcoming = Object.entries(googleCalendarCache)
+                .filter(([dateStr]) => dateStr >= today)
+                .flatMap(([dateStr, events]) => (Array.isArray(events) ? events : []).map(event => ({ ...event, dateStr })))
+                .sort((a, b) => {
+                    const dateOrder = a.dateStr.localeCompare(b.dateStr);
+                    if (dateOrder !== 0) return dateOrder;
+                    if (a.allDay !== b.allDay) return a.allDay ? -1 : 1;
+                    return (a.start || '').localeCompare(b.start || '');
+                });
+
+            section.classList.toggle('hidden', upcoming.length === 0);
+            list.innerHTML = '';
+            upcoming.slice(0, 12).forEach(event => {
+                const dateLabel = new Date(`${event.dateStr}T00:00:00`).toLocaleDateString('zh-CN', {
+                    month: 'short',
+                    day: 'numeric',
+                    weekday: 'short'
+                });
+                const timeLabel = event.allDay ? '全天' : `${event.start}–${event.end}`;
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'google-upcoming-item w-full text-left bg-white hover:bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 transition-colors';
+                button.dataset.date = event.dateStr;
+                button.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-black text-blue-700">${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}</span>
+                        <span class="text-[10px] text-textmuted truncate max-w-[45%]">${escapeHtml(event.calendarName || 'Google Calendar')}</span>
+                    </div>
+                    <div class="text-sm font-bold text-textmain truncate mt-1">${escapeHtml(event.desc)}</div>
+                `;
+                list.appendChild(button);
+            });
+
+            if (upcoming.length > 12) {
+                const more = document.createElement('div');
+                more.className = 'md:col-span-2 text-center text-xs font-bold text-textmuted py-1';
+                more.textContent = `还有 ${upcoming.length - 12} 项，可通过日期选择器查看`;
+                list.appendChild(more);
+            }
+
+            list.querySelectorAll('.google-upcoming-item').forEach(button => {
+                button.addEventListener('click', () => {
+                    const dateStr = button.dataset.date;
+                    const picker = document.getElementById('block-date-picker');
+                    if (picker) picker.value = dateStr;
+                    renderTimeBlocksCalendar(dateStr);
+                });
+            });
+
+            const selectedEvents = Array.isArray(googleCalendarCache[selectedDate]) ? googleCalendarCache[selectedDate] : [];
+            dateNote.classList.remove('hidden');
+            if (selectedEvents.length > 0) {
+                dateNote.textContent = `当前日期有 ${selectedEvents.length} 项 Google 日历事项，已显示在下方。`;
+            } else if (upcoming.length > 0) {
+                const nearest = upcoming.find(event => event.dateStr > selectedDate) || upcoming[0];
+                const nearestLabel = new Date(`${nearest.dateStr}T00:00:00`).toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
+                dateNote.textContent = `当前日期没有 Google 日历事项；最近一项在 ${nearestLabel}。可点击上方事项直接跳转。`;
+            } else {
+                dateNote.textContent = googleAccessToken ? '未来 90 天暂未读取到 Google 日历事项。' : '连接 Google Calendar 后，这里会显示所选日期的同步结果。';
+            }
+        }
+
         function migrateFocusRecordsToSchedule() {
             ensureRootData();
             Object.entries(D.taskData).forEach(([date, tasks]) => {
@@ -1769,6 +1846,7 @@
             allDayContainer.innerHTML = '';
 
             const googleEvents = Array.isArray(googleCalendarCache[dateStr]) ? googleCalendarCache[dateStr] : [];
+            renderGoogleCalendarOverview(dateStr);
             const allDayEvents = googleEvents.filter(event => event.allDay);
             allDayContainer.classList.toggle('hidden', allDayEvents.length === 0);
             allDayEvents.forEach(event => {
