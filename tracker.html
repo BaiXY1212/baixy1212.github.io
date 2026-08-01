@@ -325,19 +325,6 @@
                                 <div id="todo-list-container" class="space-y-2 max-h-[250px] overflow-y-auto pr-2"></div>
                             </div>
 
-                            <div class="bg-secondary/5 p-5 rounded-2xl border border-secondary/20">
-                                <div class="mb-4">
-                                    <h3 class="text-lg font-bold text-textmain flex items-center"><i class="fa fa-inbox text-secondary mr-2"></i>长期待办</h3>
-                                    <p class="text-xs text-textmuted mt-1 leading-relaxed">暂不安排到今天、但未来仍需完成的事项。内容不会每日重置。</p>
-                                </div>
-                                <div class="flex gap-2 mb-4">
-                                    <input type="text" id="new-long-term-todo-input" placeholder="记录一项长期待办..." class="flex-1 min-w-0 px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
-                                    <button id="btn-add-long-term-todo" class="bg-secondary text-white px-4 py-2 rounded-lg font-bold shadow-sm whitespace-nowrap">新增</button>
-                                </div>
-                                <div id="long-term-todo-list-container" class="space-y-2 max-h-[320px] overflow-y-auto pr-2"></div>
-                                <div id="long-term-todo-empty" class="text-center text-textmuted text-sm font-bold py-5 hidden">长期待办池还是空的</div>
-                            </div>
-
                             <div id="current-task-container" class="bg-white border-2 border-secondary rounded-2xl p-6 hidden shadow-[0_0_20px_rgba(187,174,204,0.3)]">
                                 <div class="flex flex-col items-center text-center">
                                     <span class="text-xs font-bold text-secondary bg-secondary/10 px-3 py-1 rounded-full uppercase tracking-wider mb-3">● 正在心流状态</span>
@@ -348,7 +335,7 @@
                             </div>
 
                             <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                                <h3 class="text-sm font-bold text-textmain mb-3 flex items-center"><i class="fa fa-pencil-square-o text-secondary mr-2"></i>添加今日专注日程</h3>
+                                <h3 class="text-sm font-bold text-textmain mb-3 flex items-center"><i class="fa fa-pencil-square-o text-secondary mr-2"></i>手动补录专注记录</h3>
                                 <input type="text" id="manual-name" placeholder="任务名称 (可从上方清单快捷带入)" class="w-full px-4 py-2 mb-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
                                 <div class="flex gap-3 mb-4">
                                     <div class="flex-1">
@@ -360,19 +347,32 @@
                                         <input type="time" id="manual-end" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none text-sm font-bold focus:ring-2 focus:ring-secondary" />
                                     </div>
                                 </div>
-                                <button id="btn-manual-log" class="w-full bg-gray-100 text-textmain hover:bg-secondary hover:text-white py-2 rounded-lg font-bold transition-colors">加入今日日程</button>
+                                <button id="btn-manual-log" class="w-full bg-gray-100 text-textmain hover:bg-secondary hover:text-white py-2 rounded-lg font-bold transition-colors">添加到日程表</button>
                             </div>
                         </div>
 
                         <div class="lg:col-span-7">
                             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm min-h-full">
                                 <h3 class="text-xl font-black text-textmain mb-6 flex items-center border-b border-gray-50 pb-4">
-                                    <i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注与日程
+                                    <i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注日程表
                                 </h3>
                                 <div id="today-tasks-timeline" class="relative border-l-2 border-secondary/20 ml-4 pl-6 space-y-6"></div>
-                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今日暂无日程，可从左侧或时间日历添加。</div>
+                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今日暂无专注记录，快去开启心流吧！</div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="bg-secondary/5 p-5 rounded-2xl border border-secondary/20 mt-8">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-bold text-textmain flex items-center"><i class="fa fa-inbox text-secondary mr-2"></i>Backlog_待办池</h3>
+                            <p class="text-xs text-textmuted mt-1 leading-relaxed">长期保存非今日优先事项，不会每日重置。需要处理时，可手动加入今日任务清单。</p>
+                        </div>
+                        <div class="flex gap-2 mb-4">
+                            <input type="text" id="new-long-term-todo-input" placeholder="记录一项非今日优先事项..." class="flex-1 min-w-0 px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
+                            <button id="btn-add-long-term-todo" class="bg-secondary text-white px-4 py-2 rounded-lg font-bold shadow-sm whitespace-nowrap">新增</button>
+                        </div>
+                        <div id="long-term-todo-list-container" class="space-y-2 max-h-[320px] overflow-y-auto pr-2"></div>
+                        <div id="long-term-todo-empty" class="text-center text-textmuted text-sm font-bold py-5 hidden">Backlog_待办池还是空的</div>
                     </div>
                 </section>
 
