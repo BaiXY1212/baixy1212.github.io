@@ -132,7 +132,7 @@
                         <li><button id="nav-tasks" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">深度专注</span><i class="fa fa-tasks text-lg text-secondary"></i></button></li>
                         <li><button id="nav-habits" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">每日习惯</span><i class="fa fa-check-square-o text-lg text-success"></i></button></li>
                         <li><button id="nav-journal" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">每日复盘</span><i class="fa fa-book text-lg text-accent"></i></button></li>
-                        <li><button id="nav-phone" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">克制诱惑</span><i class="fa fa-mobile text-lg text-danger"></i></button></li>
+                        <li><button id="nav-fitness" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">健身与身体状态</span><i class="fa fa-heartbeat text-lg text-success"></i></button></li>
                         <li><button id="nav-achievements" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">成就殿堂</span><i class="fa fa-trophy text-lg text-warning"></i></button></li>
                         <li><button id="nav-stats" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">数据洞察</span><i class="fa fa-line-chart text-lg text-primary"></i></button></li>
                     </ul>
@@ -145,7 +145,7 @@
                             <div class="flex justify-between items-center"><span class="text-gray-400">上午打卡</span><span id="sb-m-in" class="text-gray-300">未打卡</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">下午打卡</span><span id="sb-a-in" class="text-gray-300">未打卡</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">晚上打卡</span><span id="sb-e-in" class="text-gray-300">未打卡</span></div>
-                            <div class="flex justify-between items-center"><span class="text-gray-400">手机克制</span><span id="sb-phone" class="text-danger">0 次</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">今日运动</span><span id="sb-fitness" class="text-success">未安排</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">进行中任务</span><span id="sb-task" class="text-gray-300 truncate max-w-[100px] text-right" title="">无</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">每日习惯</span><span id="sb-habit" class="text-gray-300">0%</span></div>
                         </div>
@@ -471,42 +471,46 @@
                     </div>
                 </section>
 
-                <section id="phone-section" class="soft-card p-8 mb-6 hidden">
-                    <h2 class="text-2xl font-black text-textmain mb-8 flex items-center border-b border-gray-100 pb-4">
-                        <i class="fa fa-mobile mr-3 text-danger text-3xl"></i>抵抗诱惑
-                    </h2>
-
-                    <div class="bg-danger/5 border border-danger/20 rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center gap-6">
-                        <div class="text-center md:text-left flex-shrink-0">
-                            <p class="text-danger font-bold uppercase tracking-widest mb-1">累计成功克制</p>
-                            <div class="text-5xl font-black text-danger drop-shadow-sm" id="phone-resist-count">0</div>
-                        </div>
-                        <div class="flex-1 w-full space-y-3">
-                            <input type="text" id="phone-reason-input" placeholder="输入走神理由，例如：想刷小红书..." class="w-full px-5 py-3.5 bg-white border border-danger/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-danger font-medium shadow-sm" />
-                            <div class="flex gap-4">
-                                <button id="btn-resist-success" class="flex-1 bg-success text-white py-3 rounded-xl font-bold btn-shadow tracking-wide transition-transform active:scale-95"><i class="fa fa-check mr-2"></i>成功克制</button>
-                                <button id="btn-resist-fail" class="flex-1 bg-danger text-white py-3 rounded-xl font-bold btn-shadow tracking-wide transition-transform active:scale-95"><i class="fa fa-times mr-2"></i>没忍住失败</button>
-                            </div>
-                        </div>
+                <section id="fitness-section" class="soft-card p-8 mb-6 hidden">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-7 border-b border-gray-100 pb-4">
+                        <div><h2 class="text-2xl font-black text-textmain flex items-center"><i class="fa fa-heartbeat mr-3 text-success text-3xl"></i>健身与身体状态</h2><p class="text-sm text-textmuted mt-2">轻松记录居家跟练，关注身体感受，不追求惩罚式打卡。</p></div>
+                        <div class="flex flex-wrap gap-2"><button id="btn-export-fitness-week" class="bg-success text-white px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-file-text-o mr-2"></i>导出本周复盘 Markdown</button><button id="btn-export-fitness-csv" class="bg-white text-success border border-success/40 px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-table mr-2"></i>导出 CSV</button></div>
                     </div>
 
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                        <div class="bg-success/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本周运动次数</div><div id="fitness-stat-week-count" class="text-2xl font-black text-success mt-1">0 次</div></div>
+                        <div class="bg-primary/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本周总时长</div><div id="fitness-stat-week-minutes" class="text-2xl font-black text-primary mt-1">0 分钟</div></div>
+                        <div class="bg-secondary/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">平均每次</div><div id="fitness-stat-average" class="text-2xl font-black text-secondary mt-1">0 分钟</div></div>
+                        <div class="bg-accent/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本月运动次数</div><div id="fitness-stat-month-count" class="text-2xl font-black text-accent mt-1">0 次</div></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-7 text-sm">
+                        <div class="bg-gray-50 rounded-xl p-4"><span class="font-bold text-textmuted">运动类型分布</span><div id="fitness-stat-types" class="font-bold text-textmain mt-2">暂无记录</div></div>
+                        <div class="bg-gray-50 rounded-xl p-4"><span class="font-bold text-textmuted">连续运动天数（仅供参考）</span><div id="fitness-stat-streak" class="font-bold text-textmain mt-2">0 天</div></div>
+                        <div class="bg-gray-50 rounded-xl p-4"><span class="font-bold text-textmuted">最常运动时间段</span><div id="fitness-stat-time" class="font-bold text-textmain mt-2">暂无记录</div></div>
+                    </div>
+
+                    <form id="fitness-form" class="bg-success/5 border border-success/20 rounded-2xl p-5 mb-7">
+                        <input type="hidden" id="fitness-edit-id" />
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">健身标题</label><input id="fitness-title" required placeholder="例如：肩颈放松跟练" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">日期</label><input type="date" id="fitness-date" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">运动类型</label><select id="fitness-type" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>其他</option></select></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">计划开始</label><input type="time" id="fitness-start" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">计划结束</label><input type="time" id="fitness-end" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">计划时长（分钟）</label><input type="number" min="0" step="5" id="fitness-planned-minutes" placeholder="20" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">实际时长（分钟）</label><input type="number" min="0" step="1" id="fitness-actual-minutes" placeholder="完成后填写" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="fitness-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="completed">完成</option><option value="partial">部分完成</option><option value="not_completed">未完成</option><option value="skipped">跳过</option></select></div>
+                            <div class="sm:col-span-2 lg:col-span-3"><label class="block text-xs font-bold text-textmuted mb-1">跟练链接</label><input type="url" id="fitness-link" placeholder="B 站或其他视频链接" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">身体感受</label><textarea id="fitness-feeling" rows="2" placeholder="肩颈紧、精神好、太累……" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
+                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">备注 / 未完成原因</label><textarea id="fitness-notes" rows="2" placeholder="难度、是否想复练，或温和记录跳过原因" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-4"><button type="submit" id="btn-save-fitness" class="bg-success text-white px-5 py-2.5 rounded-lg font-bold"><i class="fa fa-calendar-plus-o mr-2"></i>保存并同步到时间日历</button><button type="button" id="btn-cancel-fitness-edit" class="hidden bg-white border border-gray-200 text-textmain px-4 py-2.5 rounded-lg font-bold">取消编辑</button></div>
+                    </form>
+
                     <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                            <h3 class="font-bold text-gray-800"><i class="fa fa-list mr-2 text-danger"></i>今日诱惑抵抗明细</h3>
-                        </div>
-                        <div class="overflow-x-auto max-h-[400px] overflow-y-auto">
-                            <table class="min-w-full text-sm text-left">
-                                <thead class="text-xs text-gray-500 bg-gray-50 uppercase font-bold sticky top-0 z-10">
-                                    <tr>
-                                        <th class="px-6 py-3 w-32">走神时间</th>
-                                        <th class="px-6 py-3">走神原因</th>
-                                        <th class="px-6 py-3 w-32 text-right">状态</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100" id="phone-history-list"></tbody>
-                            </table>
-                            <div id="phone-empty-msg" class="text-center py-8 text-textmuted font-bold hidden">今天还没有记录哦，继续保持专注！</div>
-                        </div>
+                        <div class="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-bold text-gray-800"><i class="fa fa-list mr-2 text-success"></i>健身记录</h3><span class="text-xs text-textmuted">完成与跳过都只是记录</span></div>
+                        <div id="fitness-record-list" class="divide-y divide-gray-100"></div>
+                        <div id="fitness-empty-msg" class="text-center py-10 text-textmuted font-bold hidden">还没有健身安排。可以先从 10 分钟轻松跟练开始。</div>
                     </div>
                 </section>
 
@@ -519,7 +523,7 @@
                     <div class="space-y-8">
                         <div><h3 class="text-lg font-bold text-secondary mb-4 border-l-4 border-secondary pl-3">⏳ 专注与心流</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-focus"></div></div>
                         <div><h3 class="text-lg font-bold text-primary mb-4 border-l-4 border-primary pl-3">🌅 作息与考勤</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-routine"></div></div>
-                        <div><h3 class="text-lg font-bold text-danger mb-4 border-l-4 border-danger pl-3">🛡️ 控制与抵抗</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-resist"></div></div>
+                        <div><h3 class="text-lg font-bold text-success mb-4 border-l-4 border-success pl-3">🌿 温和运动</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-fitness"></div></div>
                         <div><h3 class="text-lg font-bold text-success mb-4 border-l-4 border-success pl-3">📖 沉淀与复盘</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-habit"></div></div>
                         <div><h3 class="text-lg font-bold text-accent mb-4 border-l-4 border-accent pl-3">🥚 隐藏彩蛋</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-egg"></div></div>
                     </div>
@@ -563,8 +567,8 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-mobile text-danger mr-2"></i>手机克制次数趋势</h3>
-                            <div class="relative w-full h-[200px]"><canvas id="chart-phone-trend"></canvas></div>
+                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-heartbeat text-success mr-2"></i>每日实际运动时长（分钟）</h3>
+                            <div class="relative w-full h-[200px]"><canvas id="chart-fitness-trend"></canvas></div>
                         </div>
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
                             <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-check-square-o text-success mr-2"></i>每日习惯完成度 (%)</h3>
@@ -634,11 +638,12 @@
                     <div><span class="text-textmuted font-bold">更新时间</span><div id="history-block-updated" class="font-bold text-textmain mt-1"></div></div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="history-block-status" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="in_progress">进行中</option><option value="completed">已完成</option><option value="partial">部分完成</option><option value="cancelled">未执行 / 取消</option></select></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="history-block-status" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="in_progress">进行中</option><option value="completed">已完成</option><option value="partial">部分完成</option><option value="not_completed">未完成</option><option value="skipped">跳过</option><option value="cancelled">未执行 / 取消</option></select></div>
                     <div></div>
                     <div><label class="block text-xs font-bold text-textmuted mb-1">实际完成情况</label><textarea id="history-block-outcome" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
                     <div><label class="block text-xs font-bold text-textmuted mb-1">备注 / 手动补录内容</label><textarea id="history-block-notes" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
                 </div>
+                <div id="history-fitness-detail" class="hidden mt-4 bg-success/5 border border-success/20 rounded-xl p-4 text-sm"></div>
                 <div class="flex flex-wrap gap-2 mt-5">
                     <button id="btn-save-history-block" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">保存历史详情</button>
                     <button id="btn-edit-history-time" class="bg-gray-100 text-textmain px-4 py-2 rounded-lg text-sm font-bold">编辑标题与时间</button>
@@ -662,6 +667,7 @@
         const DATA_KEYS = [
             'checkinData',
             'phoneResistData',
+            'fitnessData',
             'taskData',
             'journalData',
             'timeBlocks',
@@ -770,7 +776,7 @@
             rate: null,
             period: null,
             duration: null,
-            phone: null,
+            fitness: null,
             sleep: null,
             habit: null
         };
@@ -825,6 +831,13 @@
                 text: 'text-success',
                 buttonText: 'text-success'
             },
+            fitness: {
+                label: '健身',
+                border: 'border-success',
+                bgSoft: 'bg-success/20',
+                text: 'text-green-700',
+                buttonText: 'text-green-700'
+            },
             waste: {
                 label: '摸鱼',
                 border: 'border-danger',
@@ -840,7 +853,7 @@
             tasks: 'w-full text-left px-5 py-3.5 rounded-xl bg-secondary text-white font-bold flex items-center justify-between shadow-md',
             habits: 'w-full text-left px-5 py-3.5 rounded-xl bg-success text-white font-bold flex items-center justify-between shadow-md',
             journal: 'w-full text-left px-5 py-3.5 rounded-xl bg-accent text-white font-bold flex items-center justify-between shadow-md',
-            phone: 'w-full text-left px-5 py-3.5 rounded-xl bg-danger text-white font-bold flex items-center justify-between shadow-md',
+            fitness: 'w-full text-left px-5 py-3.5 rounded-xl bg-success text-white font-bold flex items-center justify-between shadow-md',
             achievements: 'w-full text-left px-5 py-3.5 rounded-xl bg-warning text-white font-bold flex items-center justify-between shadow-md',
             stats: 'w-full text-left px-5 py-3.5 rounded-xl bg-primary text-white font-bold flex items-center justify-between shadow-md'
         };
@@ -896,9 +909,9 @@
             { id: 'sleep_21', cat: 'routine', name: '发量守卫者', desc: '连续 21 天在 23:30 前睡觉', icon: 'fa-moon-o', color: 'primary', condition: d => U.getSleepStreak(d) >= 21 },
             { id: 'checkin_3', cat: 'routine', name: '铁人三项', desc: '单日完美完成三个时段的工位打卡', icon: 'fa-check-circle', color: 'primary', condition: d => Object.values(d.checkinData).some(x => x.morning.checkIn && x.afternoon.checkIn && x.evening.checkIn) },
 
-            { id: 'resist_100', cat: 'resist', name: '定力初显', desc: '累计克制手机诱惑 100 次', icon: 'fa-shield', color: 'danger', condition: d => d.phoneResistData.totalCount >= 100 },
-            { id: 'resist_1000', cat: 'resist', name: '苦行僧', desc: '累计克制手机诱惑 1,000 次', icon: 'fa-ban', color: 'danger', condition: d => d.phoneResistData.totalCount >= 1000 },
-            { id: 'resist_5000', cat: 'resist', name: '禅定宗师', desc: '累计克制手机诱惑 5,000 次', icon: 'fa-eye-slash', color: 'danger', condition: d => d.phoneResistData.totalCount >= 5000 },
+            { id: 'fitness_10', cat: 'fitness', name: '轻松起步', desc: '累计完成 10 次居家运动', icon: 'fa-leaf', color: 'success', condition: d => getCompletedFitnessRecords().length >= 10 },
+            { id: 'fitness_30', cat: 'fitness', name: '渐成节奏', desc: '累计完成 30 次居家运动', icon: 'fa-heartbeat', color: 'success', condition: d => getCompletedFitnessRecords().length >= 30 },
+            { id: 'fitness_100', cat: 'fitness', name: '身体好朋友', desc: '累计完成 100 次居家运动', icon: 'fa-smile-o', color: 'success', condition: d => getCompletedFitnessRecords().length >= 100 },
 
             { id: 'habit_100', cat: 'habit', name: '滴水穿石', desc: '任意一个每日习惯连续打卡满 100 天', icon: 'fa-tint', color: 'success', condition: d => U.getHabitMaxStreak(d) >= 100 },
             { id: 'journal_30', cat: 'habit', name: '三省吾身', desc: '连续 30 天完成每日复盘', icon: 'fa-book', color: 'success', condition: d => U.getJournalStreak(d) >= 30 },
@@ -1008,6 +1021,9 @@
             if (!D.phoneResistData || typeof D.phoneResistData !== 'object') D.phoneResistData = { totalCount: 0, records: {} };
             if (typeof D.phoneResistData.totalCount !== 'number') D.phoneResistData.totalCount = 0;
             if (!D.phoneResistData.records || typeof D.phoneResistData.records !== 'object') D.phoneResistData.records = {};
+            if (!D.fitnessData || typeof D.fitnessData !== 'object') D.fitnessData = { records: [] };
+            if (!Array.isArray(D.fitnessData.records)) D.fitnessData.records = [];
+            D.fitnessData.records.forEach(normalizeFitnessRecord);
             if (!D.taskData || typeof D.taskData !== 'object') D.taskData = {};
             if (!D.journalData || typeof D.journalData !== 'object') D.journalData = {};
             if (!D.timeBlocks || typeof D.timeBlocks !== 'object') D.timeBlocks = {};
@@ -1070,6 +1086,7 @@
         function initData() {
             D.checkinData = safeJSONParse(localStorage.getItem('checkinData'), {});
             D.phoneResistData = safeJSONParse(localStorage.getItem('phoneResistData'), { totalCount: 0, records: {} });
+            D.fitnessData = safeJSONParse(localStorage.getItem('fitnessData'), { records: [] });
             D.taskData = safeJSONParse(localStorage.getItem('taskData'), {});
             D.journalData = safeJSONParse(localStorage.getItem('journalData'), {});
             D.timeBlocks = safeJSONParse(localStorage.getItem('timeBlocks'), {});
@@ -1099,7 +1116,7 @@
             });
             return {
                 format: 'baixy-life-dashboard',
-                version: 3,
+                version: 4,
                 exportedAt: new Date().toISOString(),
                 data
             };
@@ -1179,7 +1196,7 @@
             const mIn = document.getElementById('sb-m-in');
             const aIn = document.getElementById('sb-a-in');
             const eIn = document.getElementById('sb-e-in');
-            const sbPhone = document.getElementById('sb-phone');
+            const sbFitness = document.getElementById('sb-fitness');
             const sbTask = document.getElementById('sb-task');
             const sbHabit = document.getElementById('sb-habit');
 
@@ -1195,7 +1212,12 @@
                 eIn.textContent = cd.evening.checkIn || '未打卡';
                 eIn.className = cd.evening.checkIn ? 'text-accent' : 'text-gray-300';
             }
-            if (sbPhone) sbPhone.textContent = `${D.phoneResistData.records[t].count} 次`;
+            if (sbFitness) {
+                const todayFitness = D.fitnessData.records.filter(record => record.date === t);
+                const completed = todayFitness.filter(record => ['completed', 'partial'].includes(record.status)).length;
+                sbFitness.textContent = completed ? `${completed} 次完成` : todayFitness.length ? `${todayFitness.length} 项计划` : '未安排';
+                sbFitness.className = completed ? 'text-success' : todayFitness.length ? 'text-primary' : 'text-gray-300';
+            }
 
             if (sbTask) {
                 sbTask.textContent = currentTask ? currentTask.name : '无';
@@ -1219,7 +1241,7 @@
 
         // ================= 导航 =================
         function initNavigation() {
-            const sections = ['checkin', 'hourly', 'tasks', 'habits', 'journal', 'phone', 'achievements', 'stats'];
+            const sections = ['checkin', 'hourly', 'tasks', 'habits', 'journal', 'fitness', 'achievements', 'stats'];
 
             sections.forEach(sec => {
                 const btn = document.getElementById(`nav-${sec}`);
@@ -1244,7 +1266,7 @@
                     if (sec === 'stats') document.querySelector('.stats-period-btn.bg-white')?.click();
                     if (sec === 'achievements') renderAchievements();
                     if (sec === 'checkin') renderCheckinCalendar();
-                    if (sec === 'phone') renderPhoneHistory();
+                    if (sec === 'fitness') renderFitness();
                 });
             });
         }
@@ -2018,7 +2040,7 @@
             document.getElementById('history-block-id').value = id;
             document.getElementById('history-block-title').textContent = block.desc;
             document.getElementById('history-block-time').textContent = `${block.start}–${block.end}`;
-            const sourceLabels = { focus: '计时专注', manual: '手动补录', 'manual-calendar': '时间日历手动安排', 'backlog-planned': 'Backlog 专注计划' };
+            const sourceLabels = { focus: '计时专注', manual: '手动补录', 'manual-calendar': '时间日历手动安排', 'backlog-planned': 'Backlog 专注计划', fitness: '健身与身体状态' };
             document.getElementById('history-block-source').textContent = sourceLabels[block.source] || block.source || 'Dashboard';
             document.getElementById('history-block-backlog').textContent = getRecordBacklogTitle(block);
             document.getElementById('history-block-todo').textContent = getRecordTodoTitle(date, block);
@@ -2026,6 +2048,15 @@
             document.getElementById('history-block-status').value = block.status || 'planned';
             document.getElementById('history-block-outcome').value = block.actualOutcome || '';
             document.getElementById('history-block-notes').value = block.notes || '';
+            const fitnessDetail = document.getElementById('history-fitness-detail');
+            const fitnessRecord = block.fitnessId ? D.fitnessData.records.find(record => record.id === block.fitnessId) : null;
+            if (fitnessRecord) {
+                fitnessDetail.innerHTML = `<div class="font-black text-green-700 mb-3"><i class="fa fa-heartbeat mr-2"></i>关联健身记录</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><div><span class="text-textmuted font-bold">运动类型：</span>${escapeHtml(fitnessRecord.type)}</div><div><span class="text-textmuted font-bold">实际时长：</span>${fitnessRecord.actualMinutes || 0} 分钟</div><div><span class="text-textmuted font-bold">完成状态：</span>${escapeHtml(FITNESS_STATUS_LABELS[fitnessRecord.status] || fitnessRecord.status)}</div><div><span class="text-textmuted font-bold">身体感受：</span>${escapeHtml(fitnessRecord.feeling || '—')}</div><div class="sm:col-span-2"><span class="text-textmuted font-bold">备注：</span>${escapeHtml(fitnessRecord.notes || '—')}</div>${fitnessRecord.link ? `<div class="sm:col-span-2"><a href="${escapeHtml(fitnessRecord.link)}" target="_blank" rel="noopener noreferrer" class="text-primary font-bold">打开跟练视频 <i class="fa fa-external-link ml-1"></i></a></div>` : ''}</div>`;
+                fitnessDetail.classList.remove('hidden');
+            } else {
+                fitnessDetail.innerHTML = '';
+                fitnessDetail.classList.add('hidden');
+            }
             editor.classList.remove('hidden');
         }
 
@@ -2051,6 +2082,10 @@
                 }
             }
             if (block.backlogId) addBacklogHistory(block.backlogId, { date, type: 'focus_record', scheduleId: block.id, title: block.desc, start: block.start, end: block.end, status: block.status, outcome: block.actualOutcome });
+            if (block.fitnessId) {
+                const fitnessRecord = D.fitnessData.records.find(record => record.id === block.fitnessId);
+                if (fitnessRecord) { fitnessRecord.status = block.status === 'cancelled' ? 'not_completed' : block.status; fitnessRecord.notes = block.notes; fitnessRecord.updatedAt = block.updatedAt; }
+            }
             saveData();
             refreshScheduleViews(date);
             openDayHistory(date, id);
@@ -2095,6 +2130,10 @@
                     D.taskData[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
                 }
             }
+            if (item.fitnessId) {
+                const fitnessRecord = D.fitnessData.records.find(record => record.id === item.fitnessId);
+                if (fitnessRecord) { fitnessRecord.title = cleanDesc; fitnessRecord.start = start; fitnessRecord.end = end; fitnessRecord.updatedAt = item.updatedAt; }
+            }
 
             D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
             saveData();
@@ -2109,6 +2148,10 @@
             D.timeBlocks[date] = D.timeBlocks[date].filter(block => block.id !== id);
             if (item.taskId) {
                 D.taskData[date] = D.taskData[date].filter(task => task.id !== item.taskId);
+            }
+            if (item.fitnessId) {
+                const fitnessRecord = D.fitnessData.records.find(record => record.id === item.fitnessId);
+                if (fitnessRecord) { fitnessRecord.calendarBlockId = null; fitnessRecord.updatedAt = new Date().toISOString(); }
             }
 
             saveData();
@@ -2950,77 +2993,201 @@
             });
         }
 
-        // ================= 手机克制 =================
-        function initPhone() {
-            const handleResist = isSuccess => {
-                const reasonInput = document.getElementById('phone-reason-input');
-                const reason = reasonInput.value.trim();
+        // ================= 健身与身体状态 =================
+        const FITNESS_STATUS_LABELS = { planned: '计划中', completed: '完成', partial: '部分完成', not_completed: '未完成', skipped: '跳过' };
 
-                if (!reason) {
-                    alert('请输入具体的走神理由哦，只有直面诱惑才能战胜它！');
-                    reasonInput.focus();
-                    return;
-                }
-
-                const t = getTodayStr();
-                ensureDateDataExists(t);
-
-                if (isSuccess) {
-                    D.phoneResistData.totalCount++;
-                    D.phoneResistData.records[t].count++;
-                }
-
-                D.phoneResistData.records[t].history.unshift({
-                    id: `pr_${Date.now()}`,
-                    time: getTimeStr(),
-                    reason,
-                    success: isSuccess
-                });
-
-                reasonInput.value = '';
-                saveData();
-                renderPhoneHistory();
-            };
-
-            document.getElementById('btn-resist-success')?.addEventListener('click', () => handleResist(true));
-            document.getElementById('btn-resist-fail')?.addEventListener('click', () => handleResist(false));
-
-            renderPhoneHistory();
+        function normalizeFitnessRecord(record) {
+            const now = new Date().toISOString();
+            record.id = record.id || `fit_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+            record.title = record.title || '未命名健身';
+            record.date = record.date || getTodayStr();
+            record.start = record.start || '';
+            record.end = record.end || '';
+            record.plannedMinutes = Number(record.plannedMinutes) || 0;
+            record.actualMinutes = Number(record.actualMinutes) || 0;
+            record.type = record.type || '其他';
+            record.link = record.link || '';
+            record.status = record.status || 'planned';
+            record.feeling = record.feeling || '';
+            record.notes = record.notes || '';
+            record.calendarBlockId = record.calendarBlockId || null;
+            record.createdAt = record.createdAt || now;
+            record.updatedAt = record.updatedAt || record.createdAt;
+            return record;
         }
 
-        function renderPhoneHistory() {
-            const t = getTodayStr();
-            ensureDateDataExists(t);
+        function getCompletedFitnessRecords() {
+            return (D.fitnessData?.records || []).filter(record => ['completed', 'partial'].includes(record.status));
+        }
 
-            document.getElementById('phone-resist-count').textContent = D.phoneResistData.totalCount;
+        function getWeekRange(date = new Date()) {
+            const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const day = start.getDay() || 7;
+            start.setDate(start.getDate() - day + 1);
+            const end = new Date(start);
+            end.setDate(end.getDate() + 6);
+            const format = value => `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(value.getDate()).padStart(2, '0')}`;
+            return { start: format(start), end: format(end) };
+        }
 
-            const list = document.getElementById('phone-history-list');
-            const emptyMsg = document.getElementById('phone-empty-msg');
-            const history = D.phoneResistData.records[t].history;
+        function getFitnessTimePeriod(start) {
+            const hour = Number((start || '').split(':')[0]);
+            if (!Number.isFinite(hour)) return '未设置';
+            if (hour < 12) return '早晨';
+            if (hour < 18) return '下午';
+            return '晚上';
+        }
 
-            list.innerHTML = '';
+        function calculateFitnessStats() {
+            const records = D.fitnessData.records;
+            const completed = getCompletedFitnessRecords();
+            const week = getWeekRange();
+            const weekly = completed.filter(record => record.date >= week.start && record.date <= week.end);
+            const monthPrefix = getTodayStr().slice(0, 7);
+            const monthly = completed.filter(record => record.date.startsWith(monthPrefix));
+            const totalMinutes = weekly.reduce((sum, record) => sum + record.actualMinutes, 0);
+            const types = {};
+            completed.forEach(record => { types[record.type] = (types[record.type] || 0) + 1; });
+            const periods = {};
+            completed.forEach(record => { const period = getFitnessTimePeriod(record.start); if (period !== '未设置') periods[period] = (periods[period] || 0) + 1; });
+            const activeDates = new Set(completed.map(record => record.date));
+            let streak = 0;
+            let cursor = new Date();
+            if (!activeDates.has(getTodayStr())) cursor.setDate(cursor.getDate() - 1);
+            while (activeDates.has(`${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`)) { streak++; cursor.setDate(cursor.getDate() - 1); }
+            const topType = Object.entries(types).sort((a, b) => b[1] - a[1])[0]?.[0] || '暂无记录';
+            const topPeriod = Object.entries(periods).sort((a, b) => b[1] - a[1])[0]?.[0] || '暂无记录';
+            return { week, weekly, weekCount: weekly.length, totalMinutes, average: weekly.length ? Math.round(totalMinutes / weekly.length) : 0, monthCount: monthly.length, types, topType, topPeriod, streak };
+        }
 
-            if (!history || history.length === 0) {
-                emptyMsg.classList.remove('hidden');
-            } else {
-                emptyMsg.classList.add('hidden');
-
-                history.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-gray-50 transition-colors';
-
-                    const statusHtml = item.success
-                        ? `<span class="bg-success/20 text-green-700 px-3 py-1 rounded-full font-bold text-xs inline-block shadow-sm">成功克制</span>`
-                        : `<span class="bg-danger/20 text-red-700 px-3 py-1 rounded-full font-bold text-xs inline-block shadow-sm">没忍住</span>`;
-
-                    tr.innerHTML = `
-                        <td class="px-6 py-3 font-medium text-gray-500">${item.time}</td>
-                        <td class="px-6 py-3 font-bold text-gray-800">${item.reason}</td>
-                        <td class="px-6 py-3 text-right">${statusHtml}</td>
-                    `;
-                    list.appendChild(tr);
-                });
+        function syncFitnessCalendar(record, previousDate = null) {
+            if (previousDate && previousDate !== record.date) {
+                D.timeBlocks[previousDate] = (D.timeBlocks[previousDate] || []).filter(block => block.id !== record.calendarBlockId);
+                record.calendarBlockId = null;
             }
+            ensureDateDataExists(record.date);
+            let block = record.calendarBlockId ? D.timeBlocks[record.date].find(item => item.id === record.calendarBlockId) : null;
+            if (!record.start || !record.end) {
+                if (block) D.timeBlocks[record.date] = D.timeBlocks[record.date].filter(item => item.id !== block.id);
+                record.calendarBlockId = null;
+                return;
+            }
+            if (!block) {
+                block = { id: `fitb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, fitnessId: record.id, source: 'fitness', category: 'fitness', createdAt: record.createdAt };
+                D.timeBlocks[record.date].push(block);
+                record.calendarBlockId = block.id;
+            }
+            Object.assign(block, { start: record.start, end: record.end, desc: record.title, fitnessId: record.id, fitnessSnapshot: { title: record.title, type: record.type, link: record.link }, source: 'fitness', category: 'fitness', status: record.status, actualOutcome: record.actualMinutes ? `实际完成 ${record.actualMinutes} 分钟` : '', notes: [record.feeling, record.notes].filter(Boolean).join('；'), updatedAt: record.updatedAt });
+            D.timeBlocks[record.date].sort((a, b) => a.start.localeCompare(b.start));
+        }
+
+        function resetFitnessForm() {
+            document.getElementById('fitness-form').reset();
+            document.getElementById('fitness-edit-id').value = '';
+            document.getElementById('fitness-date').value = getTodayStr();
+            document.getElementById('fitness-status').value = 'planned';
+            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-calendar-plus-o mr-2"></i>保存并同步到时间日历';
+            document.getElementById('btn-cancel-fitness-edit').classList.add('hidden');
+        }
+
+        function readFitnessForm() {
+            const values = {
+                title: document.getElementById('fitness-title').value.trim(), date: document.getElementById('fitness-date').value,
+                start: document.getElementById('fitness-start').value, end: document.getElementById('fitness-end').value,
+                plannedMinutes: Number(document.getElementById('fitness-planned-minutes').value) || 0,
+                actualMinutes: Number(document.getElementById('fitness-actual-minutes').value) || 0,
+                type: document.getElementById('fitness-type').value, link: document.getElementById('fitness-link').value.trim(),
+                status: document.getElementById('fitness-status').value, feeling: document.getElementById('fitness-feeling').value.trim(), notes: document.getElementById('fitness-notes').value.trim()
+            };
+            if (!values.plannedMinutes && values.start && values.end) values.plannedMinutes = getDurationMinutes(values.start, values.end);
+            return values;
+        }
+
+        function editFitnessRecord(id) {
+            const record = D.fitnessData.records.find(item => item.id === id);
+            if (!record) return;
+            document.getElementById('fitness-edit-id').value = record.id;
+            ['title', 'date', 'start', 'end', 'type', 'link', 'status', 'feeling', 'notes'].forEach(key => { document.getElementById(`fitness-${key}`).value = record[key] || ''; });
+            document.getElementById('fitness-planned-minutes').value = record.plannedMinutes || '';
+            document.getElementById('fitness-actual-minutes').value = record.actualMinutes || '';
+            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-save mr-2"></i>保存修改并同步日历';
+            document.getElementById('btn-cancel-fitness-edit').classList.remove('hidden');
+            document.getElementById('fitness-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderFitness() {
+            ensureRootData();
+            const stats = calculateFitnessStats();
+            document.getElementById('fitness-stat-week-count').textContent = `${stats.weekCount} 次`;
+            document.getElementById('fitness-stat-week-minutes').textContent = `${stats.totalMinutes} 分钟`;
+            document.getElementById('fitness-stat-average').textContent = `${stats.average} 分钟`;
+            document.getElementById('fitness-stat-month-count').textContent = `${stats.monthCount} 次`;
+            document.getElementById('fitness-stat-types').textContent = Object.entries(stats.types).sort((a, b) => b[1] - a[1]).map(([type, count]) => `${type} ${count} 次`).join(' · ') || '暂无记录';
+            document.getElementById('fitness-stat-streak').textContent = `${stats.streak} 天（不作目标）`;
+            document.getElementById('fitness-stat-time').textContent = stats.topPeriod;
+            const list = document.getElementById('fitness-record-list');
+            const records = [...D.fitnessData.records].sort((a, b) => `${b.date} ${b.start}`.localeCompare(`${a.date} ${a.start}`));
+            list.innerHTML = records.map(record => {
+                const statusClass = ['completed', 'partial'].includes(record.status) ? 'bg-success/15 text-green-700' : ['not_completed', 'skipped'].includes(record.status) ? 'bg-gray-100 text-gray-500' : 'bg-primary/10 text-primary';
+                return `<div class="p-4 flex flex-col md:flex-row md:items-center gap-3">
+                    <div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black text-textmain">${escapeHtml(record.title)}</span><span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(FITNESS_STATUS_LABELS[record.status] || record.status)}</span><span class="bg-success/10 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(record.type)}</span></div><div class="text-xs text-textmuted mt-2">${escapeHtml(record.date)}${record.start && record.end ? ` · ${escapeHtml(record.start)}–${escapeHtml(record.end)}` : ''} · 计划 ${record.plannedMinutes || 0} 分钟 · 实际 ${record.actualMinutes || 0} 分钟</div>${record.feeling ? `<div class="text-xs text-textmain mt-1">身体感受：${escapeHtml(record.feeling)}</div>` : ''}</div>
+                    <div class="flex gap-2 flex-shrink-0">${record.link ? `<a href="${escapeHtml(record.link)}" target="_blank" rel="noopener noreferrer" class="bg-primary/10 text-primary px-3 py-2 rounded-lg text-xs font-bold">跟练链接 <i class="fa fa-external-link ml-1"></i></a>` : ''}<button class="edit-fitness bg-gray-100 text-textmain px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}">编辑</button><button class="delete-fitness border border-danger/40 text-danger px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}">删除</button></div>
+                </div>`;
+            }).join('');
+            document.getElementById('fitness-empty-msg').classList.toggle('hidden', records.length > 0);
+            list.querySelectorAll('.edit-fitness').forEach(button => button.addEventListener('click', () => editFitnessRecord(button.dataset.id)));
+            list.querySelectorAll('.delete-fitness').forEach(button => button.addEventListener('click', () => {
+                const record = D.fitnessData.records.find(item => item.id === button.dataset.id);
+                if (!record || !confirm(`删除健身记录「${record.title}」及其关联日历时间块？`)) return;
+                if (record.calendarBlockId) D.timeBlocks[record.date] = (D.timeBlocks[record.date] || []).filter(block => block.id !== record.calendarBlockId);
+                D.fitnessData.records = D.fitnessData.records.filter(item => item.id !== record.id);
+                saveData(); renderFitness(); refreshScheduleViews(record.date);
+            }));
+        }
+
+        function downloadTextFile(filename, content, type) {
+            const url = URL.createObjectURL(new Blob([content], { type }));
+            const link = document.createElement('a'); link.href = url; link.download = filename; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+        }
+
+        function markdownCell(value) { return String(value ?? '').replaceAll('|', '\\|').replaceAll('\n', '<br>'); }
+
+        function exportFitnessWeekMarkdown() {
+            const stats = calculateFitnessStats();
+            const records = D.fitnessData.records.filter(record => record.date >= stats.week.start && record.date <= stats.week.end).sort((a, b) => `${a.date} ${a.start}`.localeCompare(`${b.date} ${b.start}`));
+            const calendarRows = records.filter(record => record.calendarBlockId).map(record => `| ${record.date} | ${record.start || '—'}–${record.end || '—'} | ${markdownCell(record.title)} | ${markdownCell(record.title)} |`).join('\n') || '| — | — | 本周无关联时间块 | — |';
+            const dailyRows = records.map(record => `| ${record.date} | ${markdownCell(record.title)} | ${markdownCell(record.type)} | ${record.plannedMinutes || 0} | ${record.actualMinutes || 0} | ${markdownCell(FITNESS_STATUS_LABELS[record.status] || record.status)} | ${markdownCell(record.feeling)} | ${markdownCell(record.notes)} |`).join('\n') || '| — | 本周暂无记录 | — | 0 | 0 | — | — | — |';
+            const markdown = `# 本周健身复盘\n\n> 周期：${stats.week.start} 至 ${stats.week.end}\n\n## 1. 本周概览\n- 本周运动次数：${stats.weekCount}\n- 本周总运动时长：${stats.totalMinutes} 分钟\n- 平均每次时长：${stats.average} 分钟\n- 主要运动类型：${stats.topType}\n- 最常运动时间段：${stats.topPeriod}\n\n## 2. 每日记录\n| 日期 | 运动内容 | 类型 | 计划时长 | 实际时长 | 完成状态 | 身体感受 | 备注 |\n|---|---|---|---:|---:|---|---|---|\n${dailyRows}\n\n## 3. 关联日历记录\n| 日期 | 时间段 | 日历标题 | 关联健身记录 |\n|---|---|---|---|\n${calendarRows}\n\n## 4. 本周观察\n- 哪些安排比较容易完成：\n- 哪些安排容易跳过：\n- 身体状态变化：\n- 下周可以调整的地方：\n`;
+            downloadTextFile(`fitness-weekly-review-${stats.week.start}.md`, markdown, 'text/markdown;charset=utf-8');
+        }
+
+        function exportFitnessCsv() {
+            const headers = ['日期','健身标题','计划开始','计划结束','计划时长','实际时长','运动类型','跟练链接','完成状态','身体感受','备注','关联日历时间块'];
+            const quote = value => `"${String(value ?? '').replaceAll('"', '""')}"`;
+            const rows = D.fitnessData.records.map(record => [record.date,record.title,record.start,record.end,record.plannedMinutes,record.actualMinutes,record.type,record.link,FITNESS_STATUS_LABELS[record.status] || record.status,record.feeling,record.notes,record.calendarBlockId || ''].map(quote).join(','));
+            downloadTextFile(`fitness-data-${getTodayStr()}.csv`, `\uFEFF${headers.map(quote).join(',')}\n${rows.join('\n')}`, 'text/csv;charset=utf-8');
+        }
+
+        function initFitness() {
+            resetFitnessForm();
+            document.getElementById('fitness-form')?.addEventListener('submit', event => {
+                event.preventDefault();
+                const values = readFitnessForm();
+                if (!values.title || !values.date) return;
+                if ((values.start && !values.end) || (!values.start && values.end)) { alert('如需同步到时间日历，请同时填写开始与结束时间。'); return; }
+                if (values.start && values.end && values.end <= values.start) { alert('结束时间需要晚于开始时间。'); return; }
+                const editId = document.getElementById('fitness-edit-id').value;
+                let record = D.fitnessData.records.find(item => item.id === editId);
+                const previousDate = record?.date || null;
+                if (!record) { record = normalizeFitnessRecord({ id: `fit_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, createdAt: new Date().toISOString() }); D.fitnessData.records.push(record); }
+                Object.assign(record, values, { updatedAt: new Date().toISOString() });
+                syncFitnessCalendar(record, previousDate);
+                saveData(); resetFitnessForm(); renderFitness(); refreshScheduleViews(record.date); if (previousDate && previousDate !== record.date) refreshScheduleViews(previousDate);
+            });
+            document.getElementById('btn-cancel-fitness-edit')?.addEventListener('click', resetFitnessForm);
+            document.getElementById('btn-export-fitness-week')?.addEventListener('click', exportFitnessWeekMarkdown);
+            document.getElementById('btn-export-fitness-csv')?.addEventListener('click', exportFitnessCsv);
+            renderFitness();
         }
 
         // ================= 成就系统 =================
@@ -3054,7 +3221,7 @@
         }
 
         function renderAchievements() {
-            ['focus', 'routine', 'resist', 'habit', 'egg'].forEach(cat => {
+            ['focus', 'routine', 'fitness', 'habit', 'egg'].forEach(cat => {
                 const el = document.getElementById(`ach-grid-${cat}`);
                 if (el) el.innerHTML = '';
             });
@@ -3104,7 +3271,7 @@
             const labels = [];
             const rateData = [];
             const durationData = [];
-            const phoneData = [];
+            const fitnessData = [];
             const habitData = [];
 
             let mCount = 0;
@@ -3159,7 +3326,7 @@
                 (D.taskData[d] || []).forEach(t => (focusM += t.duration));
                 durationData.push((focusM / 60).toFixed(1));
 
-                phoneData.push(D.phoneResistData.records[d] ? D.phoneResistData.records[d].count : 0);
+                fitnessData.push(D.fitnessData.records.filter(record => record.date === d && ['completed', 'partial'].includes(record.status)).reduce((sum, record) => sum + record.actualMinutes, 0));
 
                 const totHabits = D.habitConfig.length;
                 let doneHabits = 0;
@@ -3217,12 +3384,12 @@
                 options: { ...chartOpt, scales: { x: xAxesOpt, y: { beginAtZero: true } } }
             });
 
-            if (charts.phone) charts.phone.destroy();
-            charts.phone = new Chart(document.getElementById('chart-phone-trend').getContext('2d'), {
+            if (charts.fitness) charts.fitness.destroy();
+            charts.fitness = new Chart(document.getElementById('chart-fitness-trend').getContext('2d'), {
                 type: 'line',
                 data: {
                     labels,
-                    datasets: [{ data: phoneData, borderColor: '#e0a2a2', backgroundColor: 'rgba(224, 162, 162, 0.1)', fill: true, tension: 0.4 }]
+                    datasets: [{ data: fitnessData, borderColor: '#71a784', backgroundColor: 'rgba(166, 203, 181, 0.2)', fill: true, tension: 0.4 }]
                 },
                 options: { ...chartOpt, scales: { x: xAxesOpt, y: { beginAtZero: true } } }
             });
@@ -3261,7 +3428,7 @@
             initTasks();
             initHabits();
             initJournal();
-            initPhone();
+            initFitness();
             renderAchievements();
             initStats();
             updateSidebar();
