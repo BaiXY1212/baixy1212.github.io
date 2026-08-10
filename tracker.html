@@ -350,19 +350,21 @@
                         <i class="fa fa-tasks mr-3 text-secondary text-3xl"></i>深度专注与日程
                     </h2>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        <div class="lg:col-span-5 space-y-6">
+                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8">
+                        <div class="xl:col-span-6 space-y-6 min-w-0">
                             <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
                                 <h3 class="text-lg font-bold text-textmain mb-4 flex items-center"><i class="fa fa-list-ul text-secondary mr-2"></i>今日任务清单</h3>
-                                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 mb-3">
-                                    <input type="text" id="new-todo-input" placeholder="输入新任务..." class="sm:col-span-6 px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
-                                    <select id="new-todo-type" class="sm:col-span-3 px-2 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="other">Other</option></select>
-                                    <select id="new-todo-exercise-type" class="hidden sm:col-span-3 px-2 py-2 bg-white border border-success/40 rounded-lg text-sm font-bold"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>散步</option><option>腰腹</option><option>其他</option></select>
-                                    <button id="btn-add-todo" class="sm:col-span-3 bg-secondary text-white px-4 py-2 rounded-lg font-bold shadow-sm">添加</button>
+                                <div class="space-y-2 mb-3">
+                                    <input type="text" id="new-todo-input" placeholder="输入新任务..." class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
+                                    <div class="grid grid-cols-2 sm:flex gap-2 items-stretch">
+                                        <select id="new-todo-type" class="sm:w-32 min-w-0 px-2 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="other">Other</option></select>
+                                        <select id="new-todo-exercise-type" class="hidden sm:w-32 min-w-0 px-2 py-2 bg-white border border-success/40 rounded-lg text-sm font-bold"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>散步</option><option>腰腹</option><option>其他</option></select>
+                                        <button id="btn-show-fitness-plans" class="text-xs font-bold text-success bg-success/10 hover:bg-success hover:text-white px-3 py-2 rounded-lg sm:ml-auto whitespace-nowrap"><i class="fa fa-plus mr-1"></i>从健身计划加入</button>
+                                        <button id="btn-add-todo" class="bg-secondary text-white px-5 py-2 rounded-lg font-bold shadow-sm whitespace-nowrap">添加</button>
+                                    </div>
                                 </div>
-                                <button id="btn-show-fitness-plans" class="text-xs font-bold text-success bg-success/10 hover:bg-success hover:text-white px-3 py-2 rounded-lg mb-3"><i class="fa fa-plus mr-1"></i>从健身计划加入</button>
                                 <div id="fitness-plan-picker" class="hidden bg-white border border-success/20 rounded-xl p-3 mb-3"><div id="fitness-plan-picker-list" class="space-y-2 max-h-40 overflow-y-auto"></div><button id="btn-add-selected-fitness-plans" class="mt-3 bg-success text-white px-3 py-2 rounded-lg text-xs font-bold">加入今日</button></div>
-                                <div id="todo-list-container" class="space-y-2 max-h-[250px] overflow-y-auto pr-2"></div>
+                                <div id="todo-list-container" class="space-y-2 max-h-[360px] overflow-y-auto pr-1"></div>
                             </div>
 
                             <div id="current-task-container" class="bg-white border-2 border-secondary rounded-2xl p-6 hidden shadow-[0_0_20px_rgba(187,174,204,0.3)]">
@@ -391,14 +393,14 @@
                             </div>
                         </div>
 
-                        <div class="lg:col-span-7">
+                        <div class="xl:col-span-6 min-w-0">
                             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm min-h-full">
                                 <h3 class="text-xl font-black text-textmain mb-4 flex items-center border-b border-gray-50 pb-4"><i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注与活动时间线</h3>
-                                <div class="grid grid-cols-2 xl:grid-cols-4 gap-2 mb-4">
-                                    <div class="bg-gray-50 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">今日已记录</div><div id="activity-stat-total" class="font-black text-textmain mt-1">0m</div></div>
-                                    <div class="bg-secondary/10 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">Deep Focus</div><div id="activity-stat-deep" class="font-black text-secondary mt-1">0m</div></div>
-                                    <div class="bg-success/10 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">今日运动</div><div id="activity-stat-exercise" class="font-black text-success mt-1">0m</div></div>
-                                    <div class="bg-primary/10 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">其他活动</div><div id="activity-stat-other" class="font-black text-primary mt-1">0m</div></div>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+                                    <div class="bg-gray-50 border border-gray-100 rounded-xl px-3 py-3"><div id="activity-stat-total" class="text-xl font-black text-textmain leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">今日已记录</div></div>
+                                    <div class="bg-secondary/10 border border-secondary/10 rounded-xl px-3 py-3"><div id="activity-stat-deep" class="text-xl font-black text-secondary leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">Deep Focus</div></div>
+                                    <div class="bg-success/10 border border-success/10 rounded-xl px-3 py-3"><div id="activity-stat-exercise" class="text-xl font-black text-success leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">今日运动</div></div>
+                                    <div class="bg-primary/10 border border-primary/10 rounded-xl px-3 py-3"><div id="activity-stat-other" class="text-xl font-black text-primary leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">其他活动</div></div>
                                 </div>
                                 <button id="btn-toggle-quick-activity" class="mb-4 text-sm font-bold text-secondary bg-secondary/10 hover:bg-secondary hover:text-white px-4 py-2 rounded-lg transition-colors"><i class="fa fa-plus mr-1"></i>快速记录活动</button>
                                 <form id="quick-activity-form" class="hidden bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5">
@@ -2831,10 +2833,10 @@
             const div = document.createElement('div');
             div.className = `bg-white p-3 rounded-xl border ${archived ? 'border-success/30 opacity-80' : 'border-gray-100'} shadow-sm group`;
             div.innerHTML = `
-                <div class="flex items-start gap-3">
+                        <div class="flex items-start gap-3 min-w-0">
                     ${archived ? '<i class="fa fa-archive text-success mt-1"></i>' : `<input type="checkbox" class="archive-backlog-check appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-success checked:border-success cursor-pointer mt-0.5 flex-shrink-0" data-id="${item.id}" title="完成并归档">`}
                     <button class="open-backlog-detail flex-1 min-w-0 text-left" data-id="${item.id}">
-                        <div class="font-bold text-sm text-textmain break-words">${escapeHtml(item.name)}</div>
+                        <div class="font-bold text-sm leading-5 text-textmain break-normal [overflow-wrap:normal]" title="${escapeHtml(item.name)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;">${escapeHtml(item.name)}</div>
                         <div class="flex flex-wrap gap-1.5 mt-2 text-[10px] font-bold">
                             <span class="bg-secondary/10 text-secondary px-2 py-0.5 rounded">${escapeHtml(statusLabels[item.status] || item.status)}</span>
                             <span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">优先级 ${escapeHtml(priorityLabels[item.priority] || item.priority)}</span>
@@ -2900,10 +2902,12 @@
                 const div = document.createElement('div');
                 div.className = `bg-white p-3 rounded-xl border ${activity.status === 'in_progress' ? 'border-secondary/50 shadow-md' : 'border-gray-100 shadow-sm'} group`;
                 div.innerHTML = `
-                    <div class="flex items-start gap-3">
-                        <input type="checkbox" class="todo-chk appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary cursor-pointer mt-0.5 flex-shrink-0" ${activity.status === 'completed' ? 'checked' : ''} data-id="${activity.id}">
-                        <div class="flex-1 min-w-0"><div class="font-bold text-sm ${activity.status === 'completed' ? 'line-through text-gray-400' : 'text-textmain'} break-words">${escapeHtml(activity.title)}</div><div class="flex flex-wrap gap-1.5 mt-1.5 text-[10px] font-bold"><span class="${typeClass} px-2 py-0.5 rounded">${typeLabels[activity.activity_type] || activity.activity_type}</span>${detail?.exercise_type ? `<span class="bg-success/10 text-green-700 px-2 py-0.5 rounded">${escapeHtml(detail.exercise_type)}</span>` : ''}<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${escapeHtml(statusLabel)}</span>${activity.planned_duration ? `<span class="bg-primary/10 text-primary px-2 py-0.5 rounded">计划 ${activity.planned_duration}m</span>` : ''}</div></div>
-                        <div class="flex flex-wrap justify-end gap-1 flex-shrink-0 max-w-[145px]">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 min-w-0">
+                        <div class="flex items-start gap-3 flex-1 min-w-0">
+                            <input type="checkbox" class="todo-chk appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary cursor-pointer mt-0.5 flex-shrink-0" ${activity.status === 'completed' ? 'checked' : ''} data-id="${activity.id}">
+                            <div class="flex-1 min-w-0"><button type="button" class="todo-title-expand block w-full text-left font-bold text-sm leading-5 ${activity.status === 'completed' ? 'line-through text-gray-400' : 'text-textmain'} break-normal [overflow-wrap:normal]" title="${escapeHtml(activity.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;" aria-expanded="false">${escapeHtml(activity.title)}</button><div class="flex flex-wrap gap-1.5 mt-1.5 text-[10px] font-bold"><span class="${typeClass} px-2 py-0.5 rounded">${typeLabels[activity.activity_type] || activity.activity_type}</span>${detail?.exercise_type ? `<span class="bg-success/10 text-green-700 px-2 py-0.5 rounded">${escapeHtml(detail.exercise_type)}</span>` : ''}<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${escapeHtml(statusLabel)}</span>${activity.planned_duration ? `<span class="bg-primary/10 text-primary px-2 py-0.5 rounded">计划 ${activity.planned_duration}m</span>` : ''}</div></div>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-end gap-1 flex-shrink-0 sm:pl-2">
                             ${activity.status === 'in_progress' ? `<button class="todo-finish bg-success text-white px-2.5 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}"><i class="fa fa-stop mr-1"></i>完成</button><button class="todo-pause bg-gray-100 text-gray-600 w-7 h-7 rounded-lg" data-id="${activity.id}" title="暂停"><i class="fa fa-pause text-xs"></i></button>` : activity.status !== 'completed' ? `<button class="todo-play ${activity.activity_type === 'exercise' ? 'bg-success/15 text-green-700 hover:bg-success' : 'bg-secondary/10 text-secondary hover:bg-secondary'} hover:text-white px-2.5 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}"><i class="fa fa-play mr-1"></i>${activity.status === 'paused' ? '继续' : '开始'}</button>` : ''}
                             ${activity.activity_type === 'exercise' ? `<button class="todo-fitness-detail text-green-700 bg-success/10 hover:bg-success hover:text-white px-2 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}" title="查看 / 补充健身详情"><i class="fa fa-heartbeat"></i></button>` : ''}
                             <button class="todo-edit-type text-gray-400 hover:text-white hover:bg-gray-500 w-7 h-7 rounded-lg" data-id="${activity.id}" title="编辑活动类型"><i class="fa fa-tag text-xs"></i></button>
@@ -2914,6 +2918,13 @@
                 `;
                 container.appendChild(div);
             });
+
+            container.querySelectorAll('.todo-title-expand').forEach(title => title.addEventListener('click', () => {
+                const expanded = title.getAttribute('aria-expanded') === 'true';
+                title.setAttribute('aria-expanded', String(!expanded));
+                title.style.webkitLineClamp = expanded ? '2' : 'unset';
+                title.style.display = expanded ? '-webkit-box' : 'block';
+            }));
 
             container.querySelectorAll('.todo-chk').forEach(chk => {
                 chk.addEventListener('change', function () {
@@ -3019,17 +3030,19 @@
                     div.className = 'relative group';
                     div.innerHTML = `
                         <div class="absolute -left-[33px] bg-secondary w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm mt-1.5 z-10 group-hover:scale-125 transition-transform"></div>
-                        <div class="bg-gray-50 hover:bg-white p-4 pr-20 rounded-xl border border-gray-100 shadow-sm transition-colors relative">
-                            <div class="text-xs font-bold text-textmuted mb-1 flex flex-wrap items-center gap-2">
+                        <div class="bg-gray-50 hover:bg-white p-4 pr-28 rounded-xl border border-gray-100 shadow-sm transition-colors relative min-h-[104px]">
+                            <div class="text-xs font-bold text-textmuted mb-2 flex flex-wrap items-center gap-2">
                                 <span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${times.start}–${times.end}${times.isActual ? '' : '（计划）'}</span>
-                                <span class="${typeClasses[item.activity_type] || typeClasses.other} px-2 py-0.5 rounded">${typeLabels[item.activity_type] || 'Other'}</span>
-                                ${item.focus_mode === 'deep_focus' ? '<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Deep Focus</span>' : ''}
                                 <span class="text-gray-600 bg-gray-100 px-2 py-0.5 rounded">${fmt(duration)}</span>
                                 <span class="text-gray-500 bg-gray-100 px-2 py-0.5 rounded">${escapeHtml(item.status || 'planned')}</span>
+                            </div>
+                            <div class="font-black text-sm leading-5 text-textmain break-normal [overflow-wrap:normal]" title="${escapeHtml(item.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;">${escapeHtml(item.title)}</div>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-2 text-[10px] font-bold">
+                                <span class="${typeClasses[item.activity_type] || typeClasses.other} px-2 py-0.5 rounded">${typeLabels[item.activity_type] || 'Other'}</span>
+                                ${item.focus_mode === 'deep_focus' ? '<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Deep Focus</span>' : ''}
                                 ${item.backlog_id ? `<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Backlog</span>` : ''}
                             </div>
-                            <div class="font-black text-textmain break-words">${escapeHtml(item.title)}</div>
-                            <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
                                 <button class="view-schedule-history text-gray-400 hover:text-white hover:bg-primary w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="历史详情"><i class="fa fa-info-circle"></i></button>
                                 <button class="edit-schedule text-gray-400 hover:text-white hover:bg-gray-500 w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="编辑"><i class="fa fa-pencil"></i></button>
                                 <button class="delete-schedule text-gray-400 hover:text-white hover:bg-danger w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="删除"><i class="fa fa-trash"></i></button>
