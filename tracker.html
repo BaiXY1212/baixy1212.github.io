@@ -383,17 +383,33 @@
                                         <input type="time" id="manual-end" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none text-sm font-bold focus:ring-2 focus:ring-secondary" />
                                     </div>
                                 </div>
-                                <button id="btn-manual-log" class="w-full bg-gray-100 text-textmain hover:bg-secondary hover:text-white py-2 rounded-lg font-bold transition-colors">添加到日程表</button>
+                                <button id="btn-manual-log" class="w-full bg-gray-100 text-textmain hover:bg-secondary hover:text-white py-2 rounded-lg font-bold transition-colors">记录为 Deep Focus Activity</button>
                             </div>
                         </div>
 
                         <div class="lg:col-span-7">
                             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm min-h-full">
-                                <h3 class="text-xl font-black text-textmain mb-6 flex items-center border-b border-gray-50 pb-4">
-                                    <i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注日程表
-                                </h3>
+                                <h3 class="text-xl font-black text-textmain mb-4 flex items-center border-b border-gray-50 pb-4"><i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注与活动时间线</h3>
+                                <div class="grid grid-cols-2 xl:grid-cols-4 gap-2 mb-4">
+                                    <div class="bg-gray-50 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">今日已记录</div><div id="activity-stat-total" class="font-black text-textmain mt-1">0m</div></div>
+                                    <div class="bg-secondary/10 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">Deep Focus</div><div id="activity-stat-deep" class="font-black text-secondary mt-1">0m</div></div>
+                                    <div class="bg-success/10 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">今日运动</div><div id="activity-stat-exercise" class="font-black text-success mt-1">0m</div></div>
+                                    <div class="bg-primary/10 rounded-xl p-3"><div class="text-[10px] font-bold text-textmuted">其他活动</div><div id="activity-stat-other" class="font-black text-primary mt-1">0m</div></div>
+                                </div>
+                                <button id="btn-toggle-quick-activity" class="mb-4 text-sm font-bold text-secondary bg-secondary/10 hover:bg-secondary hover:text-white px-4 py-2 rounded-lg transition-colors"><i class="fa fa-plus mr-1"></i>快速记录活动</button>
+                                <form id="quick-activity-form" class="hidden bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <input id="quick-activity-title" required placeholder="活动名称" class="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                                        <select id="quick-activity-type" class="px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="social">Social</option><option value="commute">Commute</option><option value="rest">Rest</option><option value="other">Other</option></select>
+                                        <input type="time" id="quick-activity-start" required class="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                                        <input type="time" id="quick-activity-end" required class="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+                                        <label class="flex items-center gap-2 text-sm font-bold text-textmain"><input type="checkbox" id="quick-activity-deep" class="w-4 h-4 accent-secondary" />这是 Deep Focus</label>
+                                        <div id="quick-exercise-type-wrap" class="hidden"><select id="quick-exercise-type" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>散步</option><option>其他</option></select></div>
+                                    </div>
+                                    <button type="submit" class="mt-3 bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold">保存活动</button>
+                                </form>
                                 <div id="today-tasks-timeline" class="relative border-l-2 border-secondary/20 ml-4 pl-6 space-y-6"></div>
-                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今日暂无专注记录，快去开启心流吧！</div>
+                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今天还没有时间活动记录。</div>
                             </div>
                         </div>
                     </div>
@@ -478,10 +494,13 @@
                     </div>
 
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                        <div class="bg-success/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">今日运动次数</div><div id="fitness-stat-today-count" class="text-2xl font-black text-success mt-1">0 次</div></div>
+                        <div class="bg-primary/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">今日运动时长</div><div id="fitness-stat-today-minutes" class="text-2xl font-black text-primary mt-1">0 分钟</div></div>
                         <div class="bg-success/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本周运动次数</div><div id="fitness-stat-week-count" class="text-2xl font-black text-success mt-1">0 次</div></div>
                         <div class="bg-primary/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本周总时长</div><div id="fitness-stat-week-minutes" class="text-2xl font-black text-primary mt-1">0 分钟</div></div>
                         <div class="bg-secondary/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">平均每次</div><div id="fitness-stat-average" class="text-2xl font-black text-secondary mt-1">0 分钟</div></div>
                         <div class="bg-accent/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本月运动次数</div><div id="fitness-stat-month-count" class="text-2xl font-black text-accent mt-1">0 次</div></div>
+                        <div class="bg-gray-50 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本周活跃天数</div><div id="fitness-stat-active-days" class="text-2xl font-black text-textmain mt-1">0 天</div></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-7 text-sm">
                         <div class="bg-gray-50 rounded-xl p-4"><span class="font-bold text-textmuted">运动类型分布</span><div id="fitness-stat-types" class="font-bold text-textmain mt-2">暂无记录</div></div>
@@ -497,6 +516,8 @@
                             <div><label class="block text-xs font-bold text-textmuted mb-1">运动类型</label><select id="fitness-type" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>其他</option></select></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">计划开始</label><input type="time" id="fitness-start" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">计划结束</label><input type="time" id="fitness-end" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">实际开始（可后补）</label><input type="time" id="fitness-actual-start" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">实际结束（可后补）</label><input type="time" id="fitness-actual-end" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">计划时长（分钟）</label><input type="number" min="0" step="5" id="fitness-planned-minutes" placeholder="20" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">实际时长（分钟）</label><input type="number" min="0" step="1" id="fitness-actual-minutes" placeholder="完成后填写" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="fitness-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="completed">完成</option><option value="partial">部分完成</option><option value="not_completed">未完成</option><option value="skipped">跳过</option></select></div>
@@ -504,7 +525,7 @@
                             <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">身体感受</label><textarea id="fitness-feeling" rows="2" placeholder="肩颈紧、精神好、太累……" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
                             <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">备注 / 未完成原因</label><textarea id="fitness-notes" rows="2" placeholder="难度、是否想复练，或温和记录跳过原因" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
                         </div>
-                        <div class="flex flex-wrap gap-2 mt-4"><button type="submit" id="btn-save-fitness" class="bg-success text-white px-5 py-2.5 rounded-lg font-bold"><i class="fa fa-calendar-plus-o mr-2"></i>保存并同步到时间日历</button><button type="button" id="btn-cancel-fitness-edit" class="hidden bg-white border border-gray-200 text-textmain px-4 py-2.5 rounded-lg font-bold">取消编辑</button></div>
+                        <div class="flex flex-wrap gap-2 mt-4"><button type="submit" id="btn-save-fitness" class="bg-success text-white px-5 py-2.5 rounded-lg font-bold"><i class="fa fa-calendar-plus-o mr-2"></i>保存并同步到今日时间线</button><button type="button" id="btn-cancel-fitness-edit" class="hidden bg-white border border-gray-200 text-textmain px-4 py-2.5 rounded-lg font-bold">取消编辑</button></div>
                     </form>
 
                     <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
@@ -639,7 +660,13 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="history-block-status" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="in_progress">进行中</option><option value="completed">已完成</option><option value="partial">部分完成</option><option value="not_completed">未完成</option><option value="skipped">跳过</option><option value="cancelled">未执行 / 取消</option></select></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">活动类型</label><select id="history-block-type" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="social">Social</option><option value="commute">Commute</option><option value="rest">Rest</option><option value="other">Other</option></select></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">专注模式</label><select id="history-block-focus-mode" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="deep_focus">Deep Focus</option><option value="normal">Normal</option><option value="none">None</option></select></div>
                     <div></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">计划开始</label><input type="time" id="history-block-planned-start" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">计划结束</label><input type="time" id="history-block-planned-end" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">实际开始</label><input type="time" id="history-block-actual-start" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">实际结束</label><input type="time" id="history-block-actual-end" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
                     <div><label class="block text-xs font-bold text-textmuted mb-1">实际完成情况</label><textarea id="history-block-outcome" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
                     <div><label class="block text-xs font-bold text-textmuted mb-1">备注 / 手动补录内容</label><textarea id="history-block-notes" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
                 </div>
@@ -668,6 +695,8 @@
             'checkinData',
             'phoneResistData',
             'fitnessData',
+            'activityData',
+            'exerciseDetails',
             'taskData',
             'journalData',
             'timeBlocks',
@@ -737,6 +766,73 @@
             item.archivedAt = item.archived ? (item.archivedAt || item.updatedAt) : null;
             if (!Array.isArray(item.history)) item.history = [];
             return item;
+        }
+
+        const ACTIVITY_TYPES = ['research', 'study', 'work', 'exercise', 'life', 'social', 'commute', 'rest', 'other'];
+        const FOCUS_MODES = ['deep_focus', 'normal', 'none'];
+        const ACTIVITY_STATUSES = ['planned', 'in_progress', 'completed', 'partial', 'not_completed', 'skipped', 'cancelled'];
+
+        function normalizeActivity(activity) {
+            const now = new Date().toISOString();
+            activity.id = activity.id || `act_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+            activity.date = activity.date || getTodayStr();
+            activity.title = activity.title || '未命名活动';
+            activity.activity_type = ACTIVITY_TYPES.includes(activity.activity_type) ? activity.activity_type : 'other';
+            activity.focus_mode = FOCUS_MODES.includes(activity.focus_mode) ? activity.focus_mode : 'none';
+            activity.planned_start = activity.planned_start || '';
+            activity.planned_end = activity.planned_end || '';
+            activity.actual_start = activity.actual_start || '';
+            activity.actual_end = activity.actual_end || '';
+            activity.planned_duration = Number(activity.planned_duration) || (activity.planned_start && activity.planned_end ? getDurationMinutes(activity.planned_start, activity.planned_end) : 0);
+            activity.actual_duration = Number(activity.actual_duration) || (activity.actual_start && activity.actual_end ? getDurationMinutes(activity.actual_start, activity.actual_end) : 0);
+            activity.status = ACTIVITY_STATUSES.includes(activity.status) ? activity.status : 'planned';
+            activity.source = activity.source || 'manual';
+            activity.backlog_id = activity.backlog_id || activity.backlogId || null;
+            activity.backlogSnapshot = activity.backlogSnapshot || null;
+            activity.todoId = activity.todoId || null;
+            activity.todoSnapshot = activity.todoSnapshot || null;
+            activity.note = activity.note || activity.notes || '';
+            activity.actual_outcome = activity.actual_outcome || activity.actualOutcome || '';
+            activity.createdAt = activity.createdAt || now;
+            activity.updatedAt = activity.updatedAt || activity.createdAt;
+            return activity;
+        }
+
+        function getActivityTimes(activity) {
+            if (activity.status === 'in_progress' && activity.actual_start && !activity.actual_end) {
+                const end = getTimeStr();
+                return { start: activity.actual_start, end, duration: getDurationMinutes(activity.actual_start, end), isActual: true };
+            }
+            const useActual = Boolean(activity.actual_start && activity.actual_end);
+            return {
+                start: useActual ? activity.actual_start : activity.planned_start,
+                end: useActual ? activity.actual_end : activity.planned_end,
+                duration: useActual ? activity.actual_duration : activity.planned_duration,
+                isActual: useActual
+            };
+        }
+
+        function getActivitiesForDate(date) {
+            return D.activityData.records.filter(activity => activity.date === date && getActivityTimes(activity).start && getActivityTimes(activity).end);
+        }
+
+        function findActivity(id) {
+            return D.activityData.records.find(activity => activity.id === id) || null;
+        }
+
+        function createActivity(values) {
+            const activity = normalizeActivity({ ...values, id: values.id || `act_${Date.now()}_${Math.random().toString(36).slice(2, 8)}` });
+            D.activityData.records.push(activity);
+            return activity;
+        }
+
+        function getExerciseDetail(activityId, create = false) {
+            let detail = D.exerciseDetails.find(item => item.activity_id === activityId);
+            if (!detail && create) {
+                detail = { activity_id: activityId, exercise_type: '其他', video_url: '', body_feeling: '', skip_reason: '', exercise_note: '', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+                D.exerciseDetails.push(detail);
+            }
+            return detail || null;
         }
 
         function getBacklogSnapshot(item) {
@@ -838,6 +934,13 @@
                 text: 'text-green-700',
                 buttonText: 'text-green-700'
             },
+            other: {
+                label: '其他',
+                border: 'border-gray-400',
+                bgSoft: 'bg-gray-100',
+                text: 'text-gray-600',
+                buttonText: 'text-gray-500'
+            },
             waste: {
                 label: '摸鱼',
                 border: 'border-danger',
@@ -926,11 +1029,11 @@
                 icon: 'fa-cogs',
                 color: 'accent',
                 condition: d => {
-                    const dates = Object.keys(d.timeBlocks).sort().reverse();
+                    const dates = [...new Set(d.activityData.records.map(activity => activity.date))].sort().reverse();
                     let streak = 0;
                     for (let i = 0; i < dates.length; i++) {
                         if (dates[i] !== getTodayStr(-i)) break;
-                        const hasRest = d.timeBlocks[dates[i]].some(b => ['rest', 'play'].includes(b.category));
+                        const hasRest = d.activityData.records.some(activity => activity.date === dates[i] && ['rest', 'life'].includes(activity.activity_type));
                         if (!hasRest) streak++;
                         else break;
                     }
@@ -940,21 +1043,12 @@
         ];
 
         const U = {
-            getTotalFocusMins: d => Object.values(d.taskData).flat().reduce((s, t) => s + (t.duration || 0), 0),
-            getMaxSingleFocus: d => Math.max(0, ...Object.values(d.taskData).flat().map(t => t.duration || 0)),
+            getTotalFocusMins: d => d.activityData.records.filter(activity => activity.focus_mode === 'deep_focus' && ['completed', 'partial'].includes(activity.status)).reduce((sum, activity) => sum + activity.actual_duration, 0),
+            getMaxSingleFocus: d => Math.max(0, ...d.activityData.records.filter(activity => activity.focus_mode === 'deep_focus').map(activity => activity.actual_duration || 0)),
             getDailyWorkStudyMax: d =>
                 Math.max(
                     0,
-                    ...Object.values(d.timeBlocks).map(arr =>
-                        arr
-                            .filter(b => ['focus', 'study', 'work'].includes(b.category))
-                            .reduce((s, b) => {
-                                const [sh, sm] = b.start.split(':').map(Number);
-                                const [eh, em] = b.end.split(':').map(Number);
-                                let m = eh * 60 + em - (sh * 60 + sm);
-                                return s + (m < 0 ? m + 1440 : m);
-                            }, 0)
-                    )
+                    ...[...new Set(d.activityData.records.map(activity => activity.date))].map(date => d.activityData.records.filter(activity => activity.date === date && ['research', 'study', 'work'].includes(activity.activity_type)).reduce((sum, activity) => sum + (activity.actual_duration || activity.planned_duration || 0), 0))
                 ),
             getWakeStreak: (d, h) => {
                 const dates = Object.keys(d.sleepData)
@@ -1024,6 +1118,11 @@
             if (!D.fitnessData || typeof D.fitnessData !== 'object') D.fitnessData = { records: [] };
             if (!Array.isArray(D.fitnessData.records)) D.fitnessData.records = [];
             D.fitnessData.records.forEach(normalizeFitnessRecord);
+            if (!D.activityData || typeof D.activityData !== 'object') D.activityData = { records: [], migrationVersion: 0 };
+            if (!Array.isArray(D.activityData.records)) D.activityData.records = [];
+            if (typeof D.activityData.migrationVersion !== 'number') D.activityData.migrationVersion = 0;
+            D.activityData.records.forEach(normalizeActivity);
+            if (!Array.isArray(D.exerciseDetails)) D.exerciseDetails = [];
             if (!D.taskData || typeof D.taskData !== 'object') D.taskData = {};
             if (!D.journalData || typeof D.journalData !== 'object') D.journalData = {};
             if (!D.timeBlocks || typeof D.timeBlocks !== 'object') D.timeBlocks = {};
@@ -1075,8 +1174,6 @@
             if (!Array.isArray(D.phoneResistData.records[dateStr].history)) D.phoneResistData.records[dateStr].history = [];
             if (typeof D.phoneResistData.records[dateStr].count !== 'number') D.phoneResistData.records[dateStr].count = 0;
 
-            if (!Array.isArray(D.taskData[dateStr])) D.taskData[dateStr] = [];
-            if (!Array.isArray(D.timeBlocks[dateStr])) D.timeBlocks[dateStr] = [];
             if (!D.sleepData[dateStr]) D.sleepData[dateStr] = { wake: null, wakeOk: false, sleep: null, sleepOk: false };
             if (!D.habitRecords[dateStr] || typeof D.habitRecords[dateStr] !== 'object') D.habitRecords[dateStr] = {};
             if (!D.journalData[dateStr] || typeof D.journalData[dateStr] !== 'object') D.journalData[dateStr] = {};
@@ -1087,6 +1184,8 @@
             D.checkinData = safeJSONParse(localStorage.getItem('checkinData'), {});
             D.phoneResistData = safeJSONParse(localStorage.getItem('phoneResistData'), { totalCount: 0, records: {} });
             D.fitnessData = safeJSONParse(localStorage.getItem('fitnessData'), { records: [] });
+            D.activityData = safeJSONParse(localStorage.getItem('activityData'), { records: [], migrationVersion: 0 });
+            D.exerciseDetails = safeJSONParse(localStorage.getItem('exerciseDetails'), []);
             D.taskData = safeJSONParse(localStorage.getItem('taskData'), {});
             D.journalData = safeJSONParse(localStorage.getItem('journalData'), {});
             D.timeBlocks = safeJSONParse(localStorage.getItem('timeBlocks'), {});
@@ -1097,8 +1196,9 @@
             D.todoData = safeJSONParse(localStorage.getItem('todoData'), {});
             D.longTermTodos = safeJSONParse(localStorage.getItem('longTermTodos'), []);
             ensureRootData();
-            migrateFocusRecordsToSchedule();
-            localStorage.setItem('timeBlocks', JSON.stringify(D.timeBlocks));
+            migrateLegacyRecordsToActivities();
+            localStorage.setItem('activityData', JSON.stringify(D.activityData));
+            localStorage.setItem('exerciseDetails', JSON.stringify(D.exerciseDetails));
             localStorage.setItem('longTermTodos', JSON.stringify(D.longTermTodos));
             localStorage.setItem('todoData', JSON.stringify(D.todoData));
             ensureDateDataExists(getTodayStr());
@@ -1116,7 +1216,7 @@
             });
             return {
                 format: 'baixy-life-dashboard',
-                version: 4,
+                version: 5,
                 exportedAt: new Date().toISOString(),
                 data
             };
@@ -1153,6 +1253,10 @@
                     D[k] = imported[k];
                     localStorage.setItem(k, JSON.stringify(imported[k]));
                 });
+                if (imported.activityData === undefined && (imported.taskData !== undefined || imported.timeBlocks !== undefined || imported.fitnessData !== undefined)) {
+                    localStorage.setItem('activityData', JSON.stringify({ records: [], migrationVersion: 0 }));
+                    localStorage.setItem('exerciseDetails', JSON.stringify([]));
+                }
 
                 ensureDateDataExists(getTodayStr());
                 alert('备份导入成功，页面将刷新。');
@@ -1213,7 +1317,7 @@
                 eIn.className = cd.evening.checkIn ? 'text-accent' : 'text-gray-300';
             }
             if (sbFitness) {
-                const todayFitness = D.fitnessData.records.filter(record => record.date === t);
+                const todayFitness = D.activityData.records.filter(record => record.date === t && record.activity_type === 'exercise');
                 const completed = todayFitness.filter(record => ['completed', 'partial'].includes(record.status)).length;
                 sbFitness.textContent = completed ? `${completed} 次完成` : todayFitness.length ? `${todayFitness.length} 项计划` : '未安排';
                 sbFitness.className = completed ? 'text-success' : todayFitness.length ? 'text-primary' : 'text-gray-300';
@@ -1852,134 +1956,87 @@
             }
         }
 
-        function migrateFocusRecordsToSchedule() {
+        function migrateLegacyRecordsToActivities() {
             ensureRootData();
-            Object.entries(D.taskData).forEach(([date, tasks]) => {
-                if (!Array.isArray(tasks)) return;
-                if (!Array.isArray(D.timeBlocks[date])) D.timeBlocks[date] = [];
+            if (D.activityData.migrationVersion >= 1) return;
+            const existingLegacyKeys = new Set(D.activityData.records.map(activity => activity.legacy_key).filter(Boolean));
+            const addMigrated = (legacyKey, values) => {
+                if (existingLegacyKeys.has(legacyKey)) return null;
+                const activity = createActivity({ ...values, legacy_key: legacyKey });
+                existingLegacyKeys.add(legacyKey);
+                return activity;
+            };
+            const categoryType = { focus: 'research', study: 'study', work: 'work', fitness: 'exercise', play: 'life', meal: 'life', rest: 'rest' };
 
-                tasks.forEach(task => {
-                    let block = D.timeBlocks[date].find(item => item.taskId === task.id);
-                    if (!block) {
-                        block = D.timeBlocks[date].find(item =>
-                            item.start === task.startTime &&
-                            item.end === task.endTime &&
-                            item.desc === task.name
-                        );
-                    }
-
-                    if (block) {
-                        block.taskId = task.id;
-                        block.source = block.source || 'focus';
-                        return;
-                    }
-
-                    D.timeBlocks[date].push({
-                        id: `schedule_${task.id}`,
-                        start: task.startTime,
-                        end: task.endTime,
-                        category: 'focus',
-                        desc: task.name,
-                        source: 'focus',
-                        status: task.status || 'completed',
-                        actualOutcome: task.actualOutcome || '',
-                        notes: task.notes || '',
-                        taskId: task.id,
-                        todoId: task.todoId || null,
-                        backlogId: task.backlogId || null,
-                        backlogSnapshot: task.backlogSnapshot || null,
-                        createdAt: task.createdAt || `${date}T00:00:00`,
-                        updatedAt: task.updatedAt || task.createdAt || `${date}T00:00:00`
-                    });
+            (D.fitnessData.records || []).forEach(record => {
+                normalizeFitnessRecord(record);
+                const linkedBlock = Object.values(D.timeBlocks).flat().find(block => block.fitnessId === record.id);
+                const activity = addMigrated(`fitness:${record.id}`, {
+                    id: linkedBlock?.id || record.id, date: record.date, title: record.title, activity_type: 'exercise', focus_mode: 'none',
+                    planned_start: record.start, planned_end: record.end, planned_duration: record.plannedMinutes,
+                    actual_start: ['completed', 'partial'].includes(record.status) ? record.start : '', actual_end: ['completed', 'partial'].includes(record.status) ? record.end : '', actual_duration: record.actualMinutes,
+                    status: record.status, source: 'exercise', note: record.notes, createdAt: record.createdAt, updatedAt: record.updatedAt
                 });
+                if (activity && !getExerciseDetail(activity.id)) D.exerciseDetails.push({ activity_id: activity.id, exercise_type: record.type, video_url: record.link, body_feeling: record.feeling, skip_reason: ['not_completed', 'skipped'].includes(record.status) ? record.notes : '', exercise_note: record.notes, createdAt: record.createdAt, updatedAt: record.updatedAt });
             });
+
+            Object.entries(D.taskData).forEach(([date, tasks]) => (tasks || []).forEach(task => {
+                const linkedBlock = (D.timeBlocks[date] || []).find(block => block.taskId === task.id);
+                addMigrated(`task:${task.id}`, {
+                    id: linkedBlock?.id || task.id, date, title: task.name, activity_type: 'research', focus_mode: 'deep_focus',
+                    actual_start: task.startTime, actual_end: task.endTime, actual_duration: task.duration,
+                    status: task.status || 'completed', source: task.backlogId ? 'backlog' : 'manual', backlog_id: task.backlogId || null,
+                    backlogSnapshot: task.backlogSnapshot || null, todoId: task.todoId || null, todoSnapshot: task.todoSnapshot || null,
+                    note: task.notes || '', actual_outcome: task.actualOutcome || '', createdAt: task.createdAt, updatedAt: task.updatedAt
+                });
+            }));
+
+            Object.entries(D.timeBlocks).forEach(([date, blocks]) => (blocks || []).forEach(block => {
+                if (block.taskId || block.fitnessId) return;
+                const focusMode = block.category === 'focus' || block.source === 'backlog-planned' ? 'deep_focus' : 'none';
+                addMigrated(`block:${block.id}`, {
+                    id: block.id, date, title: block.desc, activity_type: categoryType[block.category] || 'other', focus_mode: focusMode,
+                    planned_start: block.status === 'planned' ? block.start : '', planned_end: block.status === 'planned' ? block.end : '', planned_duration: block.status === 'planned' ? getDurationMinutes(block.start, block.end) : 0,
+                    actual_start: block.status === 'planned' ? '' : block.start, actual_end: block.status === 'planned' ? '' : block.end, actual_duration: block.status === 'planned' ? 0 : getDurationMinutes(block.start, block.end),
+                    status: block.status || 'planned', source: block.backlogId ? 'backlog' : 'calendar', backlog_id: block.backlogId || null,
+                    backlogSnapshot: block.backlogSnapshot || null, todoId: block.todoId || null, todoSnapshot: block.todoSnapshot || null,
+                    note: block.notes || '', actual_outcome: block.actualOutcome || '', createdAt: block.createdAt, updatedAt: block.updatedAt
+                });
+            }));
+            D.activityData.migrationVersion = 1;
         }
 
         function addFocusRecordAndSchedule(date, name, start, end, duration, context = {}) {
-            ensureDateDataExists(date);
-            const taskId = `t_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-            const scheduleId = `b_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
             const now = new Date().toISOString();
             const backlog = context.backlogId ? D.longTermTodos.find(item => item.id === context.backlogId) : null;
             const backlogSnapshot = context.backlogSnapshot || getBacklogSnapshot(backlog);
-
-            D.taskData[date].push({
-                id: taskId,
-                name,
-                startTime: start,
-                endTime: end,
-                duration,
-                status: context.status || 'completed',
-                actualOutcome: context.actualOutcome || '',
-                notes: context.notes || '',
-                source: context.source || 'focus',
-                todoId: context.todoId || null,
-                todoSnapshot: context.todoSnapshot || null,
-                backlogId: context.backlogId || null,
-                backlogSnapshot,
-                createdAt: now,
-                updatedAt: now
+            const activity = createActivity({
+                date, title: name, activity_type: context.activity_type || 'research', focus_mode: context.focus_mode || 'deep_focus',
+                actual_start: start, actual_end: end, actual_duration: duration, status: context.status || 'completed',
+                source: context.backlogId ? 'backlog' : (context.source || 'manual'), backlog_id: context.backlogId || null, backlogSnapshot,
+                todoId: context.todoId || null, todoSnapshot: context.todoSnapshot || null, note: context.notes || '', actual_outcome: context.actualOutcome || '', createdAt: now, updatedAt: now
             });
-            D.taskData[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
-
-            D.timeBlocks[date].push({
-                id: scheduleId,
-                start,
-                end,
-                category: 'focus',
-                desc: name,
-                source: context.source || 'focus',
-                status: context.status || 'completed',
-                actualOutcome: context.actualOutcome || '',
-                notes: context.notes || '',
-                taskId,
-                todoId: context.todoId || null,
-                todoSnapshot: context.todoSnapshot || null,
-                backlogId: context.backlogId || null,
-                backlogSnapshot,
-                createdAt: now,
-                updatedAt: now
-            });
-            D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
             if (context.backlogId) {
                 addBacklogHistory(context.backlogId, {
                     date,
                     type: 'focus_record',
-                    scheduleId,
-                    taskId,
+                    scheduleId: activity.id,
                     title: name,
                     start,
                     end,
                     status: context.status || 'completed'
                 });
             }
-            return { taskId, scheduleId };
+            return { activityId: activity.id, scheduleId: activity.id };
         }
 
         function addPlannedBacklogFocus(item, start, end) {
             const date = getTodayStr();
-            ensureDateDataExists(date);
             const name = item.nextAction.trim() || item.name;
             const now = new Date().toISOString();
-            const scheduleId = `b_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-            D.timeBlocks[date].push({
-                id: scheduleId,
-                start,
-                end,
-                category: 'focus',
-                desc: name,
-                source: 'backlog-planned',
-                status: 'planned',
-                actualOutcome: '',
-                notes: '',
-                backlogId: item.id,
-                backlogSnapshot: getBacklogSnapshot(item),
-                createdAt: now,
-                updatedAt: now
-            });
-            D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
-            addBacklogHistory(item.id, { date, type: 'focus_schedule', scheduleId, title: name, start, end, status: 'planned' });
-            return scheduleId;
+            const activity = createActivity({ date, title: name, activity_type: 'research', focus_mode: 'deep_focus', planned_start: start, planned_end: end, planned_duration: getDurationMinutes(start, end), status: 'planned', source: 'backlog', backlog_id: item.id, backlogSnapshot: getBacklogSnapshot(item), note: '', createdAt: now, updatedAt: now });
+            addBacklogHistory(item.id, { date, type: 'focus_schedule', scheduleId: activity.id, title: name, start, end, status: 'planned' });
+            return activity.id;
         }
 
         function refreshScheduleViews(date) {
@@ -1989,8 +2046,9 @@
         }
 
         function getRecordBacklogTitle(record) {
-            if (!record?.backlogId) return '无';
-            return D.longTermTodos.find(item => item.id === record.backlogId)?.name || record.backlogSnapshot?.title || '已删除的 Backlog 项目';
+            const backlogId = record?.backlog_id || record?.backlogId;
+            if (!backlogId) return '无';
+            return D.longTermTodos.find(item => item.id === backlogId)?.name || record.backlogSnapshot?.title || '已删除的 Backlog 项目';
         }
 
         function getRecordTodoTitle(date, record) {
@@ -2003,22 +2061,22 @@
             const modal = document.getElementById('history-detail-modal');
             const summary = document.getElementById('history-day-summary');
             document.getElementById('history-modal-heading').textContent = `${date} · 当日推进记录`;
-            const blocks = [...D.timeBlocks[date]].sort((a, b) => a.start.localeCompare(b.start));
+            const blocks = getActivitiesForDate(date).sort((a, b) => getActivityTimes(a).start.localeCompare(getActivityTimes(b).start));
             const todos = D.todoData[date] || [];
             const completedTodos = todos.filter(todo => todo.done);
             summary.innerHTML = `
                 <div class="grid grid-cols-3 gap-3 mb-4">
                     <div class="bg-primary/10 rounded-xl p-3 text-center"><div class="text-2xl font-black text-primary">${blocks.length}</div><div class="text-xs font-bold text-textmuted">时间记录</div></div>
                     <div class="bg-success/10 rounded-xl p-3 text-center"><div class="text-2xl font-black text-success">${completedTodos.length}</div><div class="text-xs font-bold text-textmuted">已完成任务</div></div>
-                    <div class="bg-secondary/10 rounded-xl p-3 text-center"><div class="text-2xl font-black text-secondary">${blocks.filter(block => block.backlogId).length}</div><div class="text-xs font-bold text-textmuted">Backlog 推进</div></div>
+                    <div class="bg-secondary/10 rounded-xl p-3 text-center"><div class="text-2xl font-black text-secondary">${blocks.filter(block => block.backlog_id).length}</div><div class="text-xs font-bold text-textmuted">Backlog 推进</div></div>
                 </div>
                 <div class="space-y-2">
-                    ${blocks.length ? blocks.map(block => `
+                    ${blocks.length ? blocks.map(block => { const times = getActivityTimes(block); return `
                         <button type="button" class="history-summary-block w-full text-left border border-gray-100 hover:border-primary/40 rounded-xl p-3" data-id="${block.id}">
-                            <div class="text-xs font-bold text-textmuted">${escapeHtml(block.start)}–${escapeHtml(block.end)} · ${escapeHtml(block.status || 'planned')} · ${escapeHtml(block.source || 'Dashboard')}</div>
-                            <div class="font-black text-textmain mt-1">${escapeHtml(block.desc)}</div>
-                            ${block.backlogId ? `<div class="text-xs text-secondary font-bold mt-1">关联：${escapeHtml(getRecordBacklogTitle(block))}</div>` : ''}
-                        </button>`).join('') : '<div class="text-sm text-textmuted bg-gray-50 rounded-xl p-4">当天没有 Dashboard 时间记录。</div>'}
+                            <div class="text-xs font-bold text-textmuted">${escapeHtml(times.start)}–${escapeHtml(times.end)} · ${escapeHtml(block.status || 'planned')} · ${escapeHtml(block.source || 'Dashboard')}</div>
+                            <div class="font-black text-textmain mt-1">${escapeHtml(block.title)}</div>
+                            ${block.backlog_id ? `<div class="text-xs text-secondary font-bold mt-1">关联：${escapeHtml(getRecordBacklogTitle(block))}</div>` : ''}
+                        </button>`; }).join('') : '<div class="text-sm text-textmuted bg-gray-50 rounded-xl p-4">当天没有 Dashboard 时间记录。</div>'}
                 </div>
                 <div class="mt-4 border-t border-gray-100 pt-4">
                     <h4 class="text-sm font-black text-textmain mb-2">每日任务</h4>
@@ -2033,25 +2091,32 @@
         }
 
         function openHistoryBlock(date, id) {
-            const block = D.timeBlocks[date]?.find(item => item.id === id);
+            const block = findActivity(id);
             if (!block) return;
+            const times = getActivityTimes(block);
             const editor = document.getElementById('history-block-editor');
             document.getElementById('history-block-date').value = date;
             document.getElementById('history-block-id').value = id;
-            document.getElementById('history-block-title').textContent = block.desc;
-            document.getElementById('history-block-time').textContent = `${block.start}–${block.end}`;
-            const sourceLabels = { focus: '计时专注', manual: '手动补录', 'manual-calendar': '时间日历手动安排', 'backlog-planned': 'Backlog 专注计划', fitness: '健身与身体状态' };
+            document.getElementById('history-block-title').textContent = block.title;
+            document.getElementById('history-block-time').textContent = `${times.start}–${times.end}（${times.isActual ? '实际' : '计划'}）`;
+            const sourceLabels = { focus: '计时专注', manual: '手动记录', calendar: '时间日历', backlog: 'Backlog', exercise: '健身与身体状态', 'manual-calendar': '时间日历手动安排', 'backlog-planned': 'Backlog 专注计划', fitness: '健身与身体状态' };
             document.getElementById('history-block-source').textContent = sourceLabels[block.source] || block.source || 'Dashboard';
             document.getElementById('history-block-backlog').textContent = getRecordBacklogTitle(block);
             document.getElementById('history-block-todo').textContent = getRecordTodoTitle(date, block);
             document.getElementById('history-block-updated').textContent = block.updatedAt ? new Date(block.updatedAt).toLocaleString('zh-CN') : '—';
             document.getElementById('history-block-status').value = block.status || 'planned';
-            document.getElementById('history-block-outcome').value = block.actualOutcome || '';
-            document.getElementById('history-block-notes').value = block.notes || '';
+            document.getElementById('history-block-type').value = block.activity_type;
+            document.getElementById('history-block-focus-mode').value = block.focus_mode;
+            document.getElementById('history-block-planned-start').value = block.planned_start;
+            document.getElementById('history-block-planned-end').value = block.planned_end;
+            document.getElementById('history-block-actual-start').value = block.actual_start;
+            document.getElementById('history-block-actual-end').value = block.actual_end;
+            document.getElementById('history-block-outcome').value = block.actual_outcome || '';
+            document.getElementById('history-block-notes').value = block.note || '';
             const fitnessDetail = document.getElementById('history-fitness-detail');
-            const fitnessRecord = block.fitnessId ? D.fitnessData.records.find(record => record.id === block.fitnessId) : null;
-            if (fitnessRecord) {
-                fitnessDetail.innerHTML = `<div class="font-black text-green-700 mb-3"><i class="fa fa-heartbeat mr-2"></i>关联健身记录</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><div><span class="text-textmuted font-bold">运动类型：</span>${escapeHtml(fitnessRecord.type)}</div><div><span class="text-textmuted font-bold">实际时长：</span>${fitnessRecord.actualMinutes || 0} 分钟</div><div><span class="text-textmuted font-bold">完成状态：</span>${escapeHtml(FITNESS_STATUS_LABELS[fitnessRecord.status] || fitnessRecord.status)}</div><div><span class="text-textmuted font-bold">身体感受：</span>${escapeHtml(fitnessRecord.feeling || '—')}</div><div class="sm:col-span-2"><span class="text-textmuted font-bold">备注：</span>${escapeHtml(fitnessRecord.notes || '—')}</div>${fitnessRecord.link ? `<div class="sm:col-span-2"><a href="${escapeHtml(fitnessRecord.link)}" target="_blank" rel="noopener noreferrer" class="text-primary font-bold">打开跟练视频 <i class="fa fa-external-link ml-1"></i></a></div>` : ''}</div>`;
+            const exerciseDetail = block.activity_type === 'exercise' ? getExerciseDetail(block.id) : null;
+            if (exerciseDetail) {
+                fitnessDetail.innerHTML = `<div class="font-black text-green-700 mb-3"><i class="fa fa-heartbeat mr-2"></i>关联健身记录</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><div><span class="text-textmuted font-bold">运动类型：</span>${escapeHtml(exerciseDetail.exercise_type)}</div><div><span class="text-textmuted font-bold">实际时长：</span>${block.actual_duration || 0} 分钟</div><div><span class="text-textmuted font-bold">完成状态：</span>${escapeHtml(FITNESS_STATUS_LABELS[block.status] || block.status)}</div><div><span class="text-textmuted font-bold">身体感受：</span>${escapeHtml(exerciseDetail.body_feeling || '—')}</div><div class="sm:col-span-2"><span class="text-textmuted font-bold">备注：</span>${escapeHtml(exerciseDetail.exercise_note || exerciseDetail.skip_reason || '—')}</div>${exerciseDetail.video_url ? `<div class="sm:col-span-2"><a href="${escapeHtml(exerciseDetail.video_url)}" target="_blank" rel="noopener noreferrer" class="text-primary font-bold">打开跟练视频 <i class="fa fa-external-link ml-1"></i></a></div>` : ''}</div>`;
                 fitnessDetail.classList.remove('hidden');
             } else {
                 fitnessDetail.innerHTML = '';
@@ -2069,34 +2134,35 @@
         function saveHistoryBlockDetail() {
             const date = document.getElementById('history-block-date').value;
             const id = document.getElementById('history-block-id').value;
-            const block = D.timeBlocks[date]?.find(item => item.id === id);
+            const block = findActivity(id);
             if (!block) return;
+            const plannedStart = document.getElementById('history-block-planned-start').value;
+            const plannedEnd = document.getElementById('history-block-planned-end').value;
+            const actualStart = document.getElementById('history-block-actual-start').value;
+            const actualEnd = document.getElementById('history-block-actual-end').value;
+            if ((plannedStart && !plannedEnd) || (!plannedStart && plannedEnd) || (actualStart && !actualEnd) || (!actualStart && actualEnd)) { alert('计划时间或实际时间都需要成对填写。'); return; }
+            if ((plannedStart && plannedEnd <= plannedStart) || (actualStart && actualEnd <= actualStart)) { alert('结束时间需要晚于开始时间。'); return; }
             block.status = document.getElementById('history-block-status').value;
-            block.actualOutcome = document.getElementById('history-block-outcome').value.trim();
-            block.notes = document.getElementById('history-block-notes').value.trim();
+            block.activity_type = document.getElementById('history-block-type').value;
+            block.focus_mode = document.getElementById('history-block-focus-mode').value;
+            block.planned_start = plannedStart; block.planned_end = plannedEnd; block.planned_duration = plannedStart ? getDurationMinutes(plannedStart, plannedEnd) : 0;
+            block.actual_start = actualStart; block.actual_end = actualEnd; block.actual_duration = actualStart ? getDurationMinutes(actualStart, actualEnd) : 0;
+            block.actual_outcome = document.getElementById('history-block-outcome').value.trim();
+            block.note = document.getElementById('history-block-notes').value.trim();
             block.updatedAt = new Date().toISOString();
-            if (block.taskId) {
-                const task = D.taskData[date]?.find(item => item.id === block.taskId);
-                if (task) {
-                    task.status = block.status; task.actualOutcome = block.actualOutcome; task.notes = block.notes; task.updatedAt = block.updatedAt;
-                }
-            }
-            if (block.backlogId) addBacklogHistory(block.backlogId, { date, type: 'focus_record', scheduleId: block.id, title: block.desc, start: block.start, end: block.end, status: block.status, outcome: block.actualOutcome });
-            if (block.fitnessId) {
-                const fitnessRecord = D.fitnessData.records.find(record => record.id === block.fitnessId);
-                if (fitnessRecord) { fitnessRecord.status = block.status === 'cancelled' ? 'not_completed' : block.status; fitnessRecord.notes = block.notes; fitnessRecord.updatedAt = block.updatedAt; }
-            }
+            if (block.activity_type === 'exercise') getExerciseDetail(block.id, true);
+            if (block.backlog_id) { const times = getActivityTimes(block); addBacklogHistory(block.backlog_id, { date, type: 'focus_record', scheduleId: block.id, title: block.title, start: times.start, end: times.end, status: block.status, outcome: block.actual_outcome }); }
             saveData();
             refreshScheduleViews(date);
             openDayHistory(date, id);
         }
 
         function editScheduleItem(date, id) {
-            ensureDateDataExists(date);
-            const item = D.timeBlocks[date].find(block => block.id === id);
+            const item = findActivity(id);
             if (!item) return;
 
-            const desc = prompt('事项名称', item.desc);
+            const times = getActivityTimes(item);
+            const desc = prompt('事项名称', item.title);
             if (desc === null) return;
             const cleanDesc = desc.trim();
             if (!cleanDesc) {
@@ -2104,9 +2170,9 @@
                 return;
             }
 
-            const start = prompt('开始时间（HH:MM）', item.start);
+            const start = prompt(`${times.isActual ? '实际' : '计划'}开始时间（HH:MM）`, times.start);
             if (start === null) return;
-            const end = prompt('结束时间（HH:MM）', item.end);
+            const end = prompt(`${times.isActual ? '实际' : '计划'}结束时间（HH:MM）`, times.end);
             if (end === null) return;
             const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
             if (!timePattern.test(start) || !timePattern.test(end)) {
@@ -2114,48 +2180,23 @@
                 return;
             }
 
-            item.desc = cleanDesc;
-            item.start = start;
-            item.end = end;
+            item.title = cleanDesc;
+            if (times.isActual) { item.actual_start = start; item.actual_end = end; item.actual_duration = getDurationMinutes(start, end); }
+            else { item.planned_start = start; item.planned_end = end; item.planned_duration = getDurationMinutes(start, end); }
             item.updatedAt = new Date().toISOString();
-
-            if (item.taskId) {
-                const linkedTask = D.taskData[date]?.find(task => task.id === item.taskId);
-                if (linkedTask) {
-                    linkedTask.name = cleanDesc;
-                    linkedTask.startTime = start;
-                    linkedTask.endTime = end;
-                    linkedTask.duration = getDurationMinutes(start, end);
-                    linkedTask.updatedAt = item.updatedAt;
-                    D.taskData[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
-                }
-            }
-            if (item.fitnessId) {
-                const fitnessRecord = D.fitnessData.records.find(record => record.id === item.fitnessId);
-                if (fitnessRecord) { fitnessRecord.title = cleanDesc; fitnessRecord.start = start; fitnessRecord.end = end; fitnessRecord.updatedAt = item.updatedAt; }
-            }
-
-            D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
             saveData();
-            refreshScheduleViews(date);
+            refreshScheduleViews(item.date);
+            if (item.activity_type === 'exercise') renderFitness();
         }
 
         function deleteScheduleItem(date, id) {
-            ensureDateDataExists(date);
-            const item = D.timeBlocks[date].find(block => block.id === id);
+            const item = findActivity(id);
             if (!item) return;
-
-            D.timeBlocks[date] = D.timeBlocks[date].filter(block => block.id !== id);
-            if (item.taskId) {
-                D.taskData[date] = D.taskData[date].filter(task => task.id !== item.taskId);
-            }
-            if (item.fitnessId) {
-                const fitnessRecord = D.fitnessData.records.find(record => record.id === item.fitnessId);
-                if (fitnessRecord) { fitnessRecord.calendarBlockId = null; fitnessRecord.updatedAt = new Date().toISOString(); }
-            }
-
+            D.activityData.records = D.activityData.records.filter(activity => activity.id !== id);
+            D.exerciseDetails = D.exerciseDetails.filter(detail => detail.activity_id !== id);
             saveData();
-            refreshScheduleViews(date);
+            refreshScheduleViews(item.date);
+            if (item.activity_type === 'exercise') renderFitness();
             updateCheckinUI();
         }
 
@@ -2193,16 +2234,8 @@
                     alert('请填写完整时段信息');
                     return;
                 }
-
-                ensureDateDataExists(date);
-                D.timeBlocks[date].push({
-                    id: `b_${Date.now()}`,
-                    start,
-                    end,
-                    category: cat,
-                    desc
-                });
-                D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
+                const typeMap = { focus: 'research', study: 'study', work: 'work', play: 'life', meal: 'life', rest: 'rest', waste: 'other' };
+                createActivity({ date, title: desc, activity_type: typeMap[cat] || 'other', focus_mode: cat === 'focus' ? 'deep_focus' : 'none', planned_start: start, planned_end: end, planned_duration: getDurationMinutes(start, end), status: 'planned', source: 'calendar', note: '' });
 
                 document.getElementById('tb-desc').value = '';
                 saveData();
@@ -2251,7 +2284,11 @@
             }
 
             const visibleBlocks = [
-                ...(D.timeBlocks[dateStr] || []).map(block => ({ ...block, readOnly: false })),
+                ...getActivitiesForDate(dateStr).map(activity => {
+                    const times = getActivityTimes(activity);
+                    const categoryMap = { research: 'work', study: 'study', work: 'work', exercise: 'fitness', life: 'play', social: 'play', commute: 'other', rest: 'rest', other: 'other' };
+                    return { ...activity, start: times.start, end: times.end, category: categoryMap[activity.activity_type] || 'study', desc: activity.title, backlogId: activity.backlog_id, readOnly: false };
+                }),
                 ...googleEvents.filter(event => !event.allDay).map(event => ({ ...event, readOnly: true }))
             ];
 
@@ -2428,14 +2465,14 @@
                 const t = getTodayStr();
                 ensureDateDataExists(t);
 
-                addFocusRecordAndSchedule(
-                    t,
-                    currentTask.name,
-                    currentTask.startTime,
-                    getTimeStr(),
-                    Math.floor((Date.now() - currentTask.startTimestamp) / 60000),
-                    currentTask.context || {}
-                );
+                const activity = findActivity(currentTask.activityId);
+                if (activity) {
+                    activity.actual_end = getTimeStr();
+                    activity.actual_duration = Math.floor((Date.now() - currentTask.startTimestamp) / 60000);
+                    activity.status = 'completed';
+                    activity.updatedAt = new Date().toISOString();
+                    if (activity.backlog_id) addBacklogHistory(activity.backlog_id, { date: t, type: 'focus_record', scheduleId: activity.id, title: activity.title, start: activity.actual_start, end: activity.actual_end, status: 'completed' });
+                }
                 currentTask = null;
                 document.getElementById('current-task-container').classList.add('hidden');
 
@@ -2473,6 +2510,28 @@
                 updateCheckinUI();
             });
 
+            const quickType = document.getElementById('quick-activity-type');
+            const quickDeep = document.getElementById('quick-activity-deep');
+            quickType?.addEventListener('change', () => {
+                const isExercise = quickType.value === 'exercise';
+                document.getElementById('quick-exercise-type-wrap')?.classList.toggle('hidden', !isExercise);
+                if (isExercise) { quickDeep.checked = false; quickDeep.disabled = true; } else quickDeep.disabled = false;
+            });
+            document.getElementById('btn-toggle-quick-activity')?.addEventListener('click', () => document.getElementById('quick-activity-form')?.classList.toggle('hidden'));
+            document.getElementById('quick-activity-form')?.addEventListener('submit', event => {
+                event.preventDefault();
+                const title = document.getElementById('quick-activity-title').value.trim();
+                const activityType = quickType.value;
+                const start = document.getElementById('quick-activity-start').value;
+                const end = document.getElementById('quick-activity-end').value;
+                if (!title || !start || !end || end <= start) { alert('请填写活动名称，并确保结束时间晚于开始时间。'); return; }
+                const now = new Date().toISOString();
+                const activity = createActivity({ date: getTodayStr(), title, activity_type: activityType, focus_mode: quickDeep.checked ? 'deep_focus' : (activityType === 'exercise' ? 'none' : 'normal'), actual_start: start, actual_end: end, actual_duration: getDurationMinutes(start, end), status: 'completed', source: activityType === 'exercise' ? 'exercise' : 'manual', note: '', createdAt: now, updatedAt: now });
+                if (activityType === 'exercise') { const detail = getExerciseDetail(activity.id, true); detail.exercise_type = document.getElementById('quick-exercise-type').value; detail.updatedAt = now; }
+                event.target.reset(); quickType.value = 'research'; quickDeep.disabled = false; document.getElementById('quick-exercise-type-wrap').classList.add('hidden');
+                saveData(); renderTodayTasksTimeline(); if (activityType === 'exercise') renderFitness(); refreshScheduleViews(activity.date);
+            });
+
             renderTodos();
             renderLongTermTodos();
             renderTodayTasksTimeline();
@@ -2483,15 +2542,21 @@
 
             if (currentTask) document.getElementById('end-task')?.click();
 
+            const now = new Date().toISOString();
+            const backlog = context.backlogId ? D.longTermTodos.find(item => item.id === context.backlogId) : null;
+            const activity = createActivity({ date: getTodayStr(), title: name, activity_type: context.activity_type || 'research', focus_mode: 'deep_focus', actual_start: getTimeStr(), status: 'in_progress', source: context.backlogId ? 'backlog' : 'manual', backlog_id: context.backlogId || null, backlogSnapshot: context.backlogSnapshot || getBacklogSnapshot(backlog), todoId: context.todoId || null, todoSnapshot: context.todoSnapshot || null, note: '', createdAt: now, updatedAt: now });
             currentTask = {
                 name,
-                startTime: getTimeStr(),
+                startTime: activity.actual_start,
                 startTimestamp: Date.now(),
+                activityId: activity.id,
                 context
             };
 
             document.getElementById('current-task-name').textContent = name;
             document.getElementById('current-task-container').classList.remove('hidden');
+            saveData();
+            renderTodayTasksTimeline();
             updateSidebar();
 
             taskTimer = setInterval(() => {
@@ -2557,20 +2622,19 @@
                     });
                 });
             });
-            Object.entries(D.timeBlocks).forEach(([date, blocks]) => {
-                (blocks || []).filter(block => block.backlogId === item.id).forEach(block => {
-                    if (!entries.some(entry => entry.scheduleId === block.id)) entries.push({
-                        id: `derived_${block.id}`,
-                        date,
+            D.activityData.records.filter(activity => activity.backlog_id === item.id).forEach(activity => {
+                    const times = getActivityTimes(activity);
+                    if (!entries.some(entry => entry.scheduleId === activity.id || (entry.date === activity.date && entry.title === activity.title && entry.start === times.start && entry.end === times.end))) entries.push({
+                        id: `derived_${activity.id}`,
+                        date: activity.date,
                         type: 'focus_record',
-                        scheduleId: block.id,
-                        title: block.desc,
-                        start: block.start,
-                        end: block.end,
-                        status: block.status || 'planned',
-                        createdAt: block.createdAt || `${date}T00:00:00`
+                        scheduleId: activity.id,
+                        title: activity.title,
+                        start: times.start,
+                        end: times.end,
+                        status: activity.status || 'planned',
+                        createdAt: activity.createdAt || `${activity.date}T00:00:00`
                     });
-                });
             });
             return entries.sort((a, b) => String(b.createdAt || b.date).localeCompare(String(a.createdAt || a.date)));
         }
@@ -2818,8 +2882,19 @@
             const tl = document.getElementById('today-tasks-timeline');
             const emptyMsg = document.getElementById('empty-timeline-msg');
             const today = getTodayStr();
-            ensureDateDataExists(today);
-            const schedule = [...D.timeBlocks[today]].sort((a, b) => a.start.localeCompare(b.start));
+            const schedule = getActivitiesForDate(today).sort((a, b) => getActivityTimes(a).start.localeCompare(getActivityTimes(b).start));
+            const typeLabels = { research: 'Research', study: 'Study', work: 'Work', exercise: 'Exercise', life: 'Life', social: 'Social', commute: 'Commute', rest: 'Rest', other: 'Other' };
+            const typeClasses = { research: 'text-secondary bg-secondary/10', study: 'text-primary bg-primary/10', work: 'text-gray-600 bg-gray-100', exercise: 'text-green-700 bg-success/20', life: 'text-accent bg-accent/10', social: 'text-accent bg-accent/10', commute: 'text-gray-500 bg-gray-100', rest: 'text-success bg-success/10', other: 'text-gray-500 bg-gray-100' };
+            const completed = schedule.filter(item => ['completed', 'partial'].includes(item.status));
+            const total = completed.reduce((sum, item) => sum + item.actual_duration, 0);
+            const deep = completed.filter(item => item.focus_mode === 'deep_focus').reduce((sum, item) => sum + item.actual_duration, 0);
+            const exercise = completed.filter(item => item.activity_type === 'exercise').reduce((sum, item) => sum + item.actual_duration, 0);
+            const other = completed.filter(item => item.focus_mode !== 'deep_focus' && item.activity_type !== 'exercise').reduce((sum, item) => sum + item.actual_duration, 0);
+            const fmt = mins => `${Math.floor(mins / 60) ? `${Math.floor(mins / 60)}h ` : ''}${mins % 60}m`;
+            document.getElementById('activity-stat-total').textContent = fmt(total);
+            document.getElementById('activity-stat-deep').textContent = fmt(deep);
+            document.getElementById('activity-stat-exercise').textContent = fmt(exercise);
+            document.getElementById('activity-stat-other').textContent = fmt(other);
 
             tl.innerHTML = '';
 
@@ -2829,21 +2904,22 @@
                 emptyMsg.classList.add('hidden');
 
                 schedule.forEach(item => {
-                    const conf = CAT_MAP[item.category] || CAT_MAP.study;
-                    const duration = getDurationMinutes(item.start, item.end);
+                    const times = getActivityTimes(item);
+                    const duration = times.duration;
                     const div = document.createElement('div');
                     div.className = 'relative group';
                     div.innerHTML = `
                         <div class="absolute -left-[33px] bg-secondary w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm mt-1.5 z-10 group-hover:scale-125 transition-transform"></div>
                         <div class="bg-gray-50 hover:bg-white p-4 pr-20 rounded-xl border border-gray-100 shadow-sm transition-colors relative">
                             <div class="text-xs font-bold text-textmuted mb-1 flex flex-wrap items-center gap-2">
-                                <span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${item.start} - ${item.end}</span>
-                                <span class="${conf.text} ${conf.bgSoft} px-2 py-0.5 rounded">${conf.label}</span>
-                                <span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">${Math.floor(duration / 60)}h ${duration % 60}m</span>
+                                <span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${times.start}–${times.end}${times.isActual ? '' : '（计划）'}</span>
+                                <span class="${typeClasses[item.activity_type] || typeClasses.other} px-2 py-0.5 rounded">${typeLabels[item.activity_type] || 'Other'}</span>
+                                ${item.focus_mode === 'deep_focus' ? '<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Deep Focus</span>' : ''}
+                                <span class="text-gray-600 bg-gray-100 px-2 py-0.5 rounded">${fmt(duration)}</span>
                                 <span class="text-gray-500 bg-gray-100 px-2 py-0.5 rounded">${escapeHtml(item.status || 'planned')}</span>
-                                ${item.backlogId ? `<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Backlog</span>` : ''}
+                                ${item.backlog_id ? `<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Backlog</span>` : ''}
                             </div>
-                            <div class="font-black text-textmain break-words">${escapeHtml(item.desc)}</div>
+                            <div class="font-black text-textmain break-words">${escapeHtml(item.title)}</div>
                             <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                                 <button class="view-schedule-history text-gray-400 hover:text-white hover:bg-primary w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="历史详情"><i class="fa fa-info-circle"></i></button>
                                 <button class="edit-schedule text-gray-400 hover:text-white hover:bg-gray-500 w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="编辑"><i class="fa fa-pencil"></i></button>
@@ -3017,7 +3093,17 @@
         }
 
         function getCompletedFitnessRecords() {
-            return (D.fitnessData?.records || []).filter(record => ['completed', 'partial'].includes(record.status));
+            return D.activityData.records.filter(activity => activity.activity_type === 'exercise' && ['completed', 'partial'].includes(activity.status));
+        }
+
+        function getFitnessViewRecord(activity) {
+            const detail = getExerciseDetail(activity.id) || {};
+            return {
+                id: activity.id, title: activity.title, date: activity.date, start: activity.planned_start || activity.actual_start, end: activity.planned_end || activity.actual_end,
+                actualStart: activity.actual_start, actualEnd: activity.actual_end, plannedMinutes: activity.planned_duration, actualMinutes: activity.actual_duration,
+                type: detail.exercise_type || '其他', link: detail.video_url || '', status: activity.status, feeling: detail.body_feeling || '',
+                notes: detail.exercise_note || detail.skip_reason || activity.note || '', activity, detail
+            };
         }
 
         function getWeekRange(date = new Date()) {
@@ -3039,17 +3125,17 @@
         }
 
         function calculateFitnessStats() {
-            const records = D.fitnessData.records;
-            const completed = getCompletedFitnessRecords();
+            const completed = getCompletedFitnessRecords().map(getFitnessViewRecord);
             const week = getWeekRange();
             const weekly = completed.filter(record => record.date >= week.start && record.date <= week.end);
+            const today = completed.filter(record => record.date === getTodayStr());
             const monthPrefix = getTodayStr().slice(0, 7);
             const monthly = completed.filter(record => record.date.startsWith(monthPrefix));
             const totalMinutes = weekly.reduce((sum, record) => sum + record.actualMinutes, 0);
             const types = {};
             completed.forEach(record => { types[record.type] = (types[record.type] || 0) + 1; });
             const periods = {};
-            completed.forEach(record => { const period = getFitnessTimePeriod(record.start); if (period !== '未设置') periods[period] = (periods[period] || 0) + 1; });
+            completed.forEach(record => { const period = getFitnessTimePeriod(record.actualStart || record.start); if (period !== '未设置') periods[period] = (periods[period] || 0) + 1; });
             const activeDates = new Set(completed.map(record => record.date));
             let streak = 0;
             let cursor = new Date();
@@ -3057,28 +3143,7 @@
             while (activeDates.has(`${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`)) { streak++; cursor.setDate(cursor.getDate() - 1); }
             const topType = Object.entries(types).sort((a, b) => b[1] - a[1])[0]?.[0] || '暂无记录';
             const topPeriod = Object.entries(periods).sort((a, b) => b[1] - a[1])[0]?.[0] || '暂无记录';
-            return { week, weekly, weekCount: weekly.length, totalMinutes, average: weekly.length ? Math.round(totalMinutes / weekly.length) : 0, monthCount: monthly.length, types, topType, topPeriod, streak };
-        }
-
-        function syncFitnessCalendar(record, previousDate = null) {
-            if (previousDate && previousDate !== record.date) {
-                D.timeBlocks[previousDate] = (D.timeBlocks[previousDate] || []).filter(block => block.id !== record.calendarBlockId);
-                record.calendarBlockId = null;
-            }
-            ensureDateDataExists(record.date);
-            let block = record.calendarBlockId ? D.timeBlocks[record.date].find(item => item.id === record.calendarBlockId) : null;
-            if (!record.start || !record.end) {
-                if (block) D.timeBlocks[record.date] = D.timeBlocks[record.date].filter(item => item.id !== block.id);
-                record.calendarBlockId = null;
-                return;
-            }
-            if (!block) {
-                block = { id: `fitb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, fitnessId: record.id, source: 'fitness', category: 'fitness', createdAt: record.createdAt };
-                D.timeBlocks[record.date].push(block);
-                record.calendarBlockId = block.id;
-            }
-            Object.assign(block, { start: record.start, end: record.end, desc: record.title, fitnessId: record.id, fitnessSnapshot: { title: record.title, type: record.type, link: record.link }, source: 'fitness', category: 'fitness', status: record.status, actualOutcome: record.actualMinutes ? `实际完成 ${record.actualMinutes} 分钟` : '', notes: [record.feeling, record.notes].filter(Boolean).join('；'), updatedAt: record.updatedAt });
-            D.timeBlocks[record.date].sort((a, b) => a.start.localeCompare(b.start));
+            return { week, weekly, todayCount: today.length, todayMinutes: today.reduce((sum, record) => sum + record.actualMinutes, 0), weekCount: weekly.length, totalMinutes, average: weekly.length ? Math.round(totalMinutes / weekly.length) : 0, monthCount: monthly.length, activeDays: new Set(weekly.map(record => record.date)).size, types, topType, topPeriod, streak };
         }
 
         function resetFitnessForm() {
@@ -3086,7 +3151,7 @@
             document.getElementById('fitness-edit-id').value = '';
             document.getElementById('fitness-date').value = getTodayStr();
             document.getElementById('fitness-status').value = 'planned';
-            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-calendar-plus-o mr-2"></i>保存并同步到时间日历';
+            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-calendar-plus-o mr-2"></i>保存并同步到今日时间线';
             document.getElementById('btn-cancel-fitness-edit').classList.add('hidden');
         }
 
@@ -3094,6 +3159,7 @@
             const values = {
                 title: document.getElementById('fitness-title').value.trim(), date: document.getElementById('fitness-date').value,
                 start: document.getElementById('fitness-start').value, end: document.getElementById('fitness-end').value,
+                actualStart: document.getElementById('fitness-actual-start').value, actualEnd: document.getElementById('fitness-actual-end').value,
                 plannedMinutes: Number(document.getElementById('fitness-planned-minutes').value) || 0,
                 actualMinutes: Number(document.getElementById('fitness-actual-minutes').value) || 0,
                 type: document.getElementById('fitness-type').value, link: document.getElementById('fitness-link').value.trim(),
@@ -3104,12 +3170,15 @@
         }
 
         function editFitnessRecord(id) {
-            const record = D.fitnessData.records.find(item => item.id === id);
-            if (!record) return;
+            const activity = findActivity(id);
+            if (!activity || activity.activity_type !== 'exercise') return;
+            const record = getFitnessViewRecord(activity);
             document.getElementById('fitness-edit-id').value = record.id;
             ['title', 'date', 'start', 'end', 'type', 'link', 'status', 'feeling', 'notes'].forEach(key => { document.getElementById(`fitness-${key}`).value = record[key] || ''; });
             document.getElementById('fitness-planned-minutes').value = record.plannedMinutes || '';
             document.getElementById('fitness-actual-minutes').value = record.actualMinutes || '';
+            document.getElementById('fitness-actual-start').value = record.actualStart || '';
+            document.getElementById('fitness-actual-end').value = record.actualEnd || '';
             document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-save mr-2"></i>保存修改并同步日历';
             document.getElementById('btn-cancel-fitness-edit').classList.remove('hidden');
             document.getElementById('fitness-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3118,29 +3187,33 @@
         function renderFitness() {
             ensureRootData();
             const stats = calculateFitnessStats();
+            document.getElementById('fitness-stat-today-count').textContent = `${stats.todayCount} 次`;
+            document.getElementById('fitness-stat-today-minutes').textContent = `${stats.todayMinutes} 分钟`;
             document.getElementById('fitness-stat-week-count').textContent = `${stats.weekCount} 次`;
             document.getElementById('fitness-stat-week-minutes').textContent = `${stats.totalMinutes} 分钟`;
             document.getElementById('fitness-stat-average').textContent = `${stats.average} 分钟`;
             document.getElementById('fitness-stat-month-count').textContent = `${stats.monthCount} 次`;
+            document.getElementById('fitness-stat-active-days').textContent = `${stats.activeDays} 天`;
             document.getElementById('fitness-stat-types').textContent = Object.entries(stats.types).sort((a, b) => b[1] - a[1]).map(([type, count]) => `${type} ${count} 次`).join(' · ') || '暂无记录';
             document.getElementById('fitness-stat-streak').textContent = `${stats.streak} 天（不作目标）`;
             document.getElementById('fitness-stat-time').textContent = stats.topPeriod;
             const list = document.getElementById('fitness-record-list');
-            const records = [...D.fitnessData.records].sort((a, b) => `${b.date} ${b.start}`.localeCompare(`${a.date} ${a.start}`));
+            const records = D.activityData.records.filter(activity => activity.activity_type === 'exercise').map(getFitnessViewRecord).sort((a, b) => `${b.date} ${b.actualStart || b.start}`.localeCompare(`${a.date} ${a.actualStart || a.start}`));
             list.innerHTML = records.map(record => {
                 const statusClass = ['completed', 'partial'].includes(record.status) ? 'bg-success/15 text-green-700' : ['not_completed', 'skipped'].includes(record.status) ? 'bg-gray-100 text-gray-500' : 'bg-primary/10 text-primary';
                 return `<div class="p-4 flex flex-col md:flex-row md:items-center gap-3">
-                    <div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black text-textmain">${escapeHtml(record.title)}</span><span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(FITNESS_STATUS_LABELS[record.status] || record.status)}</span><span class="bg-success/10 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(record.type)}</span></div><div class="text-xs text-textmuted mt-2">${escapeHtml(record.date)}${record.start && record.end ? ` · ${escapeHtml(record.start)}–${escapeHtml(record.end)}` : ''} · 计划 ${record.plannedMinutes || 0} 分钟 · 实际 ${record.actualMinutes || 0} 分钟</div>${record.feeling ? `<div class="text-xs text-textmain mt-1">身体感受：${escapeHtml(record.feeling)}</div>` : ''}</div>
+                    <div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black text-textmain">${escapeHtml(record.title)}</span><span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(FITNESS_STATUS_LABELS[record.status] || record.status)}</span><span class="bg-success/10 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(record.type)}</span></div><div class="text-xs text-textmuted mt-2">${escapeHtml(record.date)}${record.start && record.end ? ` · 计划 ${escapeHtml(record.start)}–${escapeHtml(record.end)}` : ''}${record.actualStart && record.actualEnd ? ` · 实际 ${escapeHtml(record.actualStart)}–${escapeHtml(record.actualEnd)}` : ''} · 计划 ${record.plannedMinutes || 0} 分钟 · 实际 ${record.actualMinutes || 0} 分钟</div>${record.feeling ? `<div class="text-xs text-textmain mt-1">身体感受：${escapeHtml(record.feeling)}</div>` : ''}</div>
                     <div class="flex gap-2 flex-shrink-0">${record.link ? `<a href="${escapeHtml(record.link)}" target="_blank" rel="noopener noreferrer" class="bg-primary/10 text-primary px-3 py-2 rounded-lg text-xs font-bold">跟练链接 <i class="fa fa-external-link ml-1"></i></a>` : ''}<button class="edit-fitness bg-gray-100 text-textmain px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}">编辑</button><button class="delete-fitness border border-danger/40 text-danger px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}">删除</button></div>
                 </div>`;
             }).join('');
             document.getElementById('fitness-empty-msg').classList.toggle('hidden', records.length > 0);
             list.querySelectorAll('.edit-fitness').forEach(button => button.addEventListener('click', () => editFitnessRecord(button.dataset.id)));
             list.querySelectorAll('.delete-fitness').forEach(button => button.addEventListener('click', () => {
-                const record = D.fitnessData.records.find(item => item.id === button.dataset.id);
+                const activity = findActivity(button.dataset.id);
+                const record = activity ? getFitnessViewRecord(activity) : null;
                 if (!record || !confirm(`删除健身记录「${record.title}」及其关联日历时间块？`)) return;
-                if (record.calendarBlockId) D.timeBlocks[record.date] = (D.timeBlocks[record.date] || []).filter(block => block.id !== record.calendarBlockId);
-                D.fitnessData.records = D.fitnessData.records.filter(item => item.id !== record.id);
+                D.activityData.records = D.activityData.records.filter(item => item.id !== record.id);
+                D.exerciseDetails = D.exerciseDetails.filter(detail => detail.activity_id !== record.id);
                 saveData(); renderFitness(); refreshScheduleViews(record.date);
             }));
         }
@@ -3154,17 +3227,17 @@
 
         function exportFitnessWeekMarkdown() {
             const stats = calculateFitnessStats();
-            const records = D.fitnessData.records.filter(record => record.date >= stats.week.start && record.date <= stats.week.end).sort((a, b) => `${a.date} ${a.start}`.localeCompare(`${b.date} ${b.start}`));
-            const calendarRows = records.filter(record => record.calendarBlockId).map(record => `| ${record.date} | ${record.start || '—'}–${record.end || '—'} | ${markdownCell(record.title)} | ${markdownCell(record.title)} |`).join('\n') || '| — | — | 本周无关联时间块 | — |';
+            const records = D.activityData.records.filter(activity => activity.activity_type === 'exercise' && activity.date >= stats.week.start && activity.date <= stats.week.end).map(getFitnessViewRecord).sort((a, b) => `${a.date} ${a.actualStart || a.start}`.localeCompare(`${b.date} ${b.actualStart || b.start}`));
+            const calendarRows = records.filter(record => (record.actualStart || record.start) && (record.actualEnd || record.end)).map(record => `| ${record.date} | ${record.actualStart || record.start || '—'}–${record.actualEnd || record.end || '—'} | ${markdownCell(record.title)} | ${markdownCell(record.title)} |`).join('\n') || '| — | — | 本周无关联时间记录 | — |';
             const dailyRows = records.map(record => `| ${record.date} | ${markdownCell(record.title)} | ${markdownCell(record.type)} | ${record.plannedMinutes || 0} | ${record.actualMinutes || 0} | ${markdownCell(FITNESS_STATUS_LABELS[record.status] || record.status)} | ${markdownCell(record.feeling)} | ${markdownCell(record.notes)} |`).join('\n') || '| — | 本周暂无记录 | — | 0 | 0 | — | — | — |';
             const markdown = `# 本周健身复盘\n\n> 周期：${stats.week.start} 至 ${stats.week.end}\n\n## 1. 本周概览\n- 本周运动次数：${stats.weekCount}\n- 本周总运动时长：${stats.totalMinutes} 分钟\n- 平均每次时长：${stats.average} 分钟\n- 主要运动类型：${stats.topType}\n- 最常运动时间段：${stats.topPeriod}\n\n## 2. 每日记录\n| 日期 | 运动内容 | 类型 | 计划时长 | 实际时长 | 完成状态 | 身体感受 | 备注 |\n|---|---|---|---:|---:|---|---|---|\n${dailyRows}\n\n## 3. 关联日历记录\n| 日期 | 时间段 | 日历标题 | 关联健身记录 |\n|---|---|---|---|\n${calendarRows}\n\n## 4. 本周观察\n- 哪些安排比较容易完成：\n- 哪些安排容易跳过：\n- 身体状态变化：\n- 下周可以调整的地方：\n`;
             downloadTextFile(`fitness-weekly-review-${stats.week.start}.md`, markdown, 'text/markdown;charset=utf-8');
         }
 
         function exportFitnessCsv() {
-            const headers = ['日期','健身标题','计划开始','计划结束','计划时长','实际时长','运动类型','跟练链接','完成状态','身体感受','备注','关联日历时间块'];
+            const headers = ['日期','健身标题','计划开始','计划结束','实际开始','实际结束','计划时长','实际时长','运动类型','跟练链接','完成状态','身体感受','备注','Activity ID'];
             const quote = value => `"${String(value ?? '').replaceAll('"', '""')}"`;
-            const rows = D.fitnessData.records.map(record => [record.date,record.title,record.start,record.end,record.plannedMinutes,record.actualMinutes,record.type,record.link,FITNESS_STATUS_LABELS[record.status] || record.status,record.feeling,record.notes,record.calendarBlockId || ''].map(quote).join(','));
+            const rows = D.activityData.records.filter(activity => activity.activity_type === 'exercise').map(getFitnessViewRecord).map(record => [record.date,record.title,record.start,record.end,record.actualStart,record.actualEnd,record.plannedMinutes,record.actualMinutes,record.type,record.link,FITNESS_STATUS_LABELS[record.status] || record.status,record.feeling,record.notes,record.id].map(quote).join(','));
             downloadTextFile(`fitness-data-${getTodayStr()}.csv`, `\uFEFF${headers.map(quote).join(',')}\n${rows.join('\n')}`, 'text/csv;charset=utf-8');
         }
 
@@ -3176,13 +3249,25 @@
                 if (!values.title || !values.date) return;
                 if ((values.start && !values.end) || (!values.start && values.end)) { alert('如需同步到时间日历，请同时填写开始与结束时间。'); return; }
                 if (values.start && values.end && values.end <= values.start) { alert('结束时间需要晚于开始时间。'); return; }
+                if ((values.actualStart && !values.actualEnd) || (!values.actualStart && values.actualEnd)) { alert('实际时间请同时填写开始与结束。'); return; }
+                if (values.actualStart && values.actualEnd && values.actualEnd <= values.actualStart) { alert('实际结束时间需要晚于实际开始时间。'); return; }
                 const editId = document.getElementById('fitness-edit-id').value;
-                let record = D.fitnessData.records.find(item => item.id === editId);
-                const previousDate = record?.date || null;
-                if (!record) { record = normalizeFitnessRecord({ id: `fit_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, createdAt: new Date().toISOString() }); D.fitnessData.records.push(record); }
-                Object.assign(record, values, { updatedAt: new Date().toISOString() });
-                syncFitnessCalendar(record, previousDate);
-                saveData(); resetFitnessForm(); renderFitness(); refreshScheduleViews(record.date); if (previousDate && previousDate !== record.date) refreshScheduleViews(previousDate);
+                let activity = findActivity(editId);
+                const previousDate = activity?.date || null;
+                const now = new Date().toISOString();
+                if (!activity) activity = createActivity({ date: values.date, title: values.title, activity_type: 'exercise', focus_mode: 'none', source: 'exercise', status: values.status, createdAt: now });
+                const resolvedActualStart = values.actualStart || activity.actual_start || (['completed', 'partial'].includes(values.status) ? values.start : '');
+                const resolvedActualEnd = values.actualEnd || activity.actual_end || (['completed', 'partial'].includes(values.status) ? values.end : '');
+                Object.assign(activity, {
+                    date: values.date, title: values.title, activity_type: 'exercise', focus_mode: 'none', source: 'exercise',
+                    planned_start: values.start, planned_end: values.end, planned_duration: values.plannedMinutes,
+                    actual_start: resolvedActualStart, actual_end: resolvedActualEnd,
+                    actual_duration: values.actualMinutes || (resolvedActualStart && resolvedActualEnd ? getDurationMinutes(resolvedActualStart, resolvedActualEnd) : 0),
+                    status: values.status, note: values.notes, updatedAt: now
+                });
+                const detail = getExerciseDetail(activity.id, true);
+                Object.assign(detail, { exercise_type: values.type, video_url: values.link, body_feeling: values.feeling, skip_reason: ['not_completed', 'skipped'].includes(values.status) ? values.notes : '', exercise_note: values.notes, updatedAt: now });
+                saveData(); resetFitnessForm(); renderFitness(); refreshScheduleViews(activity.date); if (previousDate && previousDate !== activity.date) refreshScheduleViews(previousDate);
             });
             document.getElementById('btn-cancel-fitness-edit')?.addEventListener('click', resetFitnessForm);
             document.getElementById('btn-export-fitness-week')?.addEventListener('click', exportFitnessWeekMarkdown);
@@ -3322,11 +3407,10 @@
                     }
                 }
 
-                let focusM = 0;
-                (D.taskData[d] || []).forEach(t => (focusM += t.duration));
+                const focusM = D.activityData.records.filter(activity => activity.date === d && activity.focus_mode === 'deep_focus' && ['completed', 'partial'].includes(activity.status)).reduce((sum, activity) => sum + activity.actual_duration, 0);
                 durationData.push((focusM / 60).toFixed(1));
 
-                fitnessData.push(D.fitnessData.records.filter(record => record.date === d && ['completed', 'partial'].includes(record.status)).reduce((sum, record) => sum + record.actualMinutes, 0));
+                fitnessData.push(D.activityData.records.filter(record => record.date === d && record.activity_type === 'exercise' && ['completed', 'partial'].includes(record.status)).reduce((sum, record) => sum + record.actual_duration, 0));
 
                 const totHabits = D.habitConfig.length;
                 let doneHabits = 0;
