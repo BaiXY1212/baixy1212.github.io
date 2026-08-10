@@ -351,7 +351,7 @@
                     </h2>
 
                     <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8">
-                        <div class="xl:col-span-6 space-y-6 min-w-0">
+                        <div class="xl:col-span-7 space-y-6 min-w-0">
                             <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                                     <div>
@@ -364,12 +364,12 @@
                                     </div>
                                 </div>
                                 <div class="space-y-2 mb-3">
-                                    <input type="text" id="new-todo-input" placeholder="输入新任务..." class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
-                                    <div class="grid grid-cols-2 sm:flex gap-2 items-stretch">
-                                        <select id="new-todo-type" class="sm:w-32 min-w-0 px-2 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="other">Other</option></select>
-                                        <select id="new-todo-exercise-type" class="hidden sm:w-32 min-w-0 px-2 py-2 bg-white border border-success/40 rounded-lg text-sm font-bold"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>散步</option><option>腰腹</option><option>其他</option></select>
-                                        <button id="btn-show-fitness-plans" class="text-xs font-bold text-success bg-success/10 hover:bg-success hover:text-white px-3 py-2 rounded-lg sm:ml-auto whitespace-nowrap"><i class="fa fa-plus mr-1"></i>从健身计划加入</button>
-                                        <button id="btn-add-todo" class="bg-secondary text-white px-5 py-2 rounded-lg font-bold shadow-sm whitespace-nowrap">添加</button>
+                                    <div class="flex flex-wrap gap-2 items-stretch">
+                                        <input type="text" id="new-todo-input" placeholder="输入新任务..." class="basis-full sm:basis-48 sm:flex-1 min-w-0 px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
+                                        <select id="new-todo-type" class="w-[7.5rem] min-w-0 px-2 py-2 bg-white border border-gray-200 rounded-lg text-xs font-bold"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="other">Other</option></select>
+                                        <select id="new-todo-exercise-type" class="hidden w-[7.5rem] min-w-0 px-2 py-2 bg-white border border-success/40 rounded-lg text-xs font-bold"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>散步</option><option>腰腹</option><option>其他</option></select>
+                                        <button id="btn-show-fitness-plans" class="text-xs font-bold text-success bg-success/10 hover:bg-success hover:text-white px-3 py-2 rounded-lg whitespace-nowrap"><i class="fa fa-plus mr-1"></i>健身计划</button>
+                                        <button id="btn-add-todo" class="bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap">添加</button>
                                     </div>
                                     <details class="bg-white border border-gray-100 rounded-lg px-3 py-2">
                                         <summary class="text-xs font-bold text-textmuted cursor-pointer">规划选项（预计时长、优先级、备注、时间块）</summary>
@@ -413,7 +413,7 @@
                             </div>
                         </div>
 
-                        <div class="xl:col-span-6 min-w-0">
+                        <div class="xl:col-span-5 min-w-0">
                             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm min-h-full">
                                 <h3 class="text-xl font-black text-textmain mb-4 flex items-center border-b border-gray-50 pb-4"><i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注与活动时间线</h3>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
@@ -2548,9 +2548,9 @@
                 if (!picker.classList.contains('hidden')) renderFitnessPlanPicker();
             });
             document.getElementById('btn-add-selected-fitness-plans')?.addEventListener('click', () => {
-                const selected = [...document.querySelectorAll('.fitness-plan-choice:checked')].map(input => findActivity(input.value)).filter(Boolean);
+                const selected = [...document.querySelectorAll('.fitness-plan-choice:checked')].map(input => D.exerciseLibrary.find(project => project.id === input.value)).filter(Boolean);
                 if (!selected.length) return;
-                selected.forEach(activity => addExerciseActivityToTaskDate(activity, getTaskPlanningDate()));
+                selected.forEach(project => addExerciseProjectToTaskDate(project, getTaskPlanningDate()));
                 saveData(); renderTodos(); renderFitness(); renderFitnessPlanPicker();
             });
             document.getElementById('manual-name')?.addEventListener('input', event => {
@@ -3006,18 +3006,16 @@
                 const typeClass = activity.activity_type === 'exercise' ? 'bg-success/15 text-green-700' : ['research', 'study'].includes(activity.activity_type) ? 'bg-secondary/10 text-secondary' : 'bg-gray-100 text-gray-600';
                 const statusLabel = { planned: '未开始', in_progress: '进行中', paused: '已暂停', completed: '已完成', skipped: '已跳过', cancelled: '已取消' }[activity.status] || activity.status;
                 const div = document.createElement('div');
-                div.className = `bg-white p-3 rounded-xl border ${activity.status === 'in_progress' ? 'border-secondary/50 shadow-md' : 'border-gray-100 shadow-sm'} group`;
+                div.className = `bg-white px-3 py-2 rounded-lg border ${activity.status === 'in_progress' ? 'border-secondary/50 shadow-sm' : 'border-gray-100'} group`;
                 div.innerHTML = `
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 min-w-0">
-                        <div class="flex items-start gap-3 flex-1 min-w-0">
-                            <input type="checkbox" class="todo-chk appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary cursor-pointer mt-0.5 flex-shrink-0 disabled:opacity-40" ${activity.status === 'completed' ? 'checked' : ''} ${isTomorrow ? 'disabled title="明日到来后可执行"' : ''} data-id="${activity.id}">
-                            <div class="flex-1 min-w-0"><button type="button" class="todo-title-expand block w-full text-left font-bold text-sm leading-5 ${activity.status === 'completed' ? 'line-through text-gray-400' : 'text-textmain'} break-normal [overflow-wrap:normal]" title="${escapeHtml(activity.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;" aria-expanded="false">${escapeHtml(activity.title)}</button><div class="flex flex-wrap gap-1.5 mt-1.5 text-[10px] font-bold"><span class="${typeClass} px-2 py-0.5 rounded">${typeLabels[activity.activity_type] || activity.activity_type}</span>${detail?.exercise_type ? `<span class="bg-success/10 text-green-700 px-2 py-0.5 rounded">${escapeHtml(detail.exercise_type)}</span>` : ''}<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${escapeHtml(statusLabel)}</span><span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${activity.priority === 'high' ? '高' : activity.priority === 'low' ? '低' : '中'}优先级</span>${activity.planned_duration ? `<span class="bg-primary/10 text-primary px-2 py-0.5 rounded">计划 ${activity.planned_duration}m</span>` : ''}${activity.planned_start ? `<span class="bg-primary/10 text-primary px-2 py-0.5 rounded">${activity.planned_start}–${activity.planned_end}</span>` : ''}${activity.note ? '<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded" title="有备注"><i class="fa fa-sticky-note-o"></i></span>' : ''}</div></div>
-                        </div>
-                        <div class="flex flex-wrap items-center justify-end gap-1 flex-shrink-0 sm:pl-2">
+                    <div class="grid grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto] gap-x-3 gap-y-1 items-center min-w-0">
+                        <input type="checkbox" class="todo-chk appearance-none w-[18px] h-[18px] border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary cursor-pointer flex-shrink-0 disabled:opacity-40" ${activity.status === 'completed' ? 'checked' : ''} ${isTomorrow ? 'disabled title="明日到来后可执行"' : ''} data-id="${activity.id}">
+                        <div class="min-w-0"><button type="button" class="todo-title-expand block w-full text-left font-bold text-sm leading-5 ${activity.status === 'completed' ? 'line-through text-gray-400' : 'text-textmain'} break-normal [overflow-wrap:normal]" title="${escapeHtml(activity.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:normal;" aria-expanded="false">${escapeHtml(activity.title)}</button><div class="flex flex-wrap items-center gap-x-1.5 gap-y-1 mt-0.5 text-[10px] font-bold leading-4"><span class="${typeClass} px-1.5 rounded">${typeLabels[activity.activity_type] || activity.activity_type}</span>${detail?.exercise_type ? `<span class="text-green-700">· ${escapeHtml(detail.exercise_type)}</span>` : ''}<span class="text-gray-500">· ${escapeHtml(statusLabel)}</span><span class="text-gray-500">· ${activity.priority === 'high' ? '高' : activity.priority === 'low' ? '低' : '中'}优先级</span>${activity.planned_duration ? `<span class="text-primary">· 计划 ${activity.planned_duration}m</span>` : ''}${activity.planned_start ? `<span class="text-primary">· ${activity.planned_start}–${activity.planned_end}</span>` : ''}${activity.note ? '<span class="text-gray-400" title="有备注">· <i class="fa fa-sticky-note-o"></i></span>' : ''}</div></div>
+                        <div class="col-span-2 sm:col-span-1 flex flex-nowrap items-center justify-end gap-0.5 flex-shrink-0 sm:pl-2">
                             ${isTomorrow ? `<button class="todo-move-up text-gray-400 hover:text-secondary w-7 h-7 rounded-lg" data-id="${activity.id}" title="上移"><i class="fa fa-arrow-up text-xs"></i></button><button class="todo-move-down text-gray-400 hover:text-secondary w-7 h-7 rounded-lg" data-id="${activity.id}" title="下移"><i class="fa fa-arrow-down text-xs"></i></button>` : activity.status === 'in_progress' ? `<button class="todo-finish bg-success text-white px-2.5 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}"><i class="fa fa-stop mr-1"></i>完成</button><button class="todo-pause bg-gray-100 text-gray-600 w-7 h-7 rounded-lg" data-id="${activity.id}" title="暂停"><i class="fa fa-pause text-xs"></i></button>` : activity.status !== 'completed' ? `<button class="todo-play ${activity.activity_type === 'exercise' ? 'bg-success/15 text-green-700 hover:bg-success' : 'bg-secondary/10 text-secondary hover:bg-secondary'} hover:text-white px-2.5 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}"><i class="fa fa-play mr-1"></i>${activity.status === 'paused' ? '继续' : '开始'}</button>` : ''}
                             ${activity.activity_type === 'exercise' ? `<button class="todo-fitness-detail text-green-700 bg-success/10 hover:bg-success hover:text-white px-2 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}" title="查看 / 补充健身详情"><i class="fa fa-heartbeat"></i></button>` : ''}
                             <button class="todo-edit text-gray-400 hover:text-white hover:bg-gray-500 w-7 h-7 rounded-lg" data-id="${activity.id}" title="编辑任务"><i class="fa fa-pencil text-xs"></i></button>
-                            ${isTomorrow ? '' : `<button class="todo-log text-gray-400 hover:text-white hover:bg-gray-500 w-7 h-7 rounded-lg" data-id="${activity.id}" title="手动补录时间"><i class="fa fa-clock-o text-xs"></i></button>`}
+                            <button class="todo-schedule text-gray-400 hover:text-white hover:bg-gray-500 w-7 h-7 rounded-lg" data-id="${activity.id}" title="安排时间"><i class="fa fa-clock-o text-xs"></i></button>
                             <button class="delete-todo text-danger hover:text-white hover:bg-danger w-7 h-7 rounded-lg" data-id="${activity.id}" title="从今日清单移除"><i class="fa fa-times text-xs"></i></button>
                         </div>
                     </div>
@@ -3062,7 +3060,19 @@
             });
             container.querySelectorAll('.todo-finish').forEach(btn => btn.addEventListener('click', () => { const item = findActivity(btn.dataset.id); if (!item) return; finishActivity(item); if (currentTask?.activityId === item.id) { clearInterval(taskTimer); currentTask = null; document.getElementById('current-task-container').classList.add('hidden'); } saveData(); renderTodos(); renderTodayTasksTimeline(); renderFitness(); }));
             container.querySelectorAll('.todo-pause').forEach(btn => btn.addEventListener('click', () => { const item = findActivity(btn.dataset.id); if (!item) return; pauseActivity(item); if (currentTask?.activityId === item.id) { clearInterval(taskTimer); currentTask = null; document.getElementById('current-task-container').classList.add('hidden'); } saveData(); renderTodos(); renderTodayTasksTimeline(); renderFitness(); }));
-            container.querySelectorAll('.todo-fitness-detail').forEach(btn => btn.addEventListener('click', () => { document.getElementById('nav-fitness')?.click(); editFitnessRecord(btn.dataset.id); }));
+            container.querySelectorAll('.todo-fitness-detail').forEach(btn => btn.addEventListener('click', () => {
+                const activity = findActivity(btn.dataset.id); if (!activity) return;
+                const detail = getExerciseDetail(activity.id, true);
+                const feeling = prompt('身体感受（可留空）', detail.body_feeling || '');
+                if (feeling === null) return;
+                const note = prompt('本次运动备注 / 未完成原因（可留空）', detail.exercise_note || detail.skip_reason || '');
+                if (note === null) return;
+                detail.body_feeling = feeling.trim();
+                detail.exercise_note = note.trim();
+                detail.skip_reason = ['not_completed', 'skipped'].includes(activity.status) ? note.trim() : '';
+                detail.updatedAt = new Date().toISOString();
+                saveData(); renderTodos(); renderFitness();
+            }));
             container.querySelectorAll('.todo-edit').forEach(btn => btn.addEventListener('click', () => {
                 const item = findActivity(btn.dataset.id); if (!item) return;
                 const title = prompt('任务标题', item.title);
@@ -3106,24 +3116,21 @@
             container.querySelectorAll('.todo-move-up').forEach(btn => btn.addEventListener('click', () => moveTask(btn.dataset.id, -1)));
             container.querySelectorAll('.todo-move-down').forEach(btn => btn.addEventListener('click', () => moveTask(btn.dataset.id, 1)));
 
-            container.querySelectorAll('.todo-log').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const id = this.getAttribute('data-id');
-                    const item = findActivity(id);
-                    if (item) {
-                        document.getElementById('manual-name').value = item.title;
-                        pendingManualContext = {
-                            activityId: item.id,
-                            todoId: item.id,
-                            todoSnapshot: { title: item.title },
-                            backlogId: item.backlog_id || null,
-                            backlogSnapshot: item.backlogSnapshot || null,
-                            linkedName: item.title
-                        };
-                        document.getElementById('manual-start').focus();
-                    }
-                });
-            });
+            container.querySelectorAll('.todo-schedule').forEach(btn => btn.addEventListener('click', () => {
+                const item = findActivity(btn.dataset.id); if (!item) return;
+                const start = prompt('计划开始时间（HH:MM，可留空以取消时间块）', item.planned_start || '');
+                if (start === null) return;
+                const end = prompt('计划结束时间（HH:MM）', item.planned_end || '');
+                if (end === null) return;
+                const pattern = /^([01]\d|2[0-3]):[0-5]\d$/;
+                if ((start || end) && (!pattern.test(start) || !pattern.test(end) || end <= start)) { alert('请填写有效且结束晚于开始的 HH:MM 时间段。'); return; }
+                item.planned_start = start;
+                item.planned_end = end;
+                item.planned_duration = start && end ? getDurationMinutes(start, end) : item.planned_duration;
+                item.date = taskDate;
+                item.updatedAt = new Date().toISOString();
+                saveData(); renderTodos(); refreshScheduleViews(taskDate);
+            }));
 
             container.querySelectorAll('.delete-todo').forEach(btn => {
                 btn.addEventListener('click', function () {
@@ -3463,29 +3470,12 @@
             return true;
         }
 
-        function addExerciseActivityToTaskDate(activity, taskDate = getTaskPlanningDate()) {
-            if (!activity || activity.activity_type !== 'exercise') return false;
-            const dateLabel = taskDate === getTodayStr() ? '今天' : '明天';
-            if (activity.date !== taskDate) {
-                const choice = prompt(`这项运动计划在 ${activity.date}。\n\n输入 1：更新计划日期为${dateLabel}（推荐）\n输入 2：仅加入${dateLabel}清单，保留原计划日期\n输入 3：取消`, '1');
-                if (choice === '1') { activity.original_planned_date = activity.original_planned_date || activity.date; activity.date = taskDate; }
-                else if (choice !== '2') return false;
-            }
-            activity.is_today_task = true;
-            activity.today_task_date = taskDate;
-            activity.taskDate = taskDate;
-            activity.task_order = getTodayTaskActivities(taskDate).length;
-            activity.updatedAt = new Date().toISOString();
-            return true;
-        }
-
         function renderFitnessPlanPicker() {
             const container = document.getElementById('fitness-plan-picker-list');
             if (!container) return;
             const taskDate = getTaskPlanningDate();
-            const horizon = getTodayStr(14);
-            const plans = D.activityData.records.filter(activity => activity.activity_type === 'exercise' && ['planned', 'paused'].includes(activity.status) && activity.date >= getTodayStr() && activity.date <= horizon && !(activity.is_today_task && (activity.taskDate || activity.today_task_date || activity.date) === taskDate)).sort((a, b) => `${a.date} ${a.planned_start}`.localeCompare(`${b.date} ${b.planned_start}`));
-            container.innerHTML = plans.length ? plans.map(activity => { const detail = getExerciseDetail(activity.id); return `<label class="flex items-center gap-3 text-sm bg-success/5 rounded-lg p-2 cursor-pointer"><input type="checkbox" class="fitness-plan-choice accent-green-600" value="${activity.id}"><span class="flex-1 font-bold text-textmain">${escapeHtml(activity.title)}</span><span class="text-xs text-textmuted">${escapeHtml(activity.date)}${detail?.exercise_type ? ` · ${escapeHtml(detail.exercise_type)}` : ''}${activity.planned_duration ? ` · ${activity.planned_duration}m` : ''}</span></label>`; }).join('') : `<div class="text-xs text-textmuted py-2">未来 14 天没有尚未加入${taskPlanningOffset ? '明日规划' : '今日清单'}的运动计划。</div>`;
+            const projects = D.exerciseLibrary.filter(project => project.status === 'active' && !D.activityData.records.some(activity => activity.exercise_library_id === project.id && activity.is_today_task && (activity.taskDate || activity.today_task_date || activity.date) === taskDate)).sort((a, b) => a.title.localeCompare(b.title, 'zh-CN'));
+            container.innerHTML = projects.length ? projects.map(project => `<label class="flex items-center gap-3 text-sm bg-success/5 rounded-lg p-2 cursor-pointer"><input type="checkbox" class="fitness-plan-choice accent-green-600" value="${project.id}"><span class="flex-1 font-bold text-textmain">${escapeHtml(project.title)}</span><span class="text-xs text-textmuted">${escapeHtml(project.exercise_type)}${project.default_duration ? ` · ${project.default_duration}m` : ''}</span></label>`).join('') : `<div class="text-xs text-textmuted py-2">没有尚未加入${taskPlanningOffset ? '明日规划' : '今日清单'}的启用运动项目。</div>`;
         }
 
         function renderFitness() {
@@ -3509,7 +3499,7 @@
                 const todayAdded = D.activityData.records.some(activity => activity.exercise_library_id === project.id && activity.is_today_task && (activity.taskDate || activity.today_task_date || activity.date) === getTodayStr());
                 const tomorrowAdded = D.activityData.records.some(activity => activity.exercise_library_id === project.id && activity.is_today_task && (activity.taskDate || activity.today_task_date || activity.date) === getTodayStr(1));
                 return `<article class="border border-gray-100 rounded-2xl p-4 ${project.status === 'paused' ? 'bg-gray-50 opacity-75' : 'bg-white'} shadow-sm">
-                    <div class="flex items-start justify-between gap-3"><div class="min-w-0"><h4 class="font-black text-textmain leading-5">${escapeHtml(project.title)}</h4><div class="flex flex-wrap gap-1.5 mt-2 text-[10px] font-bold"><span class="bg-success/10 text-green-700 px-2 py-0.5 rounded">${escapeHtml(project.exercise_type)}</span><span class="bg-primary/10 text-primary px-2 py-0.5 rounded">默认 ${project.default_duration || 0} 分钟</span><span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${project.links.length ? `${project.links.length} 个链接` : '无链接'}</span><span class="${project.status === 'active' ? 'bg-success/15 text-green-700' : 'bg-gray-200 text-gray-500'} px-2 py-0.5 rounded">${project.status === 'active' ? '启用' : '暂停'}</span></div></div></div>
+                    <div class="flex items-start justify-between gap-3"><div class="min-w-0"><div class="flex items-center gap-2"><h4 class="font-black text-textmain leading-5">${escapeHtml(project.title)}</h4>${project.links.length ? `<a href="${escapeHtml(project.links[0])}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white flex-shrink-0" title="打开跟练视频"><i class="fa fa-link text-xs"></i><span class="sr-only">跟练链接</span></a>` : ''}</div><div class="flex flex-wrap gap-1.5 mt-2 text-[10px] font-bold"><span class="bg-success/10 text-green-700 px-2 py-0.5 rounded">${escapeHtml(project.exercise_type)}</span><span class="bg-primary/10 text-primary px-2 py-0.5 rounded">默认 ${project.default_duration || 0} 分钟</span><span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${project.links.length ? `${project.links.length} 个链接` : '无链接'}</span><span class="${project.status === 'active' ? 'bg-success/15 text-green-700' : 'bg-gray-200 text-gray-500'} px-2 py-0.5 rounded">${project.status === 'active' ? '启用' : '暂停'}</span></div></div></div>
                     <div class="exercise-project-detail hidden mt-4 pt-3 border-t border-gray-100 text-xs text-textmuted space-y-2"><div><b class="text-textmain">适合时段：</b>${escapeHtml(periodLabels[project.preferred_period] || '灵活')}</div><div><b class="text-textmain">适合状态：</b>${escapeHtml(project.suitable_states.join('、') || '未设置')}</div><div><b class="text-textmain">重复建议：</b>${escapeHtml(repeatLabels[project.repeat_rule] || '不固定')}</div>${project.note ? `<div><b class="text-textmain">备注：</b>${escapeHtml(project.note)}</div>` : ''}${project.links.length ? `<div class="flex flex-wrap gap-2">${project.links.map((url, index) => `<a class="text-primary font-bold hover:underline" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">跟练链接 ${index + 1} <i class="fa fa-external-link"></i></a>`).join('')}</div>` : ''}</div>
                     <div class="flex flex-wrap gap-2 mt-4">${todayAdded ? '<button class="bg-success text-white px-3 py-2 rounded-lg text-xs font-bold" disabled><i class="fa fa-check mr-1"></i>已加入今日</button>' : `<button class="add-exercise-project bg-success/10 text-green-700 hover:bg-success hover:text-white px-3 py-2 rounded-lg text-xs font-bold disabled:opacity-40" data-id="${project.id}" data-date="${getTodayStr()}" ${project.status === 'paused' ? 'disabled' : ''}>加入今日任务</button>`}${tomorrowAdded ? '<button class="bg-secondary text-white px-3 py-2 rounded-lg text-xs font-bold" disabled><i class="fa fa-check mr-1"></i>已加入明日</button>' : `<button class="add-exercise-project bg-secondary/10 text-secondary hover:bg-secondary hover:text-white px-3 py-2 rounded-lg text-xs font-bold disabled:opacity-40" data-id="${project.id}" data-date="${getTodayStr(1)}" ${project.status === 'paused' ? 'disabled' : ''}>加入明日规划</button>`}<button class="toggle-exercise-project-detail bg-gray-100 text-textmain px-3 py-2 rounded-lg text-xs font-bold">详细安排</button><button class="edit-fitness bg-gray-100 text-textmain px-3 py-2 rounded-lg text-xs font-bold" data-id="${project.id}">编辑</button><button class="toggle-fitness-project-status border border-gray-200 text-textmuted px-3 py-2 rounded-lg text-xs font-bold" data-id="${project.id}">${project.status === 'active' ? '暂停' : '启用'}</button><button class="delete-fitness border border-danger/40 text-danger px-3 py-2 rounded-lg text-xs font-bold" data-id="${project.id}">删除</button></div>
                 </article>`;
