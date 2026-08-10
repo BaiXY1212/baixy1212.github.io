@@ -274,11 +274,14 @@
                 </section>
 
                 <section id="hourly-section" class="soft-card p-8 mb-6 hidden">
-                    <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-8 border-b border-gray-100 pb-4">
                         <h2 class="text-2xl font-black text-textmain flex items-center">
                             <i class="fa fa-calendar mr-3 text-primary text-3xl"></i>迷你时间日历
                         </h2>
-                        <input type="date" id="block-date-picker" class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-bold text-textmain outline-none cursor-pointer" />
+                        <div class="flex items-center gap-2">
+                            <input type="date" id="block-date-picker" class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-bold text-textmain outline-none cursor-pointer" />
+                            <button id="btn-view-day-history" class="bg-white text-primary border border-primary/40 px-4 py-2 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap"><i class="fa fa-history mr-1"></i>当日历史</button>
+                        </div>
                     </div>
 
                     <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-5 mb-6">
@@ -396,9 +399,12 @@
                     </div>
 
                     <div class="bg-secondary/5 p-5 rounded-2xl border border-secondary/20 mt-8">
-                        <div class="mb-4">
-                            <h3 class="text-lg font-bold text-textmain flex items-center"><i class="fa fa-inbox text-secondary mr-2"></i>Backlog_待办池</h3>
-                            <p class="text-xs text-textmuted mt-1 leading-relaxed">长期保存非今日优先事项，不会每日重置。需要处理时，可手动加入今日任务清单。</p>
+                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-textmain flex items-center"><i class="fa fa-inbox text-secondary mr-2"></i>Backlog_待办池</h3>
+                                <p class="text-xs text-textmuted mt-1 leading-relaxed">长期任务卡片库。列表保持简洁，点击项目查看背景、链接、反馈、下一步行动与历史推进。</p>
+                            </div>
+                            <button id="btn-show-archived-backlog" class="bg-white text-secondary border border-secondary/30 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap"><i class="fa fa-archive mr-1"></i>已完成 Backlog / 历史项目</button>
                         </div>
                         <div class="flex gap-2 mb-4">
                             <input type="text" id="new-long-term-todo-input" placeholder="记录一项非今日优先事项..." class="flex-1 min-w-0 px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
@@ -406,6 +412,11 @@
                         </div>
                         <div id="long-term-todo-list-container" class="space-y-2 max-h-[320px] overflow-y-auto pr-2"></div>
                         <div id="long-term-todo-empty" class="text-center text-textmuted text-sm font-bold py-5 hidden">Backlog_待办池还是空的</div>
+                        <div id="archived-backlog-section" class="hidden mt-5 pt-5 border-t border-secondary/20">
+                            <h4 class="text-sm font-black text-textmain mb-3"><i class="fa fa-archive text-secondary mr-2"></i>已完成 / Archived</h4>
+                            <div id="archived-backlog-list" class="space-y-2 max-h-[320px] overflow-y-auto pr-2"></div>
+                            <div id="archived-backlog-empty" class="text-center text-textmuted text-sm font-bold py-5 hidden">还没有已完成的历史项目</div>
+                        </div>
                     </div>
                 </section>
 
@@ -565,6 +576,78 @@
         </div>
     </div>
 
+    <div id="backlog-detail-modal" class="fixed inset-0 z-[70] bg-black/40 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto p-6">
+            <div class="flex items-center justify-between gap-4 mb-5 border-b border-gray-100 pb-4">
+                <div>
+                    <div class="text-xs font-black text-secondary uppercase tracking-wider">Backlog 项目详情</div>
+                    <h3 id="backlog-modal-heading" class="text-xl font-black text-textmain mt-1">长期任务卡片</h3>
+                </div>
+                <button id="btn-close-backlog-modal" class="w-9 h-9 rounded-lg bg-gray-100 text-gray-500"><i class="fa fa-times"></i></button>
+            </div>
+            <input type="hidden" id="backlog-detail-id" />
+            <label class="block text-xs font-bold text-textmuted mb-1">标题</label>
+            <input id="backlog-detail-title" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-bold mb-4 focus:ring-2 focus:ring-secondary outline-none" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                <div><label class="block text-xs font-bold text-textmuted mb-1">优先级</label><select id="backlog-detail-priority" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="low">低</option><option value="medium">中</option><option value="high">高</option><option value="critical">紧急</option></select></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">分类</label><input id="backlog-detail-category" placeholder="研究 / 生活 / 行政…" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">状态</label><select id="backlog-detail-status" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="backlog">待规划</option><option value="in_progress">进行中</option><option value="waiting">等待中</option><option value="completed">已完成 / Archived</option></select></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">可选截止日期</label><input type="date" id="backlog-detail-due" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div><label class="block text-xs font-bold text-textmuted mb-1">下一步行动</label><textarea id="backlog-detail-next-action" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg" placeholder="下一次具体要推进什么"></textarea></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">背景说明</label><textarea id="backlog-detail-background" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">备注</label><textarea id="backlog-detail-notes" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">相关链接（每行一个）</label><textarea id="backlog-detail-links" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">文献 / 阅读材料</label><textarea id="backlog-detail-literature" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">会议反馈</label><textarea id="backlog-detail-feedback" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+            </div>
+            <div class="mt-5 border-t border-gray-100 pt-4">
+                <h4 class="text-sm font-black text-textmain mb-3"><i class="fa fa-history text-secondary mr-2"></i>历史推进记录</h4>
+                <div id="backlog-detail-history" class="space-y-2 max-h-[220px] overflow-y-auto"></div>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-6 border-t border-gray-100 pt-4">
+                <button id="btn-backlog-add-today" class="bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-list mr-1"></i>加入今日任务</button>
+                <button id="btn-backlog-add-focus" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-clock-o mr-1"></i>加入今日专注</button>
+                <button id="btn-save-backlog-detail" class="bg-textmain text-white px-4 py-2 rounded-lg text-sm font-bold ml-auto">保存详情</button>
+                <button id="btn-archive-backlog" class="bg-success text-white px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-check mr-1"></i>完成并归档</button>
+                <button id="btn-delete-backlog-permanently" class="border border-danger text-danger px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-trash mr-1"></i>永久删除</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-detail-modal" class="fixed inset-0 z-[70] bg-black/40 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto p-6">
+            <div class="flex items-center justify-between gap-4 mb-5 border-b border-gray-100 pb-4">
+                <div><div class="text-xs font-black text-primary uppercase tracking-wider">时间日历历史详情</div><h3 id="history-modal-heading" class="text-xl font-black text-textmain mt-1">当日推进记录</h3></div>
+                <button id="btn-close-history-modal" class="w-9 h-9 rounded-lg bg-gray-100 text-gray-500"><i class="fa fa-times"></i></button>
+            </div>
+            <div id="history-day-summary" class="space-y-3"></div>
+            <div id="history-block-editor" class="hidden mt-5 border-t border-gray-100 pt-5">
+                <input type="hidden" id="history-block-date" /><input type="hidden" id="history-block-id" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-sm">
+                    <div><span class="text-textmuted font-bold">任务标题</span><div id="history-block-title" class="font-black text-textmain mt-1"></div></div>
+                    <div><span class="text-textmuted font-bold">时间段</span><div id="history-block-time" class="font-black text-textmain mt-1"></div></div>
+                    <div><span class="text-textmuted font-bold">来源</span><div id="history-block-source" class="font-bold text-textmain mt-1"></div></div>
+                    <div><span class="text-textmuted font-bold">关联 Backlog</span><div id="history-block-backlog" class="font-bold text-textmain mt-1"></div></div>
+                    <div><span class="text-textmuted font-bold">关联每日任务</span><div id="history-block-todo" class="font-bold text-textmain mt-1"></div></div>
+                    <div><span class="text-textmuted font-bold">更新时间</span><div id="history-block-updated" class="font-bold text-textmain mt-1"></div></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="history-block-status" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="in_progress">进行中</option><option value="completed">已完成</option><option value="partial">部分完成</option><option value="cancelled">未执行 / 取消</option></select></div>
+                    <div></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">实际完成情况</label><textarea id="history-block-outcome" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">备注 / 手动补录内容</label><textarea id="history-block-notes" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-5">
+                    <button id="btn-save-history-block" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">保存历史详情</button>
+                    <button id="btn-edit-history-time" class="bg-gray-100 text-textmain px-4 py-2 rounded-lg text-sm font-bold">编辑标题与时间</button>
+                    <button id="btn-delete-history-block" class="border border-danger text-danger px-4 py-2 rounded-lg text-sm font-bold ml-auto">删除此时间记录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="achievement-popup" class="fixed top-[30%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.25)] p-8 w-96 hidden achievement-popup z-50 border-2 border-gray-100 text-center flex flex-col items-center">
         <div class="w-24 h-24 rounded-full flex items-center justify-center mb-5 shadow-lg border-4 border-white bg-yellow-400" id="popup-icon-bg">
             <i class="fa fa-trophy text-5xl text-white drop-shadow-md" id="popup-icon"></i>
@@ -621,11 +704,58 @@
         let D = {};
         let currentTask = null;
         let taskTimer = null;
+        let pendingManualContext = null;
         let currentCalDate = new Date();
         let googleTokenClient = null;
         let googleAccessToken = null;
         let googleSyncInProgress = false;
         let googleCalendarCache = safeJSONParse(localStorage.getItem('googleCalendarCache'), {});
+
+        function normalizeBacklogItem(item) {
+            const now = new Date().toISOString();
+            item.name = item.name || item.title || '未命名 Backlog';
+            item.priority = item.priority || 'medium';
+            item.category = item.category || '';
+            item.status = item.status || (item.done ? 'completed' : 'backlog');
+            item.archived = item.archived === true || item.status === 'completed' || item.done === true;
+            item.done = item.archived;
+            item.dueDate = item.dueDate || '';
+            item.nextAction = item.nextAction || '';
+            item.background = item.background || '';
+            item.notes = item.notes || '';
+            item.links = item.links || '';
+            item.literature = item.literature || '';
+            item.feedback = item.feedback || '';
+            item.createdAt = item.createdAt || now;
+            item.updatedAt = item.updatedAt || item.createdAt;
+            item.archivedAt = item.archived ? (item.archivedAt || item.updatedAt) : null;
+            if (!Array.isArray(item.history)) item.history = [];
+            return item;
+        }
+
+        function getBacklogSnapshot(item) {
+            if (!item) return null;
+            return {
+                id: item.id,
+                title: item.name,
+                category: item.category || '',
+                priority: item.priority || 'medium',
+                nextAction: item.nextAction || ''
+            };
+        }
+
+        function addBacklogHistory(backlogId, entry) {
+            if (!backlogId) return;
+            const item = D.longTermTodos.find(backlog => backlog.id === backlogId);
+            if (!item) return;
+            normalizeBacklogItem(item);
+            item.history.push({
+                id: `bh_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+                createdAt: new Date().toISOString(),
+                ...entry
+            });
+            item.updatedAt = new Date().toISOString();
+        }
 
         const GOOGLE_CLIENT_ID_KEY = 'googleCalendarClientId';
         const GOOGLE_CACHE_KEY = 'googleCalendarCache';
@@ -887,6 +1017,32 @@
             if (!D.sleepData || typeof D.sleepData !== 'object') D.sleepData = {};
             if (!D.todoData || typeof D.todoData !== 'object') D.todoData = {};
             if (!Array.isArray(D.longTermTodos)) D.longTermTodos = [];
+            D.longTermTodos.forEach(normalizeBacklogItem);
+            Object.entries(D.todoData).forEach(([date, todos]) => {
+                if (!Array.isArray(todos)) return;
+                todos.forEach(todo => {
+                    todo.createdAt = todo.createdAt || `${date}T00:00:00`;
+                    todo.updatedAt = todo.updatedAt || todo.createdAt;
+                    if (todo.done && !todo.completedAt) todo.completedAt = todo.updatedAt;
+                    if (todo.sourceLongTermId && !todo.backlogSnapshot) {
+                        todo.backlogSnapshot = getBacklogSnapshot(D.longTermTodos.find(item => item.id === todo.sourceLongTermId));
+                    }
+                });
+            });
+            Object.entries(D.timeBlocks).forEach(([date, blocks]) => {
+                if (!Array.isArray(blocks)) return;
+                blocks.forEach(block => {
+                    block.source = block.source || (block.taskId ? 'focus' : 'manual-calendar');
+                    block.status = block.status || (block.taskId ? 'completed' : 'planned');
+                    block.actualOutcome = block.actualOutcome || '';
+                    block.notes = block.notes || '';
+                    block.createdAt = block.createdAt || `${date}T00:00:00`;
+                    block.updatedAt = block.updatedAt || block.createdAt;
+                    if (block.backlogId && !block.backlogSnapshot) {
+                        block.backlogSnapshot = getBacklogSnapshot(D.longTermTodos.find(item => item.id === block.backlogId));
+                    }
+                });
+            });
         }
 
         function ensureDateDataExists(dateStr) {
@@ -926,6 +1082,8 @@
             ensureRootData();
             migrateFocusRecordsToSchedule();
             localStorage.setItem('timeBlocks', JSON.stringify(D.timeBlocks));
+            localStorage.setItem('longTermTodos', JSON.stringify(D.longTermTodos));
+            localStorage.setItem('todoData', JSON.stringify(D.todoData));
             ensureDateDataExists(getTodayStr());
         }
 
@@ -941,7 +1099,7 @@
             });
             return {
                 format: 'baixy-life-dashboard',
-                version: 2,
+                version: 3,
                 exportedAt: new Date().toISOString(),
                 data
             };
@@ -1067,7 +1225,7 @@
                 const btn = document.getElementById(`nav-${sec}`);
                 if (!btn) return;
 
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function (event) {
                     sections.forEach(s => {
                         document.getElementById(`${s}-section`)?.classList.add('hidden');
                         const navBtn = document.getElementById(`nav-${s}`);
@@ -1701,23 +1859,44 @@
                         category: 'focus',
                         desc: task.name,
                         source: 'focus',
-                        taskId: task.id
+                        status: task.status || 'completed',
+                        actualOutcome: task.actualOutcome || '',
+                        notes: task.notes || '',
+                        taskId: task.id,
+                        todoId: task.todoId || null,
+                        backlogId: task.backlogId || null,
+                        backlogSnapshot: task.backlogSnapshot || null,
+                        createdAt: task.createdAt || `${date}T00:00:00`,
+                        updatedAt: task.updatedAt || task.createdAt || `${date}T00:00:00`
                     });
                 });
             });
         }
 
-        function addFocusRecordAndSchedule(date, name, start, end, duration) {
+        function addFocusRecordAndSchedule(date, name, start, end, duration, context = {}) {
             ensureDateDataExists(date);
             const taskId = `t_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
             const scheduleId = `b_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+            const now = new Date().toISOString();
+            const backlog = context.backlogId ? D.longTermTodos.find(item => item.id === context.backlogId) : null;
+            const backlogSnapshot = context.backlogSnapshot || getBacklogSnapshot(backlog);
 
             D.taskData[date].push({
                 id: taskId,
                 name,
                 startTime: start,
                 endTime: end,
-                duration
+                duration,
+                status: context.status || 'completed',
+                actualOutcome: context.actualOutcome || '',
+                notes: context.notes || '',
+                source: context.source || 'focus',
+                todoId: context.todoId || null,
+                todoSnapshot: context.todoSnapshot || null,
+                backlogId: context.backlogId || null,
+                backlogSnapshot,
+                createdAt: now,
+                updatedAt: now
             });
             D.taskData[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
 
@@ -1727,16 +1906,154 @@
                 end,
                 category: 'focus',
                 desc: name,
-                source: 'focus',
-                taskId
+                source: context.source || 'focus',
+                status: context.status || 'completed',
+                actualOutcome: context.actualOutcome || '',
+                notes: context.notes || '',
+                taskId,
+                todoId: context.todoId || null,
+                todoSnapshot: context.todoSnapshot || null,
+                backlogId: context.backlogId || null,
+                backlogSnapshot,
+                createdAt: now,
+                updatedAt: now
             });
             D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
+            if (context.backlogId) {
+                addBacklogHistory(context.backlogId, {
+                    date,
+                    type: 'focus_record',
+                    scheduleId,
+                    taskId,
+                    title: name,
+                    start,
+                    end,
+                    status: context.status || 'completed'
+                });
+            }
+            return { taskId, scheduleId };
+        }
+
+        function addPlannedBacklogFocus(item, start, end) {
+            const date = getTodayStr();
+            ensureDateDataExists(date);
+            const name = item.nextAction.trim() || item.name;
+            const now = new Date().toISOString();
+            const scheduleId = `b_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+            D.timeBlocks[date].push({
+                id: scheduleId,
+                start,
+                end,
+                category: 'focus',
+                desc: name,
+                source: 'backlog-planned',
+                status: 'planned',
+                actualOutcome: '',
+                notes: '',
+                backlogId: item.id,
+                backlogSnapshot: getBacklogSnapshot(item),
+                createdAt: now,
+                updatedAt: now
+            });
+            D.timeBlocks[date].sort((a, b) => a.start.localeCompare(b.start));
+            addBacklogHistory(item.id, { date, type: 'focus_schedule', scheduleId, title: name, start, end, status: 'planned' });
+            return scheduleId;
         }
 
         function refreshScheduleViews(date) {
             const pickerDate = document.getElementById('block-date-picker')?.value;
             if (pickerDate === date) renderTimeBlocksCalendar(date);
             if (date === getTodayStr()) renderTodayTasksTimeline();
+        }
+
+        function getRecordBacklogTitle(record) {
+            if (!record?.backlogId) return '无';
+            return D.longTermTodos.find(item => item.id === record.backlogId)?.name || record.backlogSnapshot?.title || '已删除的 Backlog 项目';
+        }
+
+        function getRecordTodoTitle(date, record) {
+            if (!record?.todoId) return '无';
+            return D.todoData[date]?.find(todo => todo.id === record.todoId)?.name || record.todoSnapshot?.title || '已删除的每日任务';
+        }
+
+        function openDayHistory(date, scheduleId = null) {
+            ensureDateDataExists(date);
+            const modal = document.getElementById('history-detail-modal');
+            const summary = document.getElementById('history-day-summary');
+            document.getElementById('history-modal-heading').textContent = `${date} · 当日推进记录`;
+            const blocks = [...D.timeBlocks[date]].sort((a, b) => a.start.localeCompare(b.start));
+            const todos = D.todoData[date] || [];
+            const completedTodos = todos.filter(todo => todo.done);
+            summary.innerHTML = `
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="bg-primary/10 rounded-xl p-3 text-center"><div class="text-2xl font-black text-primary">${blocks.length}</div><div class="text-xs font-bold text-textmuted">时间记录</div></div>
+                    <div class="bg-success/10 rounded-xl p-3 text-center"><div class="text-2xl font-black text-success">${completedTodos.length}</div><div class="text-xs font-bold text-textmuted">已完成任务</div></div>
+                    <div class="bg-secondary/10 rounded-xl p-3 text-center"><div class="text-2xl font-black text-secondary">${blocks.filter(block => block.backlogId).length}</div><div class="text-xs font-bold text-textmuted">Backlog 推进</div></div>
+                </div>
+                <div class="space-y-2">
+                    ${blocks.length ? blocks.map(block => `
+                        <button type="button" class="history-summary-block w-full text-left border border-gray-100 hover:border-primary/40 rounded-xl p-3" data-id="${block.id}">
+                            <div class="text-xs font-bold text-textmuted">${escapeHtml(block.start)}–${escapeHtml(block.end)} · ${escapeHtml(block.status || 'planned')} · ${escapeHtml(block.source || 'Dashboard')}</div>
+                            <div class="font-black text-textmain mt-1">${escapeHtml(block.desc)}</div>
+                            ${block.backlogId ? `<div class="text-xs text-secondary font-bold mt-1">关联：${escapeHtml(getRecordBacklogTitle(block))}</div>` : ''}
+                        </button>`).join('') : '<div class="text-sm text-textmuted bg-gray-50 rounded-xl p-4">当天没有 Dashboard 时间记录。</div>'}
+                </div>
+                <div class="mt-4 border-t border-gray-100 pt-4">
+                    <h4 class="text-sm font-black text-textmain mb-2">每日任务</h4>
+                    ${todos.length ? todos.map(todo => `<div class="flex items-center gap-2 text-sm py-1"><i class="fa ${todo.done ? 'fa-check-circle text-success' : 'fa-circle-o text-gray-300'}"></i><span class="${todo.done ? 'line-through text-gray-400' : 'text-textmain'}">${escapeHtml(todo.name)}</span>${todo.sourceLongTermId ? `<span class="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded">Backlog</span>` : ''}</div>`).join('') : '<div class="text-sm text-textmuted">当天没有每日任务。</div>'}
+                </div>
+            `;
+            summary.querySelectorAll('.history-summary-block').forEach(button => button.addEventListener('click', () => openHistoryBlock(date, button.dataset.id)));
+            document.getElementById('history-block-editor').classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            if (scheduleId) openHistoryBlock(date, scheduleId);
+        }
+
+        function openHistoryBlock(date, id) {
+            const block = D.timeBlocks[date]?.find(item => item.id === id);
+            if (!block) return;
+            const editor = document.getElementById('history-block-editor');
+            document.getElementById('history-block-date').value = date;
+            document.getElementById('history-block-id').value = id;
+            document.getElementById('history-block-title').textContent = block.desc;
+            document.getElementById('history-block-time').textContent = `${block.start}–${block.end}`;
+            const sourceLabels = { focus: '计时专注', manual: '手动补录', 'manual-calendar': '时间日历手动安排', 'backlog-planned': 'Backlog 专注计划' };
+            document.getElementById('history-block-source').textContent = sourceLabels[block.source] || block.source || 'Dashboard';
+            document.getElementById('history-block-backlog').textContent = getRecordBacklogTitle(block);
+            document.getElementById('history-block-todo').textContent = getRecordTodoTitle(date, block);
+            document.getElementById('history-block-updated').textContent = block.updatedAt ? new Date(block.updatedAt).toLocaleString('zh-CN') : '—';
+            document.getElementById('history-block-status').value = block.status || 'planned';
+            document.getElementById('history-block-outcome').value = block.actualOutcome || '';
+            document.getElementById('history-block-notes').value = block.notes || '';
+            editor.classList.remove('hidden');
+        }
+
+        function closeHistoryModal() {
+            const modal = document.getElementById('history-detail-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveHistoryBlockDetail() {
+            const date = document.getElementById('history-block-date').value;
+            const id = document.getElementById('history-block-id').value;
+            const block = D.timeBlocks[date]?.find(item => item.id === id);
+            if (!block) return;
+            block.status = document.getElementById('history-block-status').value;
+            block.actualOutcome = document.getElementById('history-block-outcome').value.trim();
+            block.notes = document.getElementById('history-block-notes').value.trim();
+            block.updatedAt = new Date().toISOString();
+            if (block.taskId) {
+                const task = D.taskData[date]?.find(item => item.id === block.taskId);
+                if (task) {
+                    task.status = block.status; task.actualOutcome = block.actualOutcome; task.notes = block.notes; task.updatedAt = block.updatedAt;
+                }
+            }
+            if (block.backlogId) addBacklogHistory(block.backlogId, { date, type: 'focus_record', scheduleId: block.id, title: block.desc, start: block.start, end: block.end, status: block.status, outcome: block.actualOutcome });
+            saveData();
+            refreshScheduleViews(date);
+            openDayHistory(date, id);
         }
 
         function editScheduleItem(date, id) {
@@ -1765,6 +2082,7 @@
             item.desc = cleanDesc;
             item.start = start;
             item.end = end;
+            item.updatedAt = new Date().toISOString();
 
             if (item.taskId) {
                 const linkedTask = D.taskData[date]?.find(task => task.id === item.taskId);
@@ -1773,6 +2091,7 @@
                     linkedTask.startTime = start;
                     linkedTask.endTime = end;
                     linkedTask.duration = getDurationMinutes(start, end);
+                    linkedTask.updatedAt = item.updatedAt;
                     D.taskData[date].sort((a, b) => a.startTime.localeCompare(b.startTime));
                 }
             }
@@ -1802,6 +2121,22 @@
             dp.value = getTodayStr();
             dp.addEventListener('change', e => {
                 renderTimeBlocksCalendar(e.target.value);
+            });
+            document.getElementById('btn-view-day-history')?.addEventListener('click', () => openDayHistory(dp.value));
+            document.getElementById('btn-close-history-modal')?.addEventListener('click', closeHistoryModal);
+            document.getElementById('btn-save-history-block')?.addEventListener('click', saveHistoryBlockDetail);
+            document.getElementById('btn-edit-history-time')?.addEventListener('click', () => {
+                const date = document.getElementById('history-block-date').value;
+                const id = document.getElementById('history-block-id').value;
+                editScheduleItem(date, id);
+                openDayHistory(date, id);
+            });
+            document.getElementById('btn-delete-history-block')?.addEventListener('click', () => {
+                const date = document.getElementById('history-block-date').value;
+                const id = document.getElementById('history-block-id').value;
+                if (!confirm('删除这条时间记录？关联 Backlog 项目不会被删除。')) return;
+                deleteScheduleItem(date, id);
+                openDayHistory(date);
             });
 
             document.getElementById('btn-add-block')?.addEventListener('click', () => {
@@ -1893,6 +2228,10 @@
 
                 const div = document.createElement('div');
                 div.className = `absolute left-0 right-0 rounded p-1 border-l-4 ${conf.border} ${conf.bgSoft} overflow-hidden shadow-sm hover:shadow-md hover:z-20 transition-all group flex justify-between items-start ${b.readOnly ? 'ring-1 ring-blue-200 z-10' : ''}`;
+                if (!b.readOnly) {
+                    div.classList.add('history-calendar-block', 'cursor-pointer');
+                    div.dataset.id = b.id;
+                }
                 div.style.top = `${top}px`;
                 div.style.height = `${height}px`;
 
@@ -1913,16 +2252,21 @@
             });
 
             items.querySelectorAll('.edit-block').forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function (event) {
+                    event.stopPropagation();
                     editScheduleItem(dateStr, this.getAttribute('data-id'));
                 });
             });
 
             items.querySelectorAll('.delete-block').forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function (event) {
+                    event.stopPropagation();
                     if (!confirm('删除此时段记录？')) return;
                     deleteScheduleItem(dateStr, this.getAttribute('data-id'));
                 });
+            });
+            items.querySelectorAll('.history-calendar-block').forEach(block => {
+                block.addEventListener('click', () => openDayHistory(dateStr, block.dataset.id));
             });
         }
 
@@ -1935,7 +2279,8 @@
 
                 const t = getTodayStr();
                 ensureDateDataExists(t);
-                D.todoData[t].push({ id: `td_${Date.now()}`, name, done: false });
+                const now = new Date().toISOString();
+                D.todoData[t].push({ id: `td_${Date.now()}`, name, done: false, createdAt: now, updatedAt: now });
 
                 input.value = '';
                 saveData();
@@ -1945,6 +2290,9 @@
             document.getElementById('btn-add-todo')?.addEventListener('click', addTodayTodo);
             document.getElementById('new-todo-input')?.addEventListener('keydown', event => {
                 if (event.key === 'Enter') addTodayTodo();
+            });
+            document.getElementById('manual-name')?.addEventListener('input', event => {
+                if (pendingManualContext?.linkedName && event.target.value.trim() !== pendingManualContext.linkedName) pendingManualContext = null;
             });
 
             const addLongTermTodo = () => {
@@ -1956,7 +2304,20 @@
                     id: `ltd_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
                     name,
                     done: false,
-                    createdAt: new Date().toISOString()
+                    archived: false,
+                    status: 'backlog',
+                    priority: 'medium',
+                    category: '',
+                    dueDate: '',
+                    nextAction: '',
+                    background: '',
+                    notes: '',
+                    links: '',
+                    literature: '',
+                    feedback: '',
+                    history: [],
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
                 });
                 input.value = '';
                 saveData();
@@ -1966,6 +2327,55 @@
             document.getElementById('btn-add-long-term-todo')?.addEventListener('click', addLongTermTodo);
             document.getElementById('new-long-term-todo-input')?.addEventListener('keydown', event => {
                 if (event.key === 'Enter') addLongTermTodo();
+            });
+            document.getElementById('btn-show-archived-backlog')?.addEventListener('click', () => {
+                document.getElementById('archived-backlog-section')?.classList.toggle('hidden');
+            });
+            document.getElementById('btn-close-backlog-modal')?.addEventListener('click', closeBacklogModal);
+            document.getElementById('btn-save-backlog-detail')?.addEventListener('click', () => {
+                const item = saveBacklogDetail();
+                if (item) openBacklogDetail(item.id);
+            });
+            document.getElementById('btn-backlog-add-today')?.addEventListener('click', () => {
+                const item = saveBacklogDetail();
+                if (item && !item.archived && addBacklogToToday(item)) {
+                    saveData(); renderTodos(); renderLongTermTodos(); openBacklogDetail(item.id);
+                }
+            });
+            document.getElementById('btn-backlog-add-focus')?.addEventListener('click', () => {
+                const item = saveBacklogDetail();
+                if (!item || item.archived) return;
+                const start = prompt('今日专注开始时间（HH:MM）', getTimeStr());
+                if (start === null) return;
+                const end = prompt('今日专注结束时间（HH:MM）', '');
+                if (end === null) return;
+                const pattern = /^([01]\d|2[0-3]):[0-5]\d$/;
+                if (!pattern.test(start) || !pattern.test(end)) { alert('请使用 HH:MM 格式，例如 14:30'); return; }
+                addPlannedBacklogFocus(item, start, end);
+                saveData(); renderTodayTasksTimeline(); openBacklogDetail(item.id);
+            });
+            document.getElementById('btn-archive-backlog')?.addEventListener('click', () => {
+                const existing = D.longTermTodos.find(backlog => backlog.id === document.getElementById('backlog-detail-id').value);
+                const wasArchived = existing?.archived === true;
+                const item = saveBacklogDetail();
+                if (!item) return;
+                if (wasArchived) {
+                    item.archived = false; item.done = false; item.status = 'in_progress'; item.archivedAt = null; item.updatedAt = new Date().toISOString();
+                    addBacklogHistory(item.id, { date: getTodayStr(), type: 'restored', title: item.name, status: 'in_progress' });
+                } else {
+                    item.archived = true; item.done = true; item.status = 'completed'; item.archivedAt = new Date().toISOString(); item.updatedAt = item.archivedAt;
+                    addBacklogHistory(item.id, { date: getTodayStr(), type: 'archived', title: item.name, status: 'completed' });
+                }
+                saveData(); renderLongTermTodos(); closeBacklogModal();
+            });
+            document.getElementById('btn-delete-backlog-permanently')?.addEventListener('click', () => {
+                const id = document.getElementById('backlog-detail-id').value;
+                const item = D.longTermTodos.find(backlog => backlog.id === id);
+                if (!item) return;
+                if (!confirm(`永久删除「${item.name}」？项目详情将被移除，但已写入时间日历的历史记录会保留。`)) return;
+                if (!confirm('请再次确认：这是永久删除，无法通过“已完成 Backlog”恢复。')) return;
+                D.longTermTodos = D.longTermTodos.filter(backlog => backlog.id !== id);
+                saveData(); renderLongTermTodos(); closeBacklogModal();
             });
 
             document.getElementById('end-task')?.addEventListener('click', () => {
@@ -1980,7 +2390,8 @@
                     currentTask.name,
                     currentTask.startTime,
                     getTimeStr(),
-                    Math.floor((Date.now() - currentTask.startTimestamp) / 60000)
+                    Math.floor((Date.now() - currentTask.startTimestamp) / 60000),
+                    currentTask.context || {}
                 );
                 currentTask = null;
                 document.getElementById('current-task-container').classList.add('hidden');
@@ -2002,11 +2413,17 @@
 
                 const t = getTodayStr();
                 ensureDateDataExists(t);
-                addFocusRecordAndSchedule(t, name, start, end, getDurationMinutes(start, end));
+                addFocusRecordAndSchedule(t, name, start, end, getDurationMinutes(start, end), {
+                    ...(pendingManualContext || {}),
+                    source: 'manual',
+                    status: 'completed',
+                    notes: '手动补录专注记录'
+                });
 
                 document.getElementById('manual-name').value = '';
                 document.getElementById('manual-start').value = '';
                 document.getElementById('manual-end').value = '';
+                pendingManualContext = null;
 
                 saveData();
                 renderTodayTasksTimeline();
@@ -2018,7 +2435,7 @@
             renderTodayTasksTimeline();
         }
 
-        function startTaskByName(name) {
+        function startTaskByName(name, context = {}) {
             if (!name) return;
 
             if (currentTask) document.getElementById('end-task')?.click();
@@ -2026,7 +2443,8 @@
             currentTask = {
                 name,
                 startTime: getTimeStr(),
-                startTimestamp: Date.now()
+                startTimestamp: Date.now(),
+                context
             };
 
             document.getElementById('current-task-name').textContent = name;
@@ -2043,91 +2461,205 @@
             }, 1000);
         }
 
+        function addBacklogToToday(item) {
+            const today = getTodayStr();
+            ensureDateDataExists(today);
+            if (D.todoData[today].some(todo => todo.sourceLongTermId === item.id && !todo.done)) return false;
+            const now = new Date().toISOString();
+            const todoId = `td_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+            const title = item.nextAction.trim() || item.name;
+            D.todoData[today].push({
+                id: todoId,
+                name: title,
+                done: false,
+                sourceLongTermId: item.id,
+                backlogSnapshot: getBacklogSnapshot(item),
+                createdAt: now,
+                updatedAt: now
+            });
+            addBacklogHistory(item.id, { date: today, type: 'today_task', todoId, title, status: 'planned' });
+            return true;
+        }
+
+        function getBacklogProgressEntries(item) {
+            const entries = [...(item.history || [])];
+            Object.entries(D.todoData).forEach(([date, todos]) => {
+                (todos || []).filter(todo => todo.sourceLongTermId === item.id).forEach(todo => {
+                    if (!entries.some(entry => entry.todoId === todo.id)) entries.push({
+                        id: `derived_${todo.id}`,
+                        date,
+                        type: 'today_task',
+                        todoId: todo.id,
+                        title: todo.name,
+                        status: todo.done ? 'completed' : 'planned',
+                        createdAt: todo.createdAt || `${date}T00:00:00`
+                    });
+                });
+            });
+            Object.entries(D.timeBlocks).forEach(([date, blocks]) => {
+                (blocks || []).filter(block => block.backlogId === item.id).forEach(block => {
+                    if (!entries.some(entry => entry.scheduleId === block.id)) entries.push({
+                        id: `derived_${block.id}`,
+                        date,
+                        type: 'focus_record',
+                        scheduleId: block.id,
+                        title: block.desc,
+                        start: block.start,
+                        end: block.end,
+                        status: block.status || 'planned',
+                        createdAt: block.createdAt || `${date}T00:00:00`
+                    });
+                });
+            });
+            return entries.sort((a, b) => String(b.createdAt || b.date).localeCompare(String(a.createdAt || a.date)));
+        }
+
+        function renderBacklogDetailHistory(item) {
+            const container = document.getElementById('backlog-detail-history');
+            const entries = getBacklogProgressEntries(item);
+            if (!entries.length) {
+                container.innerHTML = '<div class="text-sm text-textmuted bg-gray-50 rounded-xl p-4">尚未加入每日任务或专注日程。</div>';
+                return;
+            }
+            const typeLabels = { today_task: '每日任务', focus_schedule: '专注计划', focus_record: '专注记录', archived: '完成归档', restored: '恢复项目' };
+            container.innerHTML = entries.map(entry => `
+                <button type="button" class="backlog-history-entry w-full text-left bg-gray-50 hover:bg-white border border-gray-100 rounded-xl p-3" data-date="${escapeHtml(entry.date || '')}" data-schedule-id="${escapeHtml(entry.scheduleId || '')}">
+                    <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-textmuted">
+                        <span>${escapeHtml(entry.date || '—')}</span><span class="text-secondary">${escapeHtml(typeLabels[entry.type] || entry.type)}</span>
+                        ${entry.start ? `<span>${escapeHtml(entry.start)}–${escapeHtml(entry.end)}</span>` : ''}
+                        <span>${escapeHtml(entry.status || '')}</span>
+                    </div>
+                    <div class="font-bold text-textmain mt-1">${escapeHtml(entry.title || item.name)}</div>
+                </button>
+            `).join('');
+            container.querySelectorAll('.backlog-history-entry').forEach(button => {
+                button.addEventListener('click', () => {
+                    const date = button.dataset.date;
+                    const scheduleId = button.dataset.scheduleId;
+                    if (!date) return;
+                    closeBacklogModal();
+                    openDayHistory(date, scheduleId || null);
+                });
+            });
+        }
+
+        function openBacklogDetail(id) {
+            const item = D.longTermTodos.find(backlog => backlog.id === id);
+            if (!item) return;
+            normalizeBacklogItem(item);
+            document.getElementById('backlog-detail-id').value = item.id;
+            document.getElementById('backlog-detail-title').value = item.name;
+            document.getElementById('backlog-detail-priority').value = item.priority;
+            document.getElementById('backlog-detail-category').value = item.category;
+            document.getElementById('backlog-detail-status').value = item.status;
+            document.getElementById('backlog-detail-due').value = item.dueDate;
+            document.getElementById('backlog-detail-next-action').value = item.nextAction;
+            document.getElementById('backlog-detail-background').value = item.background;
+            document.getElementById('backlog-detail-notes').value = item.notes;
+            document.getElementById('backlog-detail-links').value = item.links;
+            document.getElementById('backlog-detail-literature').value = item.literature;
+            document.getElementById('backlog-detail-feedback').value = item.feedback;
+            document.getElementById('backlog-modal-heading').textContent = item.name;
+            document.getElementById('btn-archive-backlog').textContent = item.archived ? '恢复到 Backlog' : '✓ 完成并归档';
+            document.getElementById('btn-backlog-add-today').disabled = item.archived;
+            document.getElementById('btn-backlog-add-focus').disabled = item.archived;
+            renderBacklogDetailHistory(item);
+            const modal = document.getElementById('backlog-detail-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeBacklogModal() {
+            const modal = document.getElementById('backlog-detail-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveBacklogDetail() {
+            const id = document.getElementById('backlog-detail-id').value;
+            const item = D.longTermTodos.find(backlog => backlog.id === id);
+            if (!item) return null;
+            const title = document.getElementById('backlog-detail-title').value.trim();
+            if (!title) { alert('Backlog 标题不能为空'); return null; }
+            item.name = title;
+            item.priority = document.getElementById('backlog-detail-priority').value;
+            item.category = document.getElementById('backlog-detail-category').value.trim();
+            item.status = document.getElementById('backlog-detail-status').value;
+            item.dueDate = document.getElementById('backlog-detail-due').value;
+            item.nextAction = document.getElementById('backlog-detail-next-action').value.trim();
+            item.background = document.getElementById('backlog-detail-background').value.trim();
+            item.notes = document.getElementById('backlog-detail-notes').value.trim();
+            item.links = document.getElementById('backlog-detail-links').value.trim();
+            item.literature = document.getElementById('backlog-detail-literature').value.trim();
+            item.feedback = document.getElementById('backlog-detail-feedback').value.trim();
+            item.archived = item.status === 'completed';
+            item.done = item.archived;
+            item.archivedAt = item.archived ? (item.archivedAt || new Date().toISOString()) : null;
+            item.updatedAt = new Date().toISOString();
+            saveData();
+            renderLongTermTodos();
+            return item;
+        }
+
+        function renderBacklogCard(item, archived = false) {
+            const priorityLabels = { low: '低', medium: '中', high: '高', critical: '紧急' };
+            const statusLabels = { backlog: '待规划', in_progress: '进行中', waiting: '等待中', completed: '已完成' };
+            const div = document.createElement('div');
+            div.className = `bg-white p-3 rounded-xl border ${archived ? 'border-success/30 opacity-80' : 'border-gray-100'} shadow-sm group`;
+            div.innerHTML = `
+                <div class="flex items-start gap-3">
+                    ${archived ? '<i class="fa fa-archive text-success mt-1"></i>' : `<input type="checkbox" class="archive-backlog-check appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-success checked:border-success cursor-pointer mt-0.5 flex-shrink-0" data-id="${item.id}" title="完成并归档">`}
+                    <button class="open-backlog-detail flex-1 min-w-0 text-left" data-id="${item.id}">
+                        <div class="font-bold text-sm text-textmain break-words">${escapeHtml(item.name)}</div>
+                        <div class="flex flex-wrap gap-1.5 mt-2 text-[10px] font-bold">
+                            <span class="bg-secondary/10 text-secondary px-2 py-0.5 rounded">${escapeHtml(statusLabels[item.status] || item.status)}</span>
+                            <span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">优先级 ${escapeHtml(priorityLabels[item.priority] || item.priority)}</span>
+                            ${item.category ? `<span class="bg-primary/10 text-primary px-2 py-0.5 rounded">${escapeHtml(item.category)}</span>` : ''}
+                            ${item.dueDate ? `<span class="bg-warning/20 text-textmain px-2 py-0.5 rounded">截止 ${escapeHtml(item.dueDate)}</span>` : ''}
+                        </div>
+                    </button>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        ${archived ? '' : `<button class="backlog-quick-today bg-secondary/10 text-secondary hover:bg-secondary hover:text-white px-2.5 h-8 rounded-lg text-xs font-bold" data-id="${item.id}">加入今日</button>`}
+                        <button class="open-backlog-detail text-gray-400 hover:text-white hover:bg-gray-500 w-8 h-8 rounded-lg" data-id="${item.id}" title="详情"><i class="fa fa-angle-right"></i></button>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function bindBacklogCardEvents(container) {
+            container.querySelectorAll('.open-backlog-detail').forEach(button => button.addEventListener('click', () => openBacklogDetail(button.dataset.id)));
+            container.querySelectorAll('.backlog-quick-today').forEach(button => button.addEventListener('click', () => {
+                const item = D.longTermTodos.find(backlog => backlog.id === button.dataset.id);
+                if (item && addBacklogToToday(item)) { saveData(); renderTodos(); renderLongTermTodos(); }
+            }));
+            container.querySelectorAll('.archive-backlog-check').forEach(check => check.addEventListener('change', () => {
+                if (!check.checked) return;
+                const item = D.longTermTodos.find(backlog => backlog.id === check.dataset.id);
+                if (!item) return;
+                item.status = 'completed'; item.archived = true; item.done = true; item.archivedAt = new Date().toISOString(); item.updatedAt = item.archivedAt;
+                addBacklogHistory(item.id, { date: getTodayStr(), type: 'archived', title: item.name, status: 'completed' });
+                saveData(); renderLongTermTodos();
+            }));
+        }
+
         function renderLongTermTodos() {
             const container = document.getElementById('long-term-todo-list-container');
             const empty = document.getElementById('long-term-todo-empty');
-            if (!container || !empty) return;
-
+            const archivedContainer = document.getElementById('archived-backlog-list');
+            const archivedEmpty = document.getElementById('archived-backlog-empty');
+            if (!container || !empty || !archivedContainer || !archivedEmpty) return;
             ensureRootData();
+            const activeItems = D.longTermTodos.filter(item => !item.archived);
+            const archivedItems = D.longTermTodos.filter(item => item.archived).sort((a, b) => String(b.archivedAt).localeCompare(String(a.archivedAt)));
             container.innerHTML = '';
-            empty.classList.toggle('hidden', D.longTermTodos.length > 0);
-            const todayItems = D.todoData[getTodayStr()] || [];
-
-            D.longTermTodos.forEach(item => {
-                const alreadyToday = todayItems.some(todo => todo.sourceLongTermId === item.id);
-                const addDisabled = alreadyToday || item.done;
-                const addLabel = item.done ? '已完成' : alreadyToday ? '已加入' : '加入今日';
-                const div = document.createElement('div');
-                div.className = 'bg-white p-3 rounded-xl border border-gray-100 shadow-sm group';
-                div.innerHTML = `
-                    <div class="flex items-start gap-2">
-                        <label class="flex items-start cursor-pointer flex-1 min-w-0">
-                            <input type="checkbox" class="long-term-chk peer appearance-none w-5 h-5 border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary transition-all cursor-pointer mr-3 mt-0.5 flex-shrink-0" ${item.done ? 'checked' : ''} data-id="${item.id}">
-                            <span class="font-bold text-sm text-textmain peer-checked:line-through peer-checked:text-gray-400 break-words transition-all">${escapeHtml(item.name)}</span>
-                        </label>
-                        <div class="flex items-center gap-1 flex-shrink-0">
-                            <button class="long-term-today px-2.5 h-7 rounded-lg text-xs font-bold transition-colors ${addDisabled ? 'bg-gray-100 text-gray-400 cursor-default' : 'bg-secondary/10 text-secondary hover:bg-secondary hover:text-white'}" data-id="${item.id}" ${addDisabled ? 'disabled' : ''}>${addLabel}</button>
-                            <button class="edit-long-term text-gray-400 hover:text-white hover:bg-gray-500 w-7 h-7 rounded-lg flex items-center justify-center transition-colors" data-id="${item.id}" title="编辑"><i class="fa fa-pencil text-xs"></i></button>
-                            <button class="delete-long-term text-danger hover:text-white hover:bg-danger w-7 h-7 rounded-lg flex items-center justify-center transition-colors" data-id="${item.id}" title="删除"><i class="fa fa-trash text-xs"></i></button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-
-            container.querySelectorAll('.long-term-chk').forEach(chk => {
-                chk.addEventListener('change', function () {
-                    const item = D.longTermTodos.find(todo => todo.id === this.getAttribute('data-id'));
-                    if (!item) return;
-                    item.done = this.checked;
-                    saveData();
-                    renderLongTermTodos();
-                });
-            });
-
-            container.querySelectorAll('.long-term-today').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const item = D.longTermTodos.find(todo => todo.id === this.getAttribute('data-id'));
-                    if (!item) return;
-                    const today = getTodayStr();
-                    ensureDateDataExists(today);
-                    if (D.todoData[today].some(todo => todo.sourceLongTermId === item.id)) return;
-
-                    D.todoData[today].push({
-                        id: `td_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-                        name: item.name,
-                        done: false,
-                        sourceLongTermId: item.id
-                    });
-                    saveData();
-                    renderTodos();
-                    renderLongTermTodos();
-                });
-            });
-
-            container.querySelectorAll('.edit-long-term').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const item = D.longTermTodos.find(todo => todo.id === this.getAttribute('data-id'));
-                    if (!item) return;
-                    const nextName = prompt('编辑长期待办', item.name);
-                    if (nextName === null) return;
-                    const cleanName = nextName.trim();
-                    if (!cleanName) return;
-                    item.name = cleanName;
-                    saveData();
-                    renderLongTermTodos();
-                });
-            });
-
-            container.querySelectorAll('.delete-long-term').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    if (!confirm('删除这项长期待办？已加入今日的副本不会被删除。')) return;
-                    const id = this.getAttribute('data-id');
-                    D.longTermTodos = D.longTermTodos.filter(todo => todo.id !== id);
-                    saveData();
-                    renderLongTermTodos();
-                });
-            });
+            archivedContainer.innerHTML = '';
+            activeItems.forEach(item => container.appendChild(renderBacklogCard(item, false)));
+            archivedItems.forEach(item => archivedContainer.appendChild(renderBacklogCard(item, true)));
+            empty.classList.toggle('hidden', activeItems.length > 0);
+            archivedEmpty.classList.toggle('hidden', archivedItems.length > 0);
+            bindBacklogCardEvents(container);
+            bindBacklogCardEvents(archivedContainer);
         }
 
         function renderTodos() {
@@ -2160,7 +2692,14 @@
                     const item = D.todoData[getTodayStr()].find(x => x.id === id);
                     if (item) {
                         item.done = this.checked;
+                        item.updatedAt = new Date().toISOString();
+                        item.completedAt = this.checked ? item.updatedAt : null;
+                        if (item.sourceLongTermId) addBacklogHistory(item.sourceLongTermId, {
+                            date: getTodayStr(), type: 'today_task', todoId: item.id, title: item.name,
+                            status: this.checked ? 'completed' : 'planned'
+                        });
                         saveData();
+                        renderTodos();
                     }
                 });
             });
@@ -2169,7 +2708,14 @@
                 btn.addEventListener('click', function () {
                     const id = this.getAttribute('data-id');
                     const item = D.todoData[getTodayStr()].find(x => x.id === id);
-                    if (item) startTaskByName(item.name);
+                    if (item) startTaskByName(item.name, {
+                        source: 'focus',
+                        todoId: item.id,
+                        todoSnapshot: { title: item.name },
+                        backlogId: item.sourceLongTermId || null,
+                        backlogSnapshot: item.backlogSnapshot || null,
+                        status: 'completed'
+                    });
                 });
             });
 
@@ -2179,6 +2725,13 @@
                     const item = D.todoData[getTodayStr()].find(x => x.id === id);
                     if (item) {
                         document.getElementById('manual-name').value = item.name;
+                        pendingManualContext = {
+                            todoId: item.id,
+                            todoSnapshot: { title: item.name },
+                            backlogId: item.sourceLongTermId || null,
+                            backlogSnapshot: item.backlogSnapshot || null,
+                            linkedName: item.name
+                        };
                         document.getElementById('manual-start').focus();
                     }
                 });
@@ -2222,9 +2775,12 @@
                                 <span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${item.start} - ${item.end}</span>
                                 <span class="${conf.text} ${conf.bgSoft} px-2 py-0.5 rounded">${conf.label}</span>
                                 <span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">${Math.floor(duration / 60)}h ${duration % 60}m</span>
+                                <span class="text-gray-500 bg-gray-100 px-2 py-0.5 rounded">${escapeHtml(item.status || 'planned')}</span>
+                                ${item.backlogId ? `<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Backlog</span>` : ''}
                             </div>
                             <div class="font-black text-textmain break-words">${escapeHtml(item.desc)}</div>
                             <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                <button class="view-schedule-history text-gray-400 hover:text-white hover:bg-primary w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="历史详情"><i class="fa fa-info-circle"></i></button>
                                 <button class="edit-schedule text-gray-400 hover:text-white hover:bg-gray-500 w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="编辑"><i class="fa fa-pencil"></i></button>
                                 <button class="delete-schedule text-gray-400 hover:text-white hover:bg-danger w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="删除"><i class="fa fa-trash"></i></button>
                             </div>
@@ -2236,6 +2792,12 @@
                 tl.querySelectorAll('.edit-schedule').forEach(btn => {
                     btn.addEventListener('click', function () {
                         editScheduleItem(today, this.getAttribute('data-id'));
+                    });
+                });
+
+                tl.querySelectorAll('.view-schedule-history').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        openDayHistory(today, this.getAttribute('data-id'));
                     });
                 });
 
