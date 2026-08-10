@@ -515,11 +515,11 @@
 
                 <section id="fitness-section" class="soft-card p-8 mb-6 hidden">
                     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-7 border-b border-gray-100 pb-4">
-                        <div><h2 class="text-2xl font-black text-textmain flex items-center"><i class="fa fa-heartbeat mr-3 text-success text-3xl"></i>健身与身体状态</h2><p class="text-sm text-textmuted mt-2">轻松记录居家跟练，关注身体感受，不追求惩罚式打卡。</p></div>
-                        <div class="flex flex-wrap gap-2"><button id="btn-export-fitness-week" class="bg-success text-white px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-file-text-o mr-2"></i>导出本周复盘 Markdown</button><button id="btn-export-fitness-csv" class="bg-white text-success border border-success/40 px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-table mr-2"></i>导出 CSV</button></div>
+                        <div><h2 class="text-2xl font-black text-textmain flex items-center"><i class="fa fa-heartbeat mr-3 text-success text-3xl"></i>健身与身体状态</h2><p class="text-sm text-textmuted mt-2">运动项目库：保存长期可反复调用的运动，不在这里管理具体时间。</p></div>
+                        <div class="flex flex-wrap gap-2"><button id="btn-new-fitness-project" class="bg-success text-white px-4 py-2 rounded-lg text-sm font-bold"><i class="fa fa-plus mr-2"></i>新增运动项目</button><details class="relative"><summary class="list-none cursor-pointer bg-white text-success border border-success/40 px-4 py-2 rounded-lg text-sm font-bold">复盘导出</summary><div class="absolute right-0 z-20 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-lg p-2"><button id="btn-export-fitness-week" class="w-full text-left px-3 py-2 rounded-lg text-xs font-bold hover:bg-success/10">本周复盘 Markdown</button><button id="btn-export-fitness-csv" class="w-full text-left px-3 py-2 rounded-lg text-xs font-bold hover:bg-success/10">历史记录 CSV</button></div></details></div>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                    <div class="hidden grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
                         <div class="bg-success/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">今日运动次数</div><div id="fitness-stat-today-count" class="text-2xl font-black text-success mt-1">0 次</div></div>
                         <div class="bg-primary/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">今日运动时长</div><div id="fitness-stat-today-minutes" class="text-2xl font-black text-primary mt-1">0 分钟</div></div>
                         <div class="bg-success/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本周运动次数</div><div id="fitness-stat-week-count" class="text-2xl font-black text-success mt-1">0 次</div></div>
@@ -528,36 +528,33 @@
                         <div class="bg-accent/10 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本月运动次数</div><div id="fitness-stat-month-count" class="text-2xl font-black text-accent mt-1">0 次</div></div>
                         <div class="bg-gray-50 rounded-2xl p-4"><div class="text-xs font-bold text-textmuted">本周活跃天数</div><div id="fitness-stat-active-days" class="text-2xl font-black text-textmain mt-1">0 天</div></div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-7 text-sm">
+                    <div class="hidden grid grid-cols-1 md:grid-cols-3 gap-3 mb-7 text-sm">
                         <div class="bg-gray-50 rounded-xl p-4"><span class="font-bold text-textmuted">运动类型分布</span><div id="fitness-stat-types" class="font-bold text-textmain mt-2">暂无记录</div></div>
                         <div class="bg-gray-50 rounded-xl p-4"><span class="font-bold text-textmuted">连续运动天数（仅供参考）</span><div id="fitness-stat-streak" class="font-bold text-textmain mt-2">0 天</div></div>
                         <div class="bg-gray-50 rounded-xl p-4"><span class="font-bold text-textmuted">最常运动时间段</span><div id="fitness-stat-time" class="font-bold text-textmain mt-2">暂无记录</div></div>
                     </div>
 
-                    <form id="fitness-form" class="bg-success/5 border border-success/20 rounded-2xl p-5 mb-7">
+                    <form id="fitness-form" class="hidden bg-success/5 border border-success/20 rounded-2xl p-5 mb-7">
                         <input type="hidden" id="fitness-edit-id" />
-                        <div class="mb-4"><h3 class="font-black text-textmain">轻量健身计划</h3><p class="text-xs text-textmuted mt-1">这里只记录练什么和身体反馈；具体几点开始、计时与时间块请在今日任务、深度专注或时间日历中安排。</p></div>
+                        <div class="mb-4"><h3 id="fitness-form-heading" class="font-black text-textmain">新增运动项目</h3><p class="text-xs text-textmuted mt-1">设置可长期复用的默认信息；加入今日或明日后再安排具体时间。</p></div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">健身标题</label><input id="fitness-title" required placeholder="例如：肩颈放松跟练" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
-                            <div><label class="block text-xs font-bold text-textmuted mb-1">日期</label><input type="date" id="fitness-date" required class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">运动名称</label><input id="fitness-title" required placeholder="例如：拍八虚 & 八段锦" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">运动类型</label><select id="fitness-type" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>其他</option></select></div>
-                            <div><label class="block text-xs font-bold text-textmuted mb-1">默认 / 计划时长（分钟）</label><input type="number" min="0" step="5" id="fitness-planned-minutes" placeholder="20" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
-                            <div><label class="block text-xs font-bold text-textmuted mb-1">实际时长（可选）</label><input type="number" min="0" step="1" id="fitness-actual-minutes" placeholder="无计时记录时可补填" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /><p id="fitness-actual-duration-hint" class="text-[10px] text-textmuted mt-1">有计时记录时会自动同步并优先使用。</p></div>
-                            <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="fitness-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="in_progress">进行中</option><option value="paused">已暂停</option><option value="completed">完成</option><option value="partial">部分完成</option><option value="not_completed">未完成</option><option value="skipped">跳过</option></select></div>
-                            <div><label class="block text-xs font-bold text-textmuted mb-1">难度（可选）</label><select id="fitness-difficulty" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option value="">未记录</option><option value="轻松">轻松</option><option value="适中">适中</option><option value="有挑战">有挑战</option><option value="过难">过难</option></select></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">默认时长（分钟）</label><input type="number" min="0" step="5" id="fitness-planned-minutes" placeholder="20" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div><label class="block text-xs font-bold text-textmuted mb-1">状态</label><select id="fitness-project-status" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option value="active">启用</option><option value="paused">暂停</option></select></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">重复频率</label><select id="fitness-repeat-rule" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option value="none">不重复</option><option value="daily">每天</option><option value="weekdays">工作日</option><option value="mon_wed_fri">每周一三五</option><option value="weekly">每周一次</option><option value="custom">自定义</option></select></div>
                             <div><label class="block text-xs font-bold text-textmuted mb-1">默认时段</label><select id="fitness-default-period" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"><option value="">未设置</option><option value="morning">早晨</option><option value="afternoon">下午</option><option value="evening">晚上</option><option value="flexible">灵活安排</option></select></div>
-                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">跟练链接</label><input type="url" id="fitness-link" placeholder="B 站或其他视频链接" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
-                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">身体感受</label><textarea id="fitness-feeling" rows="2" placeholder="肩颈紧、精神好、太累……" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
-                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">备注 / 未完成原因</label><textarea id="fitness-notes" rows="2" placeholder="难度、是否想复练，或温和记录跳过原因" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
+                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">适合状态</label><input id="fitness-suitable-states" placeholder="疲劳日、精力好、肩颈紧、想出汗（用逗号分隔）" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg" /></div>
+                            <div class="sm:col-span-2"><label class="block text-xs font-bold text-textmuted mb-1">跟练链接</label><textarea id="fitness-link" rows="2" placeholder="每行一个 B 站或其他链接" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
+                            <div class="sm:col-span-2 lg:col-span-4"><label class="block text-xs font-bold text-textmuted mb-1">备注</label><textarea id="fitness-notes" rows="2" placeholder="动作提示、替代方案、注意事项……" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg"></textarea></div>
                         </div>
-                        <div class="flex flex-wrap gap-2 mt-4"><button type="submit" id="btn-save-fitness" class="bg-success text-white px-5 py-2.5 rounded-lg font-bold"><i class="fa fa-save mr-2"></i>保存健身计划</button><button type="button" id="btn-cancel-fitness-edit" class="hidden bg-white border border-gray-200 text-textmain px-4 py-2.5 rounded-lg font-bold">取消编辑</button></div>
+                        <div class="flex flex-wrap gap-2 mt-4"><button type="submit" id="btn-save-fitness" class="bg-success text-white px-5 py-2.5 rounded-lg font-bold"><i class="fa fa-save mr-2"></i>保存运动项目</button><button type="button" id="btn-cancel-fitness-edit" class="bg-white border border-gray-200 text-textmain px-4 py-2.5 rounded-lg font-bold">取消</button></div>
                     </form>
 
                     <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-bold text-gray-800"><i class="fa fa-list mr-2 text-success"></i>健身记录</h3><span class="text-xs text-textmuted">完成与跳过都只是记录</span></div>
-                        <div id="fitness-record-list" class="divide-y divide-gray-100"></div>
-                        <div id="fitness-empty-msg" class="text-center py-10 text-textmuted font-bold hidden">还没有健身安排。可以先从 10 分钟轻松跟练开始。</div>
+                        <div class="bg-gray-50 px-5 py-4 border-b border-gray-200 flex justify-between items-center"><h3 class="font-bold text-gray-800"><i class="fa fa-th-large mr-2 text-success"></i>运动项目库</h3><span class="text-xs text-textmuted">选择一个项目，加入今天或明天</span></div>
+                        <div id="fitness-record-list" class="grid grid-cols-1 lg:grid-cols-2 gap-3 p-4"></div>
+                        <div id="fitness-empty-msg" class="text-center py-10 text-textmuted font-bold hidden">运动项目库还是空的。添加一个经常想练的项目吧。</div>
                     </div>
                 </section>
 
@@ -723,6 +720,8 @@
             'fitnessData',
             'activityData',
             'exerciseDetails',
+            'exerciseLibrary',
+            'exerciseLibraryMigrated',
             'taskData',
             'journalData',
             'timeBlocks',
@@ -912,6 +911,23 @@
             const activity = D.activityData?.records?.find(item => item.id === activityId);
             if (activity && detail) activity.exercise_detail_id = activityId;
             return detail || null;
+        }
+
+        function normalizeExerciseProject(project) {
+            const now = new Date().toISOString();
+            project.id = project.id || `exercise_project_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+            project.title = project.title || '未命名运动';
+            project.exercise_type = project.exercise_type || '其他';
+            project.default_duration = Number(project.default_duration) || 0;
+            project.links = Array.isArray(project.links) ? project.links.filter(Boolean) : String(project.links || '').split(/\n+/).map(value => value.trim()).filter(Boolean);
+            project.status = project.status === 'paused' ? 'paused' : 'active';
+            project.preferred_period = project.preferred_period || '';
+            project.suitable_states = Array.isArray(project.suitable_states) ? project.suitable_states.filter(Boolean) : String(project.suitable_states || '').split(/[，,]/).map(value => value.trim()).filter(Boolean);
+            project.note = project.note || '';
+            project.repeat_rule = project.repeat_rule || 'none';
+            project.createdAt = project.createdAt || now;
+            project.updatedAt = project.updatedAt || project.createdAt;
+            return project;
         }
 
         function getBacklogSnapshot(item) {
@@ -1202,6 +1218,19 @@
             if (typeof D.activityData.migrationVersion !== 'number') D.activityData.migrationVersion = 0;
             D.activityData.records.forEach(normalizeActivity);
             if (!Array.isArray(D.exerciseDetails)) D.exerciseDetails = [];
+            if (!Array.isArray(D.exerciseLibrary)) D.exerciseLibrary = [];
+            D.exerciseLibrary.forEach(normalizeExerciseProject);
+            if (D.exerciseLibraryMigrated !== true) {
+                const seen = new Set(D.exerciseLibrary.map(project => project.title.trim().toLowerCase()));
+                D.activityData.records.filter(activity => activity.activity_type === 'exercise').forEach(activity => {
+                    const key = activity.title.trim().toLowerCase();
+                    if (!key || seen.has(key)) return;
+                    seen.add(key);
+                    const detail = getExerciseDetail(activity.id) || {};
+                    D.exerciseLibrary.push(normalizeExerciseProject({ title: activity.title, exercise_type: detail.exercise_type || '其他', default_duration: activity.planned_duration || activity.actual_duration || 0, links: detail.video_url ? [detail.video_url] : [], preferred_period: detail.default_period || '', suitable_states: [], note: detail.exercise_note || '', repeat_rule: detail.repeat_rule || 'none', status: 'active' }));
+                });
+                D.exerciseLibraryMigrated = true;
+            }
             if (!D.taskData || typeof D.taskData !== 'object') D.taskData = {};
             if (!D.journalData || typeof D.journalData !== 'object') D.journalData = {};
             if (!D.timeBlocks || typeof D.timeBlocks !== 'object') D.timeBlocks = {};
@@ -1264,6 +1293,8 @@
             D.fitnessData = safeJSONParse(localStorage.getItem('fitnessData'), { records: [] });
             D.activityData = safeJSONParse(localStorage.getItem('activityData'), { records: [], migrationVersion: 0 });
             D.exerciseDetails = safeJSONParse(localStorage.getItem('exerciseDetails'), []);
+            D.exerciseLibrary = safeJSONParse(localStorage.getItem('exerciseLibrary'), []);
+            D.exerciseLibraryMigrated = safeJSONParse(localStorage.getItem('exerciseLibraryMigrated'), false);
             D.taskData = safeJSONParse(localStorage.getItem('taskData'), {});
             D.journalData = safeJSONParse(localStorage.getItem('journalData'), {});
             D.timeBlocks = safeJSONParse(localStorage.getItem('timeBlocks'), {});
@@ -1277,6 +1308,8 @@
             migrateLegacyRecordsToActivities();
             localStorage.setItem('activityData', JSON.stringify(D.activityData));
             localStorage.setItem('exerciseDetails', JSON.stringify(D.exerciseDetails));
+            localStorage.setItem('exerciseLibrary', JSON.stringify(D.exerciseLibrary));
+            localStorage.setItem('exerciseLibraryMigrated', JSON.stringify(D.exerciseLibraryMigrated));
             localStorage.setItem('longTermTodos', JSON.stringify(D.longTermTodos));
             localStorage.setItem('todoData', JSON.stringify(D.todoData));
             ensureDateDataExists(getTodayStr());
@@ -1294,7 +1327,7 @@
             });
             return {
                 format: 'baixy-life-dashboard',
-                version: 6,
+                version: 7,
                 exportedAt: new Date().toISOString(),
                 data
             };
@@ -3378,45 +3411,56 @@
         function resetFitnessForm() {
             document.getElementById('fitness-form').reset();
             document.getElementById('fitness-edit-id').value = '';
-            document.getElementById('fitness-date').value = getTodayStr();
-            document.getElementById('fitness-status').value = 'planned';
             document.getElementById('fitness-repeat-rule').value = 'none';
             document.getElementById('fitness-default-period').value = '';
-            document.getElementById('fitness-actual-minutes').disabled = false;
-            document.getElementById('fitness-actual-duration-hint').textContent = '有计时记录时会自动同步并优先使用。';
-            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-save mr-2"></i>保存健身计划';
-            document.getElementById('btn-cancel-fitness-edit').classList.add('hidden');
+            document.getElementById('fitness-project-status').value = 'active';
+            document.getElementById('fitness-form-heading').textContent = '新增运动项目';
+            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-save mr-2"></i>保存运动项目';
+            document.getElementById('fitness-form').classList.add('hidden');
         }
 
         function readFitnessForm() {
-            const values = {
-                title: document.getElementById('fitness-title').value.trim(), date: document.getElementById('fitness-date').value,
-                plannedMinutes: Number(document.getElementById('fitness-planned-minutes').value) || 0,
-                actualMinutes: Number(document.getElementById('fitness-actual-minutes').value) || 0,
-                type: document.getElementById('fitness-type').value, link: document.getElementById('fitness-link').value.trim(),
-                status: document.getElementById('fitness-status').value, difficulty: document.getElementById('fitness-difficulty').value, feeling: document.getElementById('fitness-feeling').value.trim(), notes: document.getElementById('fitness-notes').value.trim(),
-                repeatRule: document.getElementById('fitness-repeat-rule').value, defaultPeriod: document.getElementById('fitness-default-period').value
+            return {
+                title: document.getElementById('fitness-title').value.trim(),
+                exercise_type: document.getElementById('fitness-type').value,
+                default_duration: Number(document.getElementById('fitness-planned-minutes').value) || 0,
+                links: document.getElementById('fitness-link').value.split(/\n+/).map(value => value.trim()).filter(Boolean),
+                status: document.getElementById('fitness-project-status').value,
+                preferred_period: document.getElementById('fitness-default-period').value,
+                suitable_states: document.getElementById('fitness-suitable-states').value.split(/[，,]/).map(value => value.trim()).filter(Boolean),
+                note: document.getElementById('fitness-notes').value.trim(),
+                repeat_rule: document.getElementById('fitness-repeat-rule').value
             };
-            return values;
         }
 
         function editFitnessRecord(id) {
-            const activity = findActivity(id);
-            if (!activity || activity.activity_type !== 'exercise') return;
-            const record = getFitnessViewRecord(activity);
-            document.getElementById('fitness-edit-id').value = record.id;
-            ['title', 'date', 'type', 'link', 'status', 'feeling', 'notes'].forEach(key => { document.getElementById(`fitness-${key}`).value = record[key] || ''; });
-            document.getElementById('fitness-planned-minutes').value = record.plannedMinutes || '';
-            document.getElementById('fitness-actual-minutes').value = record.actualMinutes || '';
-            const hasTimedDuration = Boolean(record.actualStart && record.actualEnd);
-            document.getElementById('fitness-actual-minutes').disabled = hasTimedDuration;
-            document.getElementById('fitness-actual-duration-hint').textContent = hasTimedDuration ? `已由活动计时同步：${record.actualStart}–${record.actualEnd}` : '当前没有计时记录，可以手动补填。';
-            document.getElementById('fitness-difficulty').value = record.difficulty || '';
-            document.getElementById('fitness-repeat-rule').value = record.repeatRule || 'none';
-            document.getElementById('fitness-default-period').value = record.defaultPeriod || '';
-            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-save mr-2"></i>保存健身信息';
-            document.getElementById('btn-cancel-fitness-edit').classList.remove('hidden');
+            const project = D.exerciseLibrary.find(item => item.id === id);
+            if (!project) return;
+            document.getElementById('fitness-edit-id').value = project.id;
+            document.getElementById('fitness-title').value = project.title;
+            document.getElementById('fitness-type').value = project.exercise_type;
+            document.getElementById('fitness-planned-minutes').value = project.default_duration || '';
+            document.getElementById('fitness-link').value = project.links.join('\n');
+            document.getElementById('fitness-project-status').value = project.status;
+            document.getElementById('fitness-default-period').value = project.preferred_period;
+            document.getElementById('fitness-suitable-states').value = project.suitable_states.join('、');
+            document.getElementById('fitness-notes').value = project.note;
+            document.getElementById('fitness-repeat-rule').value = project.repeat_rule;
+            document.getElementById('fitness-form-heading').textContent = `编辑：${project.title}`;
+            document.getElementById('btn-save-fitness').innerHTML = '<i class="fa fa-save mr-2"></i>保存修改';
+            document.getElementById('fitness-form').classList.remove('hidden');
             document.getElementById('fitness-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function addExerciseProjectToTaskDate(project, taskDate) {
+            if (!project || project.status !== 'active') return false;
+            const existing = D.activityData.records.find(activity => activity.activity_type === 'exercise' && activity.exercise_library_id === project.id && activity.is_today_task && (activity.taskDate || activity.today_task_date || activity.date) === taskDate);
+            if (existing) return false;
+            const now = new Date().toISOString();
+            const activity = createActivity({ date: taskDate, taskDate, title: project.title, activity_type: 'exercise', focus_mode: 'none', planned_duration: project.default_duration, status: 'planned', source: 'exercise', exercise_library_id: project.id, is_today_task: true, today_task_date: taskDate, task_order: getTodayTaskActivities(taskDate).length, createdAt: now, updatedAt: now });
+            const detail = getExerciseDetail(activity.id, true);
+            Object.assign(detail, { exercise_type: project.exercise_type, video_url: project.links[0] || '', exercise_note: project.note, repeat_rule: project.repeat_rule, default_period: project.preferred_period, library_id: project.id, updatedAt: now });
+            return true;
         }
 
         function addExerciseActivityToTaskDate(activity, taskDate = getTaskPlanningDate()) {
@@ -3458,30 +3502,28 @@
             document.getElementById('fitness-stat-streak').textContent = `${stats.streak} 天（不作目标）`;
             document.getElementById('fitness-stat-time').textContent = stats.topPeriod;
             const list = document.getElementById('fitness-record-list');
-            const records = D.activityData.records.filter(activity => activity.activity_type === 'exercise').map(getFitnessViewRecord).sort((a, b) => `${b.date} ${b.actualStart || b.start}`.localeCompare(`${a.date} ${a.actualStart || a.start}`));
             const repeatLabels = { none: '不重复', daily: '每天', weekdays: '工作日', mon_wed_fri: '每周一三五', weekly: '每周一次', custom: '自定义' };
             const periodLabels = { morning: '早晨', afternoon: '下午', evening: '晚上', flexible: '灵活安排' };
-            list.innerHTML = records.map(record => {
-                const statusClass = ['completed', 'partial'].includes(record.status) ? 'bg-success/15 text-green-700' : ['not_completed', 'skipped'].includes(record.status) ? 'bg-gray-100 text-gray-500' : 'bg-primary/10 text-primary';
-                const taskDate = record.activity.taskDate || record.activity.today_task_date || record.activity.date;
-                const isTodayTask = record.activity.is_today_task && taskDate === getTodayStr();
-                const isTomorrowTask = record.activity.is_today_task && taskDate === getTodayStr(1);
-                const todayState = record.status === 'in_progress' ? `今日任务 · 进行中 · ${getActivityTimes(record.activity).duration}m` : record.status === 'completed' ? `今日任务 · 已完成 · ${record.actualMinutes}m` : record.status === 'paused' ? `今日任务 · 已暂停 · ${record.actualMinutes}m` : '今日任务 · 未开始';
-                return `<div class="p-4 flex flex-col md:flex-row md:items-center gap-3">
-                    <div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black text-textmain">${escapeHtml(record.title)}</span><span class="${statusClass} px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(FITNESS_STATUS_LABELS[record.status] || record.status)}</span><span class="bg-success/10 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(record.type)}</span>${isTodayTask ? `<span class="bg-success text-white px-2 py-0.5 rounded text-[10px] font-bold">${escapeHtml(todayState)}</span>` : ''}${isTomorrowTask ? '<span class="bg-secondary text-white px-2 py-0.5 rounded text-[10px] font-bold">已加入明日规划</span>' : ''}</div><div class="text-xs text-textmuted mt-2">${escapeHtml(record.date)} · 默认 ${record.plannedMinutes || 0} 分钟 · 实际 ${record.actualMinutes || 0} 分钟 · ${escapeHtml(repeatLabels[record.repeatRule] || '不重复')}${record.defaultPeriod ? ` · ${escapeHtml(periodLabels[record.defaultPeriod] || record.defaultPeriod)}` : ''}</div>${record.feeling ? `<div class="text-xs text-textmain mt-1">身体感受：${escapeHtml(record.feeling)}</div>` : ''}</div>
-                    <div class="flex flex-wrap gap-2 flex-shrink-0">${record.link ? `<a href="${escapeHtml(record.link)}" target="_blank" rel="noopener noreferrer" class="bg-primary/10 text-primary px-3 py-2 rounded-lg text-xs font-bold">跟练链接 <i class="fa fa-external-link ml-1"></i></a>` : ''}${isTodayTask ? `<button class="bg-success text-white px-3 py-2 rounded-lg text-xs font-bold" disabled><i class="fa fa-check mr-1"></i>已加入今日</button>` : `<button class="add-fitness-task bg-success/10 text-green-700 hover:bg-success hover:text-white px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}" data-date="${getTodayStr()}"><i class="fa fa-plus mr-1"></i>加入今日</button>`}${isTomorrowTask ? `<button class="bg-secondary text-white px-3 py-2 rounded-lg text-xs font-bold" disabled><i class="fa fa-check mr-1"></i>已加入明日</button>` : `<button class="add-fitness-task bg-secondary/10 text-secondary hover:bg-secondary hover:text-white px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}" data-date="${getTodayStr(1)}"><i class="fa fa-plus mr-1"></i>加入明日规划</button>`}<button class="edit-fitness bg-gray-100 text-textmain px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}">编辑</button><button class="delete-fitness border border-danger/40 text-danger px-3 py-2 rounded-lg text-xs font-bold" data-id="${record.id}">删除</button></div>
-                </div>`;
+            const projects = [...D.exerciseLibrary].sort((a, b) => (a.status === b.status ? a.title.localeCompare(b.title, 'zh-CN') : a.status === 'active' ? -1 : 1));
+            list.innerHTML = projects.map(project => {
+                const todayAdded = D.activityData.records.some(activity => activity.exercise_library_id === project.id && activity.is_today_task && (activity.taskDate || activity.today_task_date || activity.date) === getTodayStr());
+                const tomorrowAdded = D.activityData.records.some(activity => activity.exercise_library_id === project.id && activity.is_today_task && (activity.taskDate || activity.today_task_date || activity.date) === getTodayStr(1));
+                return `<article class="border border-gray-100 rounded-2xl p-4 ${project.status === 'paused' ? 'bg-gray-50 opacity-75' : 'bg-white'} shadow-sm">
+                    <div class="flex items-start justify-between gap-3"><div class="min-w-0"><h4 class="font-black text-textmain leading-5">${escapeHtml(project.title)}</h4><div class="flex flex-wrap gap-1.5 mt-2 text-[10px] font-bold"><span class="bg-success/10 text-green-700 px-2 py-0.5 rounded">${escapeHtml(project.exercise_type)}</span><span class="bg-primary/10 text-primary px-2 py-0.5 rounded">默认 ${project.default_duration || 0} 分钟</span><span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded">${project.links.length ? `${project.links.length} 个链接` : '无链接'}</span><span class="${project.status === 'active' ? 'bg-success/15 text-green-700' : 'bg-gray-200 text-gray-500'} px-2 py-0.5 rounded">${project.status === 'active' ? '启用' : '暂停'}</span></div></div></div>
+                    <div class="exercise-project-detail hidden mt-4 pt-3 border-t border-gray-100 text-xs text-textmuted space-y-2"><div><b class="text-textmain">适合时段：</b>${escapeHtml(periodLabels[project.preferred_period] || '灵活')}</div><div><b class="text-textmain">适合状态：</b>${escapeHtml(project.suitable_states.join('、') || '未设置')}</div><div><b class="text-textmain">重复建议：</b>${escapeHtml(repeatLabels[project.repeat_rule] || '不固定')}</div>${project.note ? `<div><b class="text-textmain">备注：</b>${escapeHtml(project.note)}</div>` : ''}${project.links.length ? `<div class="flex flex-wrap gap-2">${project.links.map((url, index) => `<a class="text-primary font-bold hover:underline" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">跟练链接 ${index + 1} <i class="fa fa-external-link"></i></a>`).join('')}</div>` : ''}</div>
+                    <div class="flex flex-wrap gap-2 mt-4">${todayAdded ? '<button class="bg-success text-white px-3 py-2 rounded-lg text-xs font-bold" disabled><i class="fa fa-check mr-1"></i>已加入今日</button>' : `<button class="add-exercise-project bg-success/10 text-green-700 hover:bg-success hover:text-white px-3 py-2 rounded-lg text-xs font-bold disabled:opacity-40" data-id="${project.id}" data-date="${getTodayStr()}" ${project.status === 'paused' ? 'disabled' : ''}>加入今日任务</button>`}${tomorrowAdded ? '<button class="bg-secondary text-white px-3 py-2 rounded-lg text-xs font-bold" disabled><i class="fa fa-check mr-1"></i>已加入明日</button>' : `<button class="add-exercise-project bg-secondary/10 text-secondary hover:bg-secondary hover:text-white px-3 py-2 rounded-lg text-xs font-bold disabled:opacity-40" data-id="${project.id}" data-date="${getTodayStr(1)}" ${project.status === 'paused' ? 'disabled' : ''}>加入明日规划</button>`}<button class="toggle-exercise-project-detail bg-gray-100 text-textmain px-3 py-2 rounded-lg text-xs font-bold">详细安排</button><button class="edit-fitness bg-gray-100 text-textmain px-3 py-2 rounded-lg text-xs font-bold" data-id="${project.id}">编辑</button><button class="toggle-fitness-project-status border border-gray-200 text-textmuted px-3 py-2 rounded-lg text-xs font-bold" data-id="${project.id}">${project.status === 'active' ? '暂停' : '启用'}</button><button class="delete-fitness border border-danger/40 text-danger px-3 py-2 rounded-lg text-xs font-bold" data-id="${project.id}">删除</button></div>
+                </article>`;
             }).join('');
-            document.getElementById('fitness-empty-msg').classList.toggle('hidden', records.length > 0);
+            document.getElementById('fitness-empty-msg').classList.toggle('hidden', projects.length > 0);
+            list.querySelectorAll('.toggle-exercise-project-detail').forEach(button => button.addEventListener('click', () => button.closest('article').querySelector('.exercise-project-detail').classList.toggle('hidden')));
             list.querySelectorAll('.edit-fitness').forEach(button => button.addEventListener('click', () => editFitnessRecord(button.dataset.id)));
-            list.querySelectorAll('.add-fitness-task').forEach(button => button.addEventListener('click', () => { const activity = findActivity(button.dataset.id); if (addExerciseActivityToTaskDate(activity, button.dataset.date)) { saveData(); renderFitness(); renderTodos(); } }));
+            list.querySelectorAll('.add-exercise-project').forEach(button => button.addEventListener('click', () => { const project = D.exerciseLibrary.find(item => item.id === button.dataset.id); if (addExerciseProjectToTaskDate(project, button.dataset.date)) { saveData(); renderFitness(); renderTodos(); } }));
+            list.querySelectorAll('.toggle-fitness-project-status').forEach(button => button.addEventListener('click', () => { const project = D.exerciseLibrary.find(item => item.id === button.dataset.id); if (!project) return; project.status = project.status === 'active' ? 'paused' : 'active'; project.updatedAt = new Date().toISOString(); saveData(); renderFitness(); }));
             list.querySelectorAll('.delete-fitness').forEach(button => button.addEventListener('click', () => {
-                const activity = findActivity(button.dataset.id);
-                const record = activity ? getFitnessViewRecord(activity) : null;
-                if (!record || !confirm(`删除健身记录「${record.title}」及其关联日历时间块？`)) return;
-                D.activityData.records = D.activityData.records.filter(item => item.id !== record.id);
-                D.exerciseDetails = D.exerciseDetails.filter(detail => detail.activity_id !== record.id);
-                saveData(); renderFitness(); refreshScheduleViews(record.date);
+                const project = D.exerciseLibrary.find(item => item.id === button.dataset.id);
+                if (!project || !confirm(`删除运动项目「${project.title}」？过去的运动 Activity 和时间记录会继续保留。`)) return;
+                D.exerciseLibrary = D.exerciseLibrary.filter(item => item.id !== project.id);
+                saveData(); renderFitness();
             }));
         }
 
@@ -3510,25 +3552,21 @@
 
         function initFitness() {
             resetFitnessForm();
+            document.getElementById('btn-new-fitness-project')?.addEventListener('click', () => {
+                resetFitnessForm();
+                document.getElementById('fitness-form').classList.remove('hidden');
+                document.getElementById('fitness-title').focus();
+            });
             document.getElementById('fitness-form')?.addEventListener('submit', event => {
                 event.preventDefault();
                 const values = readFitnessForm();
-                if (!values.title || !values.date) return;
+                if (!values.title) return;
                 const editId = document.getElementById('fitness-edit-id').value;
-                let activity = findActivity(editId);
-                const previousDate = activity?.date || null;
+                let project = D.exerciseLibrary.find(item => item.id === editId);
                 const now = new Date().toISOString();
-                if (!activity) activity = createActivity({ date: values.date, title: values.title, activity_type: 'exercise', focus_mode: 'none', source: 'exercise', status: values.status, createdAt: now });
-                const hasTimedDuration = Boolean(activity.actual_start && activity.actual_end);
-                Object.assign(activity, {
-                    date: values.date, title: values.title, activity_type: 'exercise', focus_mode: 'none', source: 'exercise',
-                    planned_duration: values.plannedMinutes,
-                    actual_duration: hasTimedDuration ? getDurationMinutes(activity.actual_start, activity.actual_end) : values.actualMinutes,
-                    status: values.status, note: values.notes, updatedAt: now
-                });
-                const detail = getExerciseDetail(activity.id, true);
-                Object.assign(detail, { exercise_type: values.type, video_url: values.link, body_feeling: values.feeling, difficulty: values.difficulty, repeat_rule: values.repeatRule, default_period: values.defaultPeriod, skip_reason: ['not_completed', 'skipped'].includes(values.status) ? values.notes : '', exercise_note: values.notes, updatedAt: now });
-                saveData(); resetFitnessForm(); renderFitness(); refreshScheduleViews(activity.date); if (previousDate && previousDate !== activity.date) refreshScheduleViews(previousDate);
+                if (!project) { project = normalizeExerciseProject({ ...values, createdAt: now, updatedAt: now }); D.exerciseLibrary.push(project); }
+                else Object.assign(project, values, { updatedAt: now });
+                saveData(); resetFitnessForm(); renderFitness();
             });
             document.getElementById('btn-cancel-fitness-edit')?.addEventListener('click', resetFitnessForm);
             document.getElementById('btn-export-fitness-week')?.addEventListener('click', exportFitnessWeekMarkdown);
