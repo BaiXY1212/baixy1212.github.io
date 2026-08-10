@@ -2464,7 +2464,7 @@
         function addBacklogToToday(item) {
             const today = getTodayStr();
             ensureDateDataExists(today);
-            if (D.todoData[today].some(todo => todo.sourceLongTermId === item.id && !todo.done)) return false;
+            if (getBacklogTodayTodo(item.id)) return false;
             const now = new Date().toISOString();
             const todoId = `td_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
             const title = item.nextAction.trim() || item.name;
@@ -2479,6 +2479,24 @@
             });
             addBacklogHistory(item.id, { date: today, type: 'today_task', todoId, title, status: 'planned' });
             return true;
+        }
+
+        function getBacklogTodayTodo(backlogId) {
+            const today = getTodayStr();
+            ensureDateDataExists(today);
+            return (D.todoData[today] || []).find(todo => todo.sourceLongTermId === backlogId) || null;
+        }
+
+        function updateBacklogTodayButton(button, item) {
+            const todayTodo = getBacklogTodayTodo(item.id);
+            const unavailable = item.archived || Boolean(todayTodo);
+            button.disabled = unavailable;
+            button.className = todayTodo
+                ? 'bg-success text-white px-4 py-2 rounded-lg text-sm font-bold cursor-default'
+                : 'bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed';
+            button.innerHTML = todayTodo
+                ? `<i class="fa fa-check mr-1"></i>${todayTodo.done ? '今日已完成' : '已加入今日'}`
+                : '<i class="fa fa-list mr-1"></i>加入今日任务';
         }
 
         function getBacklogProgressEntries(item) {
@@ -2561,7 +2579,7 @@
             document.getElementById('backlog-detail-feedback').value = item.feedback;
             document.getElementById('backlog-modal-heading').textContent = item.name;
             document.getElementById('btn-archive-backlog').textContent = item.archived ? '恢复到 Backlog' : '✓ 完成并归档';
-            document.getElementById('btn-backlog-add-today').disabled = item.archived;
+            updateBacklogTodayButton(document.getElementById('btn-backlog-add-today'), item);
             document.getElementById('btn-backlog-add-focus').disabled = item.archived;
             renderBacklogDetailHistory(item);
             const modal = document.getElementById('backlog-detail-modal');
@@ -2604,6 +2622,7 @@
         function renderBacklogCard(item, archived = false) {
             const priorityLabels = { low: '低', medium: '中', high: '高', critical: '紧急' };
             const statusLabels = { backlog: '待规划', in_progress: '进行中', waiting: '等待中', completed: '已完成' };
+            const todayTodo = archived ? null : getBacklogTodayTodo(item.id);
             const div = document.createElement('div');
             div.className = `bg-white p-3 rounded-xl border ${archived ? 'border-success/30 opacity-80' : 'border-gray-100'} shadow-sm group`;
             div.innerHTML = `
@@ -2619,7 +2638,9 @@
                         </div>
                     </button>
                     <div class="flex items-center gap-1 flex-shrink-0">
-                        ${archived ? '' : `<button class="backlog-quick-today bg-secondary/10 text-secondary hover:bg-secondary hover:text-white px-2.5 h-8 rounded-lg text-xs font-bold" data-id="${item.id}">加入今日</button>`}
+                        ${archived ? '' : todayTodo
+                            ? `<button class="bg-success text-white px-2.5 h-8 rounded-lg text-xs font-bold cursor-default" data-id="${item.id}" disabled><i class="fa fa-check mr-1"></i>${todayTodo.done ? '今日已完成' : '已加入今日'}</button>`
+                            : `<button class="backlog-quick-today bg-secondary/10 text-secondary hover:bg-secondary hover:text-white px-2.5 h-8 rounded-lg text-xs font-bold" data-id="${item.id}">加入今日</button>`}
                         <button class="open-backlog-detail text-gray-400 hover:text-white hover:bg-gray-500 w-8 h-8 rounded-lg" data-id="${item.id}" title="详情"><i class="fa fa-angle-right"></i></button>
                     </div>
                 </div>
@@ -2700,6 +2721,7 @@
                         });
                         saveData();
                         renderTodos();
+                        renderLongTermTodos();
                     }
                 });
             });
