@@ -642,13 +642,21 @@
                 <div><label class="block text-xs font-bold text-textmuted mb-1">状态</label><select id="backlog-detail-status" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="backlog">待规划</option><option value="in_progress">进行中</option><option value="waiting">等待中</option><option value="completed">已完成 / Archived</option></select></div>
                 <div><label class="block text-xs font-bold text-textmuted mb-1">可选截止日期</label><input type="date" id="backlog-detail-due" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div><label class="block text-xs font-bold text-textmuted mb-1">下一步行动</label><textarea id="backlog-detail-next-action" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg" placeholder="下一次具体要推进什么"></textarea></div>
-                <div><label class="block text-xs font-bold text-textmuted mb-1">背景说明</label><textarea id="backlog-detail-background" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
-                <div><label class="block text-xs font-bold text-textmuted mb-1">备注</label><textarea id="backlog-detail-notes" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
-                <div><label class="block text-xs font-bold text-textmuted mb-1">相关链接（每行一个）</label><textarea id="backlog-detail-links" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
-                <div><label class="block text-xs font-bold text-textmuted mb-1">文献 / 阅读材料</label><textarea id="backlog-detail-literature" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
-                <div><label class="block text-xs font-bold text-textmuted mb-1">会议反馈</label><textarea id="backlog-detail-feedback" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                <div><label class="block text-xs font-bold text-textmuted mb-1">下一步行动</label><textarea id="backlog-detail-next-action" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-lg" placeholder="下一次具体要推进什么"></textarea></div>
+                <div><label class="block text-xs font-bold text-textmuted mb-1">相关链接（每行一个）</label><textarea id="backlog-detail-links" rows="2" class="w-full px-3 py-2 border border-gray-200 rounded-lg"></textarea></div>
+            </div>
+            <div class="border border-gray-200 rounded-2xl overflow-hidden">
+                <div class="flex flex-wrap items-center gap-1 bg-gray-50 border-b border-gray-200 p-2">
+                    <button type="button" class="markdown-insert px-2 py-1 rounded text-xs font-bold hover:bg-white" data-prefix="# ">H1</button><button type="button" class="markdown-insert px-2 py-1 rounded text-xs font-bold hover:bg-white" data-prefix="## ">H2</button><button type="button" class="markdown-insert px-2 py-1 rounded text-xs font-bold hover:bg-white" data-prefix="### ">H3</button><button type="button" class="markdown-wrap px-2 py-1 rounded text-xs font-bold hover:bg-white" data-before="**" data-after="**">加粗</button><button type="button" class="markdown-wrap px-2 py-1 rounded text-xs font-bold hover:bg-white" data-before="[" data-after="](https://)">链接</button><button type="button" class="markdown-insert px-2 py-1 rounded text-xs font-bold hover:bg-white" data-prefix="- [ ] ">☐ 子任务</button><button type="button" class="markdown-insert px-2 py-1 rounded text-xs font-bold hover:bg-white" data-prefix="---\n">分隔线</button>
+                    <div class="ml-auto inline-flex bg-white border border-gray-200 rounded-lg p-0.5"><button type="button" id="btn-backlog-markdown-edit" class="px-3 py-1 rounded-md text-xs font-bold bg-secondary text-white">编辑</button><button type="button" id="btn-backlog-markdown-preview" class="px-3 py-1 rounded-md text-xs font-bold text-textmuted">预览</button></div>
+                </div>
+                <textarea id="backlog-detail-markdown" rows="16" class="w-full px-4 py-3 font-mono text-sm outline-none resize-y" placeholder="# 项目背景\n\n## 阶段计划\n- [ ] 下一步子任务\n\n## 会议反馈"></textarea>
+                <div id="backlog-markdown-preview" class="hidden min-h-[280px] p-5 text-sm leading-7"></div>
+            </div>
+            <div class="mt-4 bg-secondary/5 border border-secondary/20 rounded-xl p-4">
+                <div class="flex items-center justify-between gap-3 mb-3"><h4 class="text-sm font-black text-textmain"><i class="fa fa-check-square-o text-secondary mr-2"></i>Markdown 子任务</h4><span class="text-[10px] text-textmuted">可加入今日或明日；完成后自动回写 checkbox</span></div>
+                <div id="backlog-markdown-subtasks" class="space-y-2"></div>
             </div>
             <div class="mt-5 border-t border-gray-100 pt-4">
                 <h4 class="text-sm font-black text-textmain mb-3"><i class="fa fa-history text-secondary mr-2"></i>历史推进记录</h4>
@@ -788,6 +796,14 @@
             item.links = item.links || '';
             item.literature = item.literature || '';
             item.feedback = item.feedback || '';
+            if (typeof item.markdownBody !== 'string') {
+                const sections = [];
+                if (item.background) sections.push(`## 背景说明\n${item.background}`);
+                if (item.notes) sections.push(`## 备注\n${item.notes}`);
+                if (item.literature) sections.push(`## 文献 / 阅读材料\n${item.literature}`);
+                if (item.feedback) sections.push(`## 会议反馈\n${item.feedback}`);
+                item.markdownBody = sections.join('\n\n');
+            }
             item.createdAt = item.createdAt || now;
             item.updatedAt = item.updatedAt || item.createdAt;
             item.archivedAt = item.archived ? (item.archivedAt || item.updatedAt) : null;
@@ -823,6 +839,8 @@
             activity.accumulated_duration = Number(activity.accumulated_duration) || 0;
             activity.last_resumed_at = activity.last_resumed_at || '';
             activity.backlog_id = activity.backlog_id || activity.backlogId || null;
+            activity.backlog_subtask_line = activity.backlog_subtask_line === null || activity.backlog_subtask_line === undefined ? null : Number(activity.backlog_subtask_line);
+            activity.backlog_subtask_title = activity.backlog_subtask_title || '';
             activity.backlogSnapshot = activity.backlogSnapshot || null;
             activity.todoId = activity.todoId || null;
             activity.todoSnapshot = activity.todoSnapshot || null;
@@ -879,6 +897,7 @@
             activity.last_resumed_at = '';
             activity.status = status;
             activity.updatedAt = new Date().toISOString();
+            syncBacklogMarkdownSubtask(activity, status === 'completed');
             if (activity.backlog_id) addBacklogHistory(activity.backlog_id, { date: activity.date, type: 'focus_record', scheduleId: activity.id, title: activity.title, start: activity.actual_start, end: activity.actual_end, status });
         }
 
@@ -2596,6 +2615,30 @@
                 document.getElementById('archived-backlog-section')?.classList.toggle('hidden');
             });
             document.getElementById('btn-close-backlog-modal')?.addEventListener('click', closeBacklogModal);
+            const markdownEditor = document.getElementById('backlog-detail-markdown');
+            const setMarkdownMode = preview => {
+                document.getElementById('backlog-markdown-preview').innerHTML = renderBacklogMarkdown(markdownEditor.value);
+                markdownEditor.classList.toggle('hidden', preview);
+                document.getElementById('backlog-markdown-preview').classList.toggle('hidden', !preview);
+                document.getElementById('btn-backlog-markdown-edit').className = `px-3 py-1 rounded-md text-xs font-bold ${preview ? 'text-textmuted' : 'bg-secondary text-white'}`;
+                document.getElementById('btn-backlog-markdown-preview').className = `px-3 py-1 rounded-md text-xs font-bold ${preview ? 'bg-secondary text-white' : 'text-textmuted'}`;
+            };
+            document.getElementById('btn-backlog-markdown-edit')?.addEventListener('click', () => setMarkdownMode(false));
+            document.getElementById('btn-backlog-markdown-preview')?.addEventListener('click', () => setMarkdownMode(true));
+            markdownEditor?.addEventListener('input', () => {
+                const item = D.longTermTodos.find(backlog => backlog.id === document.getElementById('backlog-detail-id').value);
+                if (!item) return;
+                item.markdownBody = markdownEditor.value;
+                renderBacklogMarkdownSubtasks(item);
+            });
+            document.querySelectorAll('.markdown-insert').forEach(button => button.addEventListener('click', () => {
+                const start = markdownEditor.selectionStart; const prefix = button.dataset.prefix.replace('\\n', '\n');
+                markdownEditor.setRangeText(prefix, start, start, 'end'); markdownEditor.focus(); markdownEditor.dispatchEvent(new Event('input'));
+            }));
+            document.querySelectorAll('.markdown-wrap').forEach(button => button.addEventListener('click', () => {
+                const start = markdownEditor.selectionStart; const end = markdownEditor.selectionEnd; const selected = markdownEditor.value.slice(start, end) || '文字';
+                markdownEditor.setRangeText(`${button.dataset.before}${selected}${button.dataset.after}`, start, end, 'select'); markdownEditor.focus(); markdownEditor.dispatchEvent(new Event('input'));
+            }));
             document.getElementById('btn-save-backlog-detail')?.addEventListener('click', () => {
                 const item = saveBacklogDetail();
                 if (item) openBacklogDetail(item.id);
@@ -2864,6 +2907,68 @@
             });
         }
 
+        function getBacklogMarkdownSubtasks(item) {
+            return String(item.markdownBody || '').split('\n').map((line, lineIndex) => {
+                const match = line.match(/^\s*-\s*\[([ xX])\]\s+(.+?)\s*$/);
+                return match ? { lineIndex, completed: match[1].toLowerCase() === 'x', title: match[2] } : null;
+            }).filter(Boolean);
+        }
+
+        function renderInlineMarkdown(text) {
+            return escapeHtml(text)
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary font-bold hover:underline">$1</a>');
+        }
+
+        function renderBacklogMarkdown(markdown) {
+            return String(markdown || '').split('\n').map(line => {
+                if (/^---\s*$/.test(line)) return '<hr class="my-4 border-gray-200">';
+                const heading = line.match(/^(#{1,3})\s+(.+)$/);
+                if (heading) return `<h${heading[1].length} class="font-black text-textmain mt-4 mb-2 ${heading[1].length === 1 ? 'text-xl' : heading[1].length === 2 ? 'text-lg' : 'text-base'}">${renderInlineMarkdown(heading[2])}</h${heading[1].length}>`;
+                const task = line.match(/^\s*-\s*\[([ xX])\]\s+(.+)$/);
+                if (task) return `<div class="flex items-start gap-2 py-1"><i class="fa ${task[1].toLowerCase() === 'x' ? 'fa-check-square text-success' : 'fa-square-o text-gray-400'} mt-1"></i><span class="${task[1].toLowerCase() === 'x' ? 'line-through text-gray-400' : 'text-textmain'}">${renderInlineMarkdown(task[2])}</span></div>`;
+                if (!line.trim()) return '<div class="h-3"></div>';
+                return `<p class="text-textmain">${renderInlineMarkdown(line)}</p>`;
+            }).join('');
+        }
+
+        function renderBacklogMarkdownSubtasks(item) {
+            const container = document.getElementById('backlog-markdown-subtasks');
+            if (!container) return;
+            const subtasks = getBacklogMarkdownSubtasks(item);
+            container.innerHTML = subtasks.length ? subtasks.map(task => {
+                const linked = D.activityData.records.filter(activity => activity.backlog_id === item.id && (Number(activity.backlog_subtask_line) === task.lineIndex || activity.backlog_subtask_title === task.title) && activity.is_today_task);
+                const todayLinked = linked.some(activity => (activity.taskDate || activity.today_task_date || activity.date) === getTodayStr());
+                const tomorrowLinked = linked.some(activity => (activity.taskDate || activity.today_task_date || activity.date) === getTodayStr(1));
+                return `<div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-white rounded-lg border border-gray-100 px-3 py-2"><div class="flex-1 min-w-0 text-sm ${task.completed ? 'line-through text-gray-400' : 'font-bold text-textmain'}">${task.completed ? '☑' : '☐'} ${escapeHtml(task.title)}</div><div class="flex gap-1">${task.completed ? '<span class="text-[10px] text-success font-bold px-2 py-1">已完成</span>' : `${todayLinked ? '<button disabled class="text-[10px] bg-success text-white px-2 py-1 rounded">已加入今日</button>' : `<button class="add-backlog-subtask text-[10px] bg-secondary/10 text-secondary px-2 py-1 rounded font-bold" data-line="${task.lineIndex}" data-date="${getTodayStr()}">加入今日</button>`}${tomorrowLinked ? '<button disabled class="text-[10px] bg-secondary text-white px-2 py-1 rounded">已加入明日</button>' : `<button class="add-backlog-subtask text-[10px] bg-primary/10 text-primary px-2 py-1 rounded font-bold" data-line="${task.lineIndex}" data-date="${getTodayStr(1)}">加入明日</button>`}`}</div></div>`;
+            }).join('') : '<div class="text-xs text-textmuted">在 Markdown 中输入 <code>- [ ] 子任务</code> 后，这里会自动识别。</div>';
+            container.querySelectorAll('.add-backlog-subtask').forEach(button => button.addEventListener('click', () => {
+                const lineIndex = Number(button.dataset.line);
+                const task = getBacklogMarkdownSubtasks(item).find(entry => entry.lineIndex === lineIndex);
+                if (!task || task.completed) return;
+                const taskDate = button.dataset.date;
+                const now = new Date().toISOString();
+                createActivity({ date: taskDate, taskDate, title: task.title, activity_type: 'research', focus_mode: 'deep_focus', status: 'planned', source: 'backlog', backlog_id: item.id, backlog_subtask_line: lineIndex, backlog_subtask_title: task.title, backlogSnapshot: getBacklogSnapshot(item), is_today_task: true, today_task_date: taskDate, task_order: getTodayTaskActivities(taskDate).length, createdAt: now, updatedAt: now });
+                addBacklogHistory(item.id, { date: taskDate, type: 'markdown_subtask', title: task.title, status: 'planned' });
+                saveData(); renderBacklogMarkdownSubtasks(item); renderTodos();
+            }));
+        }
+
+        function syncBacklogMarkdownSubtask(activity, completed) {
+            if (!activity?.backlog_id || activity.backlog_subtask_line === null || !Number.isInteger(Number(activity.backlog_subtask_line))) return;
+            const item = D.longTermTodos.find(backlog => backlog.id === activity.backlog_id);
+            if (!item) return;
+            const lines = String(item.markdownBody || '').split('\n');
+            let index = Number(activity.backlog_subtask_line);
+            if (!/^\s*-\s*\[[ xX]\]/.test(lines[index] || '') || (activity.backlog_subtask_title && !lines[index].includes(activity.backlog_subtask_title))) {
+                index = lines.findIndex(line => /^\s*-\s*\[[ xX]\]/.test(line) && (!activity.backlog_subtask_title || line.includes(activity.backlog_subtask_title)));
+            }
+            if (!/^\s*-\s*\[[ xX]\]/.test(lines[index] || '')) return;
+            lines[index] = lines[index].replace(/\[([ xX])\]/, completed ? '[x]' : '[ ]');
+            item.markdownBody = lines.join('\n');
+            item.updatedAt = new Date().toISOString();
+        }
+
         function openBacklogDetail(id) {
             const item = D.longTermTodos.find(backlog => backlog.id === id);
             if (!item) return;
@@ -2875,15 +2980,17 @@
             document.getElementById('backlog-detail-status').value = item.status;
             document.getElementById('backlog-detail-due').value = item.dueDate;
             document.getElementById('backlog-detail-next-action').value = item.nextAction;
-            document.getElementById('backlog-detail-background').value = item.background;
-            document.getElementById('backlog-detail-notes').value = item.notes;
             document.getElementById('backlog-detail-links').value = item.links;
-            document.getElementById('backlog-detail-literature').value = item.literature;
-            document.getElementById('backlog-detail-feedback').value = item.feedback;
+            document.getElementById('backlog-detail-markdown').value = item.markdownBody;
+            document.getElementById('backlog-detail-markdown').classList.remove('hidden');
+            document.getElementById('backlog-markdown-preview').classList.add('hidden');
+            document.getElementById('btn-backlog-markdown-edit').className = 'px-3 py-1 rounded-md text-xs font-bold bg-secondary text-white';
+            document.getElementById('btn-backlog-markdown-preview').className = 'px-3 py-1 rounded-md text-xs font-bold text-textmuted';
             document.getElementById('backlog-modal-heading').textContent = item.name;
             document.getElementById('btn-archive-backlog').textContent = item.archived ? '恢复到 Backlog' : '✓ 完成并归档';
             updateBacklogTodayButton(document.getElementById('btn-backlog-add-today'), item);
             document.getElementById('btn-backlog-add-focus').disabled = item.archived;
+            renderBacklogMarkdownSubtasks(item);
             renderBacklogDetailHistory(item);
             const modal = document.getElementById('backlog-detail-modal');
             modal.classList.remove('hidden');
@@ -2908,11 +3015,8 @@
             item.status = document.getElementById('backlog-detail-status').value;
             item.dueDate = document.getElementById('backlog-detail-due').value;
             item.nextAction = document.getElementById('backlog-detail-next-action').value.trim();
-            item.background = document.getElementById('backlog-detail-background').value.trim();
-            item.notes = document.getElementById('backlog-detail-notes').value.trim();
             item.links = document.getElementById('backlog-detail-links').value.trim();
-            item.literature = document.getElementById('backlog-detail-literature').value.trim();
-            item.feedback = document.getElementById('backlog-detail-feedback').value.trim();
+            item.markdownBody = document.getElementById('backlog-detail-markdown').value;
             item.archived = item.status === 'completed';
             item.done = item.archived;
             item.archivedAt = item.archived ? (item.archivedAt || new Date().toISOString()) : null;
@@ -3040,6 +3144,7 @@
                     if (item) {
                         if (this.checked && item.status === 'in_progress') finishActivity(item);
                         else item.status = this.checked ? 'completed' : 'planned';
+                        syncBacklogMarkdownSubtask(item, this.checked);
                         item.updatedAt = new Date().toISOString();
                         if (item.backlog_id) addBacklogHistory(item.backlog_id, {
                             date: getTodayStr(), type: 'today_task', todoId: item.id, title: item.title,
