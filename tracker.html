@@ -430,12 +430,13 @@
 
                         <div class="xl:col-span-5 min-w-0">
                             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm min-h-full">
-                                <h3 class="text-xl font-black text-textmain mb-4 flex items-center border-b border-gray-50 pb-4"><i class="fa fa-check-circle-o text-secondary mr-2 text-2xl"></i>今日完成与活动摘要</h3>
-                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
-                                    <div class="bg-gray-50 border border-gray-100 rounded-xl px-3 py-3"><div id="activity-stat-total" class="text-xl font-black text-textmain leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">今日已记录</div></div>
-                                    <div class="bg-secondary/10 border border-secondary/10 rounded-xl px-3 py-3"><div id="activity-stat-deep" class="text-xl font-black text-secondary leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">Deep Focus</div></div>
-                                    <div class="bg-success/10 border border-success/10 rounded-xl px-3 py-3"><div id="activity-stat-exercise" class="text-xl font-black text-success leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">今日运动</div></div>
-                                    <div class="bg-primary/10 border border-primary/10 rounded-xl px-3 py-3"><div id="activity-stat-other" class="text-xl font-black text-primary leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">其他活动</div></div>
+                                <h3 class="text-lg font-black text-textmain mb-3 flex items-center border-b border-gray-50 pb-3"><i class="fa fa-check-circle-o text-secondary mr-2 text-xl"></i>今日完成清单</h3>
+                                <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 mb-4">
+                                    <div class="bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-2"><div id="activity-stat-total" class="text-lg font-black text-textmain leading-none">0m</div><div class="text-[9px] font-bold text-textmuted mt-1.5">今日已记录</div></div>
+                                    <div class="bg-secondary/10 border border-secondary/10 rounded-lg px-2.5 py-2"><div id="activity-stat-deep" class="text-lg font-black text-secondary leading-none">0m</div><div class="text-[9px] font-bold text-textmuted mt-1.5">Deep Focus</div></div>
+                                    <div class="bg-success/10 border border-success/10 rounded-lg px-2.5 py-2"><div id="activity-stat-exercise" class="text-lg font-black text-success leading-none">0m</div><div class="text-[9px] font-bold text-textmuted mt-1.5">运动</div></div>
+                                    <div class="bg-accent/10 border border-accent/10 rounded-lg px-2.5 py-2"><div id="activity-stat-language" class="text-lg font-black text-accent leading-none">0m</div><div class="text-[9px] font-bold text-textmuted mt-1.5">语言</div></div>
+                                    <div class="bg-primary/10 border border-primary/10 rounded-lg px-2.5 py-2"><div id="activity-stat-other" class="text-lg font-black text-primary leading-none">0m</div><div class="text-[9px] font-bold text-textmuted mt-1.5">其他</div></div>
                                 </div>
                                 <button id="btn-toggle-quick-activity" class="mb-4 text-sm font-bold text-secondary bg-secondary/10 hover:bg-secondary hover:text-white px-4 py-2 rounded-lg transition-colors"><i class="fa fa-plus mr-1"></i>快速记录活动</button>
                                 <form id="quick-activity-form" class="hidden bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5">
@@ -449,7 +450,7 @@
                                     </div>
                                     <button type="submit" class="mt-3 bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold">保存活动</button>
                                 </form>
-                                <div id="today-tasks-timeline" class="relative border-l-2 border-secondary/20 ml-4 pl-6 space-y-6"></div>
+                                <div id="today-tasks-timeline" class="space-y-1.5"></div>
                                 <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今天还没有完成记录。</div>
                             </div>
                         </div>
@@ -3268,6 +3269,7 @@
                     if (item) {
                         if (this.checked && item.status === 'in_progress') finishActivity(item);
                         else item.status = this.checked ? 'completed' : 'planned';
+                        if (this.checked) item.date = getTodayStr();
                         syncBacklogMarkdownSubtask(item, this.checked);
                         syncLanguagePractice(item, this.checked);
                         item.updatedAt = new Date().toISOString();
@@ -3382,18 +3384,20 @@
             const tl = document.getElementById('today-tasks-timeline');
             const emptyMsg = document.getElementById('empty-timeline-msg');
             const today = getTodayStr();
-            const schedule = D.activityData.records.filter(item => item.date === today && item.status !== 'planned' && (item.actual_duration || item.status === 'in_progress')).sort((a, b) => String(getActivityTimes(a).start).localeCompare(String(getActivityTimes(b).start)));
+            const schedule = D.activityData.records.filter(item => (item.date === today || (item.is_today_task && (item.taskDate || item.today_task_date) === today)) && ['completed', 'partial'].includes(item.status)).sort((a, b) => String(b.updatedAt || b.createdAt).localeCompare(String(a.updatedAt || a.createdAt)));
             const typeLabels = { research: 'Research', study: 'Study', language: 'Language', work: 'Work', exercise: 'Exercise', life: 'Life', social: 'Social', commute: 'Commute', rest: 'Rest', other: 'Other' };
             const typeClasses = { research: 'text-secondary bg-secondary/10', study: 'text-primary bg-primary/10', language: 'text-accent bg-accent/10', work: 'text-gray-600 bg-gray-100', exercise: 'text-green-700 bg-success/20', life: 'text-accent bg-accent/10', social: 'text-accent bg-accent/10', commute: 'text-gray-500 bg-gray-100', rest: 'text-success bg-success/10', other: 'text-gray-500 bg-gray-100' };
-            const completed = schedule.filter(item => ['completed', 'partial'].includes(item.status));
-            const total = completed.reduce((sum, item) => sum + item.actual_duration, 0);
-            const deep = completed.filter(item => item.focus_mode === 'deep_focus').reduce((sum, item) => sum + item.actual_duration, 0);
-            const exercise = completed.filter(item => item.activity_type === 'exercise').reduce((sum, item) => sum + item.actual_duration, 0);
-            const other = completed.filter(item => item.focus_mode !== 'deep_focus' && item.activity_type !== 'exercise').reduce((sum, item) => sum + item.actual_duration, 0);
+            const durationForSummary = item => Number(item.actual_duration) || Number(item.planned_duration) || 0;
+            const total = schedule.reduce((sum, item) => sum + durationForSummary(item), 0);
+            const deep = schedule.filter(item => item.focus_mode === 'deep_focus').reduce((sum, item) => sum + durationForSummary(item), 0);
+            const exercise = schedule.filter(item => item.activity_type === 'exercise').reduce((sum, item) => sum + durationForSummary(item), 0);
+            const language = schedule.filter(item => item.activity_type === 'language').reduce((sum, item) => sum + durationForSummary(item), 0);
+            const other = schedule.filter(item => item.focus_mode !== 'deep_focus' && !['exercise', 'language'].includes(item.activity_type)).reduce((sum, item) => sum + durationForSummary(item), 0);
             const fmt = mins => `${Math.floor(mins / 60) ? `${Math.floor(mins / 60)}h ` : ''}${mins % 60}m`;
             document.getElementById('activity-stat-total').textContent = fmt(total);
             document.getElementById('activity-stat-deep').textContent = fmt(deep);
             document.getElementById('activity-stat-exercise').textContent = fmt(exercise);
+            document.getElementById('activity-stat-language').textContent = fmt(language);
             document.getElementById('activity-stat-other').textContent = fmt(other);
 
             tl.innerHTML = '';
@@ -3404,28 +3408,23 @@
                 emptyMsg.classList.add('hidden');
 
                 schedule.forEach(item => {
-                    const times = getActivityTimes(item);
-                    const duration = times.duration;
+                    const hasActual = Number(item.actual_duration) > 0;
+                    const hasEstimate = !hasActual && Number(item.planned_duration) > 0;
+                    const durationLabel = hasActual ? fmt(Number(item.actual_duration)) : hasEstimate ? `${fmt(Number(item.planned_duration))} est.` : '未记录时长';
                     const div = document.createElement('div');
-                    div.className = 'relative group';
+                    div.className = 'group';
                     div.innerHTML = `
-                        <div class="absolute -left-[33px] bg-secondary w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm mt-1.5 z-10 group-hover:scale-125 transition-transform"></div>
-                        <div class="bg-gray-50 hover:bg-white p-4 pr-28 rounded-xl border border-gray-100 shadow-sm transition-colors relative min-h-[104px]">
-                            <div class="text-xs font-bold text-textmuted mb-2 flex flex-wrap items-center gap-2">
-                                ${times.start && times.end ? `<span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${times.start}–${times.end}</span>` : ''}
-                                <span class="text-gray-600 bg-gray-100 px-2 py-0.5 rounded">${fmt(duration)}</span>
-                                <span class="text-gray-500 bg-gray-100 px-2 py-0.5 rounded">${escapeHtml(item.status || 'planned')}</span>
+                        <div class="bg-gray-50/80 hover:bg-white px-3 py-2 rounded-lg border border-gray-100 transition-colors flex items-center gap-2 min-w-0">
+                            <button class="open-completed-calendar flex-1 min-w-0 text-left" data-id="${item.id}" title="在时间日历中查看">
+                                <div class="font-bold text-sm leading-5 text-textmain break-normal [overflow-wrap:normal]" title="${escapeHtml(item.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:normal;">${escapeHtml(item.title)}</div>
+                                <span class="${typeClasses[item.activity_type] || typeClasses.other} inline-block px-1.5 py-0.5 rounded text-[9px] font-bold mt-0.5">${typeLabels[item.activity_type] || 'Other'}</span>
+                            </button>
+                            <div class="text-right flex-shrink-0">
+                                <div class="text-xs font-black ${hasActual ? 'text-textmain' : 'text-gray-400'} whitespace-nowrap">${durationLabel}</div>
                             </div>
-                            <div class="font-black text-sm leading-5 text-textmain break-normal [overflow-wrap:normal]" title="${escapeHtml(item.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;">${escapeHtml(item.title)}</div>
-                            <div class="flex flex-wrap items-center gap-1.5 mt-2 text-[10px] font-bold">
-                                <span class="${typeClasses[item.activity_type] || typeClasses.other} px-2 py-0.5 rounded">${typeLabels[item.activity_type] || 'Other'}</span>
-                                ${item.focus_mode === 'deep_focus' ? '<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Deep Focus</span>' : ''}
-                                ${item.backlog_id ? `<span class="text-secondary bg-secondary/10 px-2 py-0.5 rounded">Backlog</span>` : ''}
-                            </div>
-                            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                                <button class="view-schedule-history text-gray-400 hover:text-white hover:bg-primary w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="历史详情"><i class="fa fa-info-circle"></i></button>
-                                <button class="edit-schedule text-gray-400 hover:text-white hover:bg-gray-500 w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="编辑"><i class="fa fa-pencil"></i></button>
-                                <button class="delete-schedule text-gray-400 hover:text-white hover:bg-danger w-8 h-8 rounded-lg transition-colors" data-id="${item.id}" title="删除"><i class="fa fa-trash"></i></button>
+                            <div class="flex items-center gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity flex-shrink-0">
+                                <button class="edit-schedule text-gray-400 hover:text-white hover:bg-gray-500 w-7 h-7 rounded-md" data-id="${item.id}" title="编辑"><i class="fa fa-pencil text-xs"></i></button>
+                                <button class="delete-schedule text-gray-400 hover:text-white hover:bg-danger w-7 h-7 rounded-md" data-id="${item.id}" title="删除"><i class="fa fa-trash text-xs"></i></button>
                             </div>
                         </div>
                     `;
@@ -3438,11 +3437,10 @@
                     });
                 });
 
-                tl.querySelectorAll('.view-schedule-history').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        openDayHistory(today, this.getAttribute('data-id'));
-                    });
-                });
+                tl.querySelectorAll('.open-completed-calendar').forEach(btn => btn.addEventListener('click', () => {
+                    const picker = document.getElementById('block-date-picker'); if (picker) picker.value = today;
+                    document.getElementById('nav-hourly')?.click();
+                }));
 
                 tl.querySelectorAll('.delete-schedule').forEach(btn => {
                     btn.addEventListener('click', function () {
