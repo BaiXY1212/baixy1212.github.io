@@ -127,6 +127,21 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
             <nav class="md:col-span-3">
                 <div class="soft-card p-5 sticky top-8">
+                    <div class="space-y-3 mb-5">
+                        <div class="bg-warning/5 border border-warning/20 rounded-xl p-3">
+                            <div class="flex items-center justify-between mb-2"><h3 class="text-xs font-black text-textmain"><i class="fa fa-sun-o text-warning mr-1.5"></i>今日启动</h3><span id="quick-routine-summary" class="text-[10px] text-textmuted">尚未记录</span></div>
+                            <div class="grid grid-cols-2 gap-2"><button id="quick-wake" class="bg-warning/15 hover:bg-warning/25 text-textmain rounded-lg py-2 text-xs font-bold transition-colors">我起床了</button><button id="quick-sleep" class="bg-secondary/10 hover:bg-secondary/20 text-secondary rounded-lg py-2 text-xs font-bold transition-colors">我要睡了</button></div>
+                        </div>
+                        <div class="bg-accent/5 border border-accent/20 rounded-xl p-3">
+                            <div class="flex items-center justify-between gap-2"><h3 class="text-xs font-black text-textmain"><i class="fa fa-pencil text-accent mr-1.5"></i>今日记录 / Daily Note</h3><span id="daily-note-state" class="text-[10px] font-bold text-gray-400">未记录</span></div>
+                            <div id="daily-note-updated" class="text-[10px] text-textmuted mt-1">尚无更新时间</div>
+                            <p id="daily-note-summary" class="text-[11px] leading-4 text-textmuted line-clamp-2 my-2">今天还没有记录</p>
+                            <div class="flex gap-2"><button id="quick-daily-note" class="flex-1 bg-accent/10 text-accent rounded-lg py-2 text-[11px] font-bold">快速写一点</button><button id="open-daily-note" class="flex-1 bg-white border border-gray-100 text-textmain rounded-lg py-2 text-[11px] font-bold">打开 Note</button></div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-4">
+                        <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">主导航</h3>
                     <ul class="space-y-3">
                         <li><button id="nav-hourly" class="w-full text-left px-5 py-3.5 rounded-xl bg-primary text-white font-bold flex items-center justify-between shadow-md"><span class="tracking-wide">时间日历</span><i class="fa fa-calendar text-lg"></i></button></li>
                         <li><button id="nav-tasks" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">每日 ToDo</span><i class="fa fa-tasks text-lg text-secondary"></i></button></li>
@@ -135,25 +150,20 @@
                         <li><button id="nav-achievements" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">成就殿堂</span><i class="fa fa-trophy text-lg text-warning"></i></button></li>
                         <li><button id="nav-stats" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">数据洞察</span><i class="fa fa-line-chart text-lg text-primary"></i></button></li>
                     </ul>
+                    </div>
 
-                    <div class="mt-8 border-t border-gray-100 pt-6">
-                        <h3 class="text-sm font-black text-gray-800 mb-4 flex items-center tracking-widest uppercase">
-                            <i class="fa fa-dashboard text-primary mr-2"></i>今日状态
-                        </h3>
-                        <div class="space-y-3 text-sm font-bold">
+                    <details class="mt-5 border-t border-gray-100 pt-4" open>
+                        <summary class="cursor-pointer list-none text-xs font-black text-gray-500 flex items-center justify-between"><span><i class="fa fa-dashboard text-primary mr-2"></i>今日状态摘要</span><i class="fa fa-angle-down text-gray-300"></i></summary>
+                        <div class="space-y-2.5 text-xs font-bold mt-3">
                             <div class="flex justify-between items-center"><span class="text-gray-400">起床时间</span><span id="sb-wake" class="text-gray-300">未记录</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">今日任务</span><span id="sb-todo" class="text-primary">0/0</span></div>
-                            <div class="flex justify-between items-center"><span class="text-gray-400">今日运动</span><span id="sb-fitness" class="text-success">未安排</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">进行中任务</span><span id="sb-task" class="text-gray-300 truncate max-w-[100px] text-right" title="">无</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">今日运动</span><span id="sb-fitness" class="text-success">未安排</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">语言练习</span><span id="sb-habit" class="text-gray-300">0%</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">今日专注</span><span id="sb-focus" class="text-secondary">0m</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">今日记录</span><span id="sb-note" class="text-gray-300">未记录</span></div>
                         </div>
-                    </div>
-                    <div class="mt-6 border-t border-gray-100 pt-5 space-y-4">
-                        <div><h3 class="text-xs font-black text-textmain mb-2">今日启动</h3><div class="grid grid-cols-3 gap-1"><button id="quick-wake" class="bg-warning/15 text-textmain rounded-lg py-2 text-[10px] font-bold">我起床了</button><button id="quick-start-day" class="bg-primary/10 text-primary rounded-lg py-2 text-[10px] font-bold">开始今天</button><button id="quick-sleep" class="bg-secondary/10 text-secondary rounded-lg py-2 text-[10px] font-bold">我要睡了</button></div><select id="quick-energy" class="w-full mt-2 px-2 py-2 bg-gray-50 rounded-lg text-xs"><option value="">精神状态</option><option>精力好</option><option>普通</option><option>有点累</option><option>需要休息</option></select><div class="flex justify-between mt-2 text-[10px] text-textmuted"><span id="quick-day-status">今天尚未开始</span><span id="quick-first-focus">首段专注未开始</span></div></div>
-                        <div><h3 class="text-xs font-black text-textmain mb-1">今日记录 / Daily Note</h3><p id="daily-note-summary" class="text-[10px] text-textmuted line-clamp-2 mb-2">今天还没有记录</p><div class="flex gap-1"><button id="quick-daily-note" class="flex-1 bg-accent/10 text-accent rounded-lg py-2 text-[10px] font-bold">快速写一点</button><button id="open-daily-note" class="flex-1 bg-gray-100 text-textmain rounded-lg py-2 text-[10px] font-bold">打开 Note</button></div></div>
-                    </div>
+                    </details>
                 </div>
             </nav>
 
@@ -1574,12 +1584,13 @@
             const sbNote = document.getElementById('sb-note');
             if (sbNote) { sbNote.textContent = note.trim() ? '已记录' : '未记录'; sbNote.className = note.trim() ? 'text-accent' : 'text-gray-300'; }
             const summary = document.getElementById('daily-note-summary');
-            if (summary) summary.textContent = `${D.journalData[t]?.updatedAt ? `更新 ${new Date(D.journalData[t].updatedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · ` : ''}${note.replace(/^#+\s*/gm, '').replace(/- \[[ xX]\]\s*/g, '').trim().slice(0, 80) || '今天还没有记录'}`;
-            const dayStatus = document.getElementById('quick-day-status');
-            if (dayStatus) dayStatus.textContent = D.sleepData[t]?.dayStartedAt ? '今天已开始' : '今天尚未开始';
-            const firstFocus = D.activityData.records.filter(item => item.date === t && item.actual_start).sort((a,b) => a.actual_start.localeCompare(b.actual_start))[0];
-            const firstFocusStatus = document.getElementById('quick-first-focus');
-            if (firstFocusStatus) firstFocusStatus.textContent = firstFocus ? `首段 ${firstFocus.actual_start}` : '首段专注未开始';
+            if (summary) summary.textContent = note.replace(/^#+\s*/gm, '').replace(/- \[[ xX]\]\s*/g, '').trim().slice(0, 100) || '今天还没有记录';
+            const noteState = document.getElementById('daily-note-state');
+            if (noteState) { noteState.textContent = note.trim() ? '已有记录' : '未记录'; noteState.className = note.trim() ? 'text-[10px] font-bold text-accent' : 'text-[10px] font-bold text-gray-400'; }
+            const noteUpdated = document.getElementById('daily-note-updated');
+            if (noteUpdated) noteUpdated.textContent = D.journalData[t]?.updatedAt ? `最近更新 ${new Date(D.journalData[t].updatedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}` : '尚无更新时间';
+            const routineSummary = document.getElementById('quick-routine-summary');
+            if (routineSummary) routineSummary.textContent = D.sleepData[t]?.wake ? `起床 ${D.sleepData[t].wake}${D.sleepData[t].sleep ? ` · 睡觉 ${D.sleepData[t].sleep}` : ''}` : (D.sleepData[t]?.sleep ? `睡觉 ${D.sleepData[t].sleep}` : '尚未记录');
         }
 
         // ================= 导航 =================
@@ -1638,13 +1649,21 @@
                 saveData();
                 updateCheckinUI();
             });
-            document.getElementById('quick-wake')?.addEventListener('click', () => document.getElementById('btn-wake')?.click());
-            document.getElementById('quick-sleep')?.addEventListener('click', () => document.getElementById('btn-sleep')?.click());
-            document.getElementById('quick-start-day')?.addEventListener('click', () => {
-                const t = getTodayStr(); ensureDateDataExists(t); D.sleepData[t].dayStartedAt = new Date().toISOString(); saveData(); document.getElementById('nav-tasks')?.click();
+            document.getElementById('quick-wake')?.addEventListener('click', () => {
+                const date = getTodayStr(); ensureDateDataExists(date);
+                if (D.sleepData[date].wake && !confirm(`今天已记录起床时间 ${D.sleepData[date].wake}，是否更新为当前时间？`)) return;
+                D.sleepData[date].wake = getTimeStr();
+                D.sleepData[date].wakeOk = new Date().getHours() < 9;
+                saveData(); updateCheckinUI(); updateSidebar(); document.getElementById('nav-tasks')?.click();
             });
-            document.getElementById('quick-energy')?.addEventListener('change', event => { const t = getTodayStr(); ensureDateDataExists(t); D.sleepData[t].energy = event.target.value; saveData(); });
-            document.getElementById('quick-energy').value = D.sleepData[getTodayStr()]?.energy || '';
+            document.getElementById('quick-sleep')?.addEventListener('click', () => {
+                const date = getTodayStr(); ensureDateDataExists(date);
+                if (D.sleepData[date].sleep && !confirm(`今天已记录睡觉时间 ${D.sleepData[date].sleep}，是否更新为当前时间？`)) return;
+                const now = new Date();
+                D.sleepData[date].sleep = getTimeStr();
+                D.sleepData[date].sleepOk = now.getHours() >= 18 && (now.getHours() < 23 || (now.getHours() === 23 && now.getMinutes() <= 30));
+                saveData(); updateCheckinUI(); updateSidebar(); openDailyNote(date);
+            });
 
             ['morning', 'afternoon', 'evening'].forEach(p => {
                 document.getElementById(`${p}-checkin`)?.addEventListener('click', () => {
@@ -3542,6 +3561,10 @@
 ## 今日简记
 
 ## 情绪 / 身体
+
+- 精神状态：
+- 身体状态：
+- 情绪关键词：
 
 ## 学习 / 研究
 
