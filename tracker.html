@@ -106,7 +106,8 @@
                     <span id="backup-status" class="text-xs text-textmuted whitespace-nowrap">仅保存在此设备</span>
                 </summary>
                 <div class="mt-4">
-                    <p class="text-sm text-textmuted leading-relaxed mb-4">你的记录保存在当前浏览器中，不会自动上传。建议定期导出 JSON 备份；在另一台设备导入即可迁移数据。</p>
+                    <p class="text-sm text-textmuted leading-relaxed mb-2">你的记录保存在当前浏览器中，不会自动上传。建议定期导出 JSON 备份；在另一台设备导入即可迁移数据。</p>
+                    <p id="storage-origin-note" class="hidden text-xs font-bold text-warning bg-warning/10 border border-warning/20 rounded-lg p-3 mb-4"></p>
                     <div class="flex flex-wrap gap-3">
                         <button id="btn-export-data" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm"><i class="fa fa-download mr-2"></i>导出备份</button>
                         <button id="btn-import-data" class="bg-white text-primary border border-primary/40 px-4 py-2 rounded-lg text-sm font-bold shadow-sm"><i class="fa fa-upload mr-2"></i>导入备份</button>
@@ -119,7 +120,7 @@
 
         <header class="mb-10 text-center">
             <h1 class="text-4xl font-extrabold text-primary mb-3 drop-shadow-sm tracking-wide">Life Dashboard</h1>
-            <p class="text-sm text-textmuted mb-3">A calm workspace for focus, habits and reflection.</p>
+            <p class="text-sm text-textmuted mb-3">A calm workspace for daily planning, focused work and gentle reflection.</p>
             <p class="text-textmuted font-medium bg-white inline-block px-6 py-2 rounded-full shadow-sm border border-gray-100" id="current-date-time">正在加载时间...</p>
         </header>
 
@@ -127,12 +128,10 @@
             <nav class="md:col-span-3">
                 <div class="soft-card p-5 sticky top-8">
                     <ul class="space-y-3">
-                        <li><button id="nav-checkin" class="w-full text-left px-5 py-3.5 rounded-xl bg-primary text-white font-bold flex items-center justify-between shadow-md"><span class="tracking-wide">起居与工位</span><i class="fa fa-clock-o text-lg"></i></button></li>
-                        <li><button id="nav-hourly" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">时间日历</span><i class="fa fa-calendar text-lg text-primary"></i></button></li>
-                        <li><button id="nav-tasks" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">深度专注</span><i class="fa fa-tasks text-lg text-secondary"></i></button></li>
-                        <li><button id="nav-habits" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">每日习惯</span><i class="fa fa-check-square-o text-lg text-success"></i></button></li>
-                        <li><button id="nav-journal" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">每日复盘</span><i class="fa fa-book text-lg text-accent"></i></button></li>
+                        <li><button id="nav-hourly" class="w-full text-left px-5 py-3.5 rounded-xl bg-primary text-white font-bold flex items-center justify-between shadow-md"><span class="tracking-wide">时间日历</span><i class="fa fa-calendar text-lg"></i></button></li>
+                        <li><button id="nav-tasks" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">每日 ToDo</span><i class="fa fa-tasks text-lg text-secondary"></i></button></li>
                         <li><button id="nav-fitness" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">健身与身体状态</span><i class="fa fa-heartbeat text-lg text-success"></i></button></li>
+                        <li><button id="nav-habits" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">语言练习</span><i class="fa fa-language text-lg text-accent"></i></button></li>
                         <li><button id="nav-achievements" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">成就殿堂</span><i class="fa fa-trophy text-lg text-warning"></i></button></li>
                         <li><button id="nav-stats" class="w-full text-left px-5 py-3.5 rounded-xl hover:bg-gray-50 text-textmain font-bold flex items-center justify-between transition-all"><span class="tracking-wide">数据洞察</span><i class="fa fa-line-chart text-lg text-primary"></i></button></li>
                     </ul>
@@ -142,19 +141,24 @@
                             <i class="fa fa-dashboard text-primary mr-2"></i>今日状态
                         </h3>
                         <div class="space-y-3 text-sm font-bold">
-                            <div class="flex justify-between items-center"><span class="text-gray-400">上午打卡</span><span id="sb-m-in" class="text-gray-300">未打卡</span></div>
-                            <div class="flex justify-between items-center"><span class="text-gray-400">下午打卡</span><span id="sb-a-in" class="text-gray-300">未打卡</span></div>
-                            <div class="flex justify-between items-center"><span class="text-gray-400">晚上打卡</span><span id="sb-e-in" class="text-gray-300">未打卡</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">起床时间</span><span id="sb-wake" class="text-gray-300">未记录</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">今日任务</span><span id="sb-todo" class="text-primary">0/0</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">今日运动</span><span id="sb-fitness" class="text-success">未安排</span></div>
                             <div class="flex justify-between items-center"><span class="text-gray-400">进行中任务</span><span id="sb-task" class="text-gray-300 truncate max-w-[100px] text-right" title="">无</span></div>
-                            <div class="flex justify-between items-center"><span class="text-gray-400">每日习惯</span><span id="sb-habit" class="text-gray-300">0%</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">语言练习</span><span id="sb-habit" class="text-gray-300">0%</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">今日专注</span><span id="sb-focus" class="text-secondary">0m</span></div>
+                            <div class="flex justify-between items-center"><span class="text-gray-400">今日记录</span><span id="sb-note" class="text-gray-300">未记录</span></div>
                         </div>
+                    </div>
+                    <div class="mt-6 border-t border-gray-100 pt-5 space-y-4">
+                        <div><h3 class="text-xs font-black text-textmain mb-2">今日启动</h3><div class="grid grid-cols-3 gap-1"><button id="quick-wake" class="bg-warning/15 text-textmain rounded-lg py-2 text-[10px] font-bold">我起床了</button><button id="quick-start-day" class="bg-primary/10 text-primary rounded-lg py-2 text-[10px] font-bold">开始今天</button><button id="quick-sleep" class="bg-secondary/10 text-secondary rounded-lg py-2 text-[10px] font-bold">我要睡了</button></div><select id="quick-energy" class="w-full mt-2 px-2 py-2 bg-gray-50 rounded-lg text-xs"><option value="">精神状态</option><option>精力好</option><option>普通</option><option>有点累</option><option>需要休息</option></select><div class="flex justify-between mt-2 text-[10px] text-textmuted"><span id="quick-day-status">今天尚未开始</span><span id="quick-first-focus">首段专注未开始</span></div></div>
+                        <div><h3 class="text-xs font-black text-textmain mb-1">今日记录 / Daily Note</h3><p id="daily-note-summary" class="text-[10px] text-textmuted line-clamp-2 mb-2">今天还没有记录</p><div class="flex gap-1"><button id="quick-daily-note" class="flex-1 bg-accent/10 text-accent rounded-lg py-2 text-[10px] font-bold">快速写一点</button><button id="open-daily-note" class="flex-1 bg-gray-100 text-textmain rounded-lg py-2 text-[10px] font-bold">打开 Note</button></div></div>
                     </div>
                 </div>
             </nav>
 
             <main class="md:col-span-9 relative">
-                <section id="checkin-section" class="soft-card p-8 mb-6">
+                <section id="checkin-section" class="soft-card p-8 mb-6 hidden">
                     <h2 class="text-2xl font-black text-textmain mb-8 flex items-center border-b border-gray-100 pb-4">
                         <i class="fa fa-clock-o mr-3 text-primary text-3xl"></i>起居与工位打卡
                     </h2>
@@ -273,7 +277,7 @@
                     </div>
                 </section>
 
-                <section id="hourly-section" class="soft-card p-8 mb-6 hidden">
+                <section id="hourly-section" class="soft-card p-8 mb-6">
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-8 border-b border-gray-100 pb-4">
                         <h2 class="text-2xl font-black text-textmain flex items-center">
                             <i class="fa fa-calendar mr-3 text-primary text-3xl"></i>迷你时间日历
@@ -323,6 +327,7 @@
                                 <select id="tb-cat" class="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary outline-none font-bold text-sm">
                                     <option value="focus">🎯 专注</option>
                                     <option value="study">📖 学习</option>
+                                    <option value="language">🌏 语言</option>
                                     <option value="work">🧪 科研</option>
                                     <option value="play">🎮 娱乐</option>
                                     <option value="meal">🍱 餐饮</option>
@@ -347,7 +352,7 @@
 
                 <section id="tasks-section" class="soft-card p-8 mb-6 hidden">
                     <h2 class="text-2xl font-black text-textmain mb-8 flex items-center border-b border-gray-100 pb-4">
-                        <i class="fa fa-tasks mr-3 text-secondary text-3xl"></i>深度专注与日程
+                        <i class="fa fa-tasks mr-3 text-secondary text-3xl"></i>每日 ToDo
                     </h2>
 
                     <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8">
@@ -366,7 +371,7 @@
                                 <div class="space-y-2 mb-3">
                                     <div class="flex flex-wrap gap-2 items-stretch">
                                         <input type="text" id="new-todo-input" placeholder="输入新任务..." class="basis-full sm:basis-48 sm:flex-1 min-w-0 px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-secondary outline-none text-sm font-bold" />
-                                        <select id="new-todo-type" class="w-[7.5rem] min-w-0 px-2 py-2 bg-white border border-gray-200 rounded-lg text-xs font-bold"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="other">Other</option></select>
+                                        <select id="new-todo-type" class="w-[7.5rem] min-w-0 px-2 py-2 bg-white border border-gray-200 rounded-lg text-xs font-bold"><option value="research">Research</option><option value="study">Study</option><option value="language">Language</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="other">Other</option></select>
                                         <select id="new-todo-exercise-type" class="hidden w-[7.5rem] min-w-0 px-2 py-2 bg-white border border-success/40 rounded-lg text-xs font-bold"><option>力量</option><option>有氧</option><option>拉伸</option><option>八段锦</option><option>舞蹈</option><option>康复放松</option><option>散步</option><option>腰腹</option><option>其他</option></select>
                                         <button id="btn-show-fitness-plans" class="text-xs font-bold text-success bg-success/10 hover:bg-success hover:text-white px-3 py-2 rounded-lg whitespace-nowrap"><i class="fa fa-plus mr-1"></i>健身计划</button>
                                         <button id="btn-add-todo" class="bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm whitespace-nowrap">添加</button>
@@ -415,7 +420,7 @@
 
                         <div class="xl:col-span-5 min-w-0">
                             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm min-h-full">
-                                <h3 class="text-xl font-black text-textmain mb-4 flex items-center border-b border-gray-50 pb-4"><i class="fa fa-clock-o text-secondary mr-2 text-2xl"></i>今日专注与活动时间线</h3>
+                                <h3 class="text-xl font-black text-textmain mb-4 flex items-center border-b border-gray-50 pb-4"><i class="fa fa-check-circle-o text-secondary mr-2 text-2xl"></i>今日完成与活动摘要</h3>
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
                                     <div class="bg-gray-50 border border-gray-100 rounded-xl px-3 py-3"><div id="activity-stat-total" class="text-xl font-black text-textmain leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">今日已记录</div></div>
                                     <div class="bg-secondary/10 border border-secondary/10 rounded-xl px-3 py-3"><div id="activity-stat-deep" class="text-xl font-black text-secondary leading-none">0m</div><div class="text-[10px] font-bold text-textmuted mt-2">Deep Focus</div></div>
@@ -426,7 +431,7 @@
                                 <form id="quick-activity-form" class="hidden bg-gray-50 border border-gray-200 rounded-xl p-4 mb-5">
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <input id="quick-activity-title" required placeholder="活动名称" class="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-                                        <select id="quick-activity-type" class="px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="social">Social</option><option value="commute">Commute</option><option value="rest">Rest</option><option value="other">Other</option></select>
+                                        <select id="quick-activity-type" class="px-3 py-2 border border-gray-200 rounded-lg text-sm"><option value="research">Research</option><option value="study">Study</option><option value="language">Language</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="social">Social</option><option value="commute">Commute</option><option value="rest">Rest</option><option value="other">Other</option></select>
                                         <input type="time" id="quick-activity-start" required class="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
                                         <input type="time" id="quick-activity-end" required class="px-3 py-2 border border-gray-200 rounded-lg text-sm" />
                                         <label class="flex items-center gap-2 text-sm font-bold text-textmain"><input type="checkbox" id="quick-activity-deep" class="w-4 h-4 accent-secondary" />这是 Deep Focus</label>
@@ -435,7 +440,7 @@
                                     <button type="submit" class="mt-3 bg-secondary text-white px-4 py-2 rounded-lg text-sm font-bold">保存活动</button>
                                 </form>
                                 <div id="today-tasks-timeline" class="relative border-l-2 border-secondary/20 ml-4 pl-6 space-y-6"></div>
-                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今天还没有时间活动记录。</div>
+                                <div id="empty-timeline-msg" class="text-center text-textmuted font-bold py-10 hidden">今天还没有完成记录。</div>
                             </div>
                         </div>
                     </div>
@@ -464,20 +469,20 @@
 
                 <section id="habits-section" class="soft-card p-8 mb-6 hidden">
                     <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
-                        <h2 class="text-2xl font-black text-textmain flex items-center"><i class="fa fa-check-square-o mr-3 text-success text-3xl"></i>每日习惯</h2>
+                        <div><h2 class="text-2xl font-black text-textmain flex items-center"><i class="fa fa-language mr-3 text-accent text-3xl"></i>语言练习</h2><p class="text-sm text-textmuted mt-2">English PTE + Japanese Speaking，低压力持续练习。</p></div>
                         <input type="date" id="habit-date-picker" class="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 font-bold text-textmain outline-none" />
                     </div>
                     <div class="mb-6 bg-success/10 p-5 rounded-2xl border border-success/20">
-                        <div class="flex justify-between font-bold text-success mb-2 text-sm"><span id="habit-progress-text">完成度 0%</span></div>
+                        <div class="flex justify-between font-bold text-success mb-2 text-sm"><span id="habit-progress-text">今日语言练习完成度 0%</span><label class="flex items-center gap-2 text-xs"><input id="language-low-pressure" type="checkbox" class="accent-success">低压力模式</label></div>
                         <div class="w-full bg-white rounded-full h-3 border border-success/30 overflow-hidden">
                             <div id="habit-progress-bar" class="bg-success h-3 rounded-full transition-all duration-500" style="width: 0%;"></div>
                         </div>
                     </div>
-                    <div class="space-y-3 mb-8" id="habits-list-container"></div>
-                    <div class="flex gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
-                        <input type="text" id="new-habit-input" placeholder="输入新习惯..." class="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-success" />
-                        <button id="btn-add-habit" class="bg-success text-white px-6 rounded-lg font-bold shadow-sm">添加</button>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-primary/5 border border-primary/20 rounded-2xl p-5"><h3 class="font-black text-primary">English PTE</h3><p class="text-xs text-textmuted mt-1">目标：今年年底前参加考试 · 建议每周 4 次</p><p id="pte-week-summary" class="text-xs font-bold text-primary mt-2">本周 0 次 · 尚无最近练习</p><div class="grid grid-cols-2 gap-2 mt-4 text-xs"><label>目标分数<input id="pte-target-score" class="w-full mt-1 px-2 py-2 rounded border" placeholder="例如 79"></label><label>当前估计<input id="pte-current-score" class="w-full mt-1 px-2 py-2 rounded border"></label><label>最近模考日期<input id="pte-mock-date" type="date" class="w-full mt-1 px-2 py-2 rounded border"></label><label>最近模考分数<input id="pte-mock-score" class="w-full mt-1 px-2 py-2 rounded border"></label><label class="col-span-2">薄弱题型 / 下一步<input id="pte-next" class="w-full mt-1 px-2 py-2 rounded border" placeholder="例如 Repeat Sentence；周六模考"></label></div></div>
+                        <div class="bg-accent/5 border border-accent/20 rounded-2xl p-5"><h3 class="font-black text-accent">Japanese Speaking</h3><p class="text-xs text-textmuted mt-1">目标：可以进行简单开口对话 · 建议每周 5 次</p><p id="jp-week-summary" class="text-xs font-bold text-accent mt-2">本周 0 次 · 尚无最近练习</p><div class="grid grid-cols-1 gap-2 mt-4 text-xs"><label class="flex items-center gap-2"><input id="jp-spoke-today" type="checkbox" class="accent-accent">今天开口了</label><label>练习话题<input id="jp-topic" class="w-full mt-1 px-2 py-2 rounded border"></label><label>新句子 / 卡住的表达 / 下次复用<textarea id="jp-notes" rows="3" class="w-full mt-1 px-2 py-2 rounded border"></textarea></label></div></div>
                     </div>
+                    <div class="bg-gray-50 rounded-2xl p-5 mb-5"><h3 class="font-black text-textmain mb-3">今日推荐练习</h3><div class="space-y-2" id="habits-list-container"></div></div>
                 </section>
 
                 <section id="journal-section" class="soft-card p-8 mb-6 hidden">
@@ -589,18 +594,18 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-percent text-primary mr-2"></i>工位打卡合格率 (%)</h3>
+                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-pencil-square-o text-primary mr-2"></i>Daily Note 记录率 (%)</h3>
                             <div class="relative w-full h-[220px]"><canvas id="chart-checkin-rate"></canvas></div>
                         </div>
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-bed text-warning mr-2"></i>按时起居打卡 (天数)</h3>
+                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-bed text-warning mr-2"></i>起床 / 睡觉记录 (天数)</h3>
                             <div class="relative w-full h-[220px]"><canvas id="chart-sleep-stats"></canvas></div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-sun-o text-accent mr-2"></i>各时段出勤次数</h3>
+                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-clock-o text-accent mr-2"></i>每日已记录活动数</h3>
                             <div class="relative w-full h-[220px]"><canvas id="chart-checkin-period"></canvas></div>
                         </div>
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
@@ -615,12 +620,22 @@
                             <div class="relative w-full h-[200px]"><canvas id="chart-fitness-trend"></canvas></div>
                         </div>
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-check-square-o text-success mr-2"></i>每日习惯完成度 (%)</h3>
+                            <h3 class="text-sm font-bold text-gray-700 mb-4"><i class="fa fa-language text-success mr-2"></i>每日语言练习完成度 (%)</h3>
                             <div class="relative w-full h-[200px]"><canvas id="chart-habit-trend"></canvas></div>
                         </div>
                     </div>
                 </section>
             </main>
+        </div>
+    </div>
+
+    <div id="daily-note-modal" class="fixed inset-0 z-[75] bg-black/40 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] overflow-y-auto p-6">
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-4"><div><div class="text-xs font-black text-accent uppercase">Daily Note</div><h3 id="daily-note-heading" class="text-xl font-black text-textmain"></h3></div><button id="close-daily-note" class="w-9 h-9 rounded-lg bg-gray-100"><i class="fa fa-times"></i></button></div>
+            <div class="flex justify-end mb-2"><div class="inline-flex border rounded-lg p-0.5"><button id="daily-note-edit-tab" class="px-3 py-1 text-xs font-bold bg-accent text-white rounded-md">编辑</button><button id="daily-note-preview-tab" class="px-3 py-1 text-xs font-bold text-textmuted rounded-md">预览</button></div></div>
+            <textarea id="daily-note-markdown" rows="20" class="w-full border border-gray-200 rounded-xl p-4 font-mono text-sm outline-none"></textarea><div id="daily-note-preview" class="hidden min-h-[360px] border border-gray-200 rounded-xl p-5 text-sm leading-7"></div>
+            <div class="mt-4 bg-accent/5 border border-accent/20 rounded-xl p-4"><h4 class="font-black text-sm mb-3">Note checklist</h4><div id="daily-note-subtasks" class="space-y-2"></div></div>
+            <div class="flex justify-end mt-4"><button id="save-daily-note" class="bg-accent text-white px-5 py-2 rounded-lg font-bold">保存 Daily Note</button></div>
         </div>
     </div>
 
@@ -691,7 +706,7 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div><label class="block text-xs font-bold text-textmuted mb-1">完成状态</label><select id="history-block-status" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="planned">计划中</option><option value="in_progress">进行中</option><option value="paused">已暂停</option><option value="completed">已完成</option><option value="partial">部分完成</option><option value="not_completed">未完成</option><option value="skipped">跳过</option><option value="cancelled">未执行 / 取消</option></select></div>
-                    <div><label class="block text-xs font-bold text-textmuted mb-1">活动类型</label><select id="history-block-type" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="research">Research</option><option value="study">Study</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="social">Social</option><option value="commute">Commute</option><option value="rest">Rest</option><option value="other">Other</option></select></div>
+                    <div><label class="block text-xs font-bold text-textmuted mb-1">活动类型</label><select id="history-block-type" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="research">Research</option><option value="study">Study</option><option value="language">Language</option><option value="work">Work</option><option value="exercise">Exercise</option><option value="life">Life</option><option value="social">Social</option><option value="commute">Commute</option><option value="rest">Rest</option><option value="other">Other</option></select></div>
                     <div><label class="block text-xs font-bold text-textmuted mb-1">专注模式</label><select id="history-block-focus-mode" class="w-full px-3 py-2 border border-gray-200 rounded-lg"><option value="deep_focus">Deep Focus</option><option value="normal">Normal</option><option value="none">None</option></select></div>
                     <div></div>
                     <div><label class="block text-xs font-bold text-textmuted mb-1">计划开始</label><input type="time" id="history-block-planned-start" class="w-full px-3 py-2 border border-gray-200 rounded-lg" /></div>
@@ -730,6 +745,7 @@
             'exerciseDetails',
             'exerciseLibrary',
             'exerciseLibraryMigrated',
+            'languagePractice',
             'taskData',
             'journalData',
             'timeBlocks',
@@ -757,6 +773,31 @@
                 return value ? JSON.parse(value) : fallback;
             } catch {
                 return fallback;
+            }
+        }
+
+        const DASHBOARD_SCHEMA_VERSION = 8;
+        const PRE_UPGRADE_BACKUP_KEY = `dashboardPreUpgradeBackupV${DASHBOARD_SCHEMA_VERSION}`;
+
+        function createPreUpgradeSnapshot() {
+            if (localStorage.getItem(PRE_UPGRADE_BACKUP_KEY)) return true;
+            const rawData = {};
+            DATA_KEYS.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value !== null) rawData[key] = value;
+            });
+            if (Object.keys(rawData).length === 0) return true;
+            try {
+                localStorage.setItem(PRE_UPGRADE_BACKUP_KEY, JSON.stringify({
+                    format: 'baixy-life-dashboard-pre-upgrade',
+                    schemaVersion: DASHBOARD_SCHEMA_VERSION,
+                    createdAt: new Date().toISOString(),
+                    rawData
+                }));
+                return true;
+            } catch (error) {
+                console.warn('升级前快照空间不足；原数据仍保持不变。', error);
+                return false;
             }
         }
 
@@ -811,7 +852,21 @@
             return item;
         }
 
-        const ACTIVITY_TYPES = ['research', 'study', 'work', 'exercise', 'life', 'social', 'commute', 'rest', 'other'];
+        const ACTIVITY_TYPES = ['research', 'study', 'language', 'work', 'exercise', 'life', 'social', 'commute', 'rest', 'other'];
+        const LANGUAGE_PRACTICES = [
+            { id: 'pte_speaking', language: 'English · PTE', title: 'Speaking', duration: 20, minimum: 'Read aloud 5 分钟', minimumDuration: 5 },
+            { id: 'pte_listening', language: 'English · PTE', title: 'Listening', duration: 20, minimum: '精听 5 分钟', minimumDuration: 5 },
+            { id: 'pte_reading', language: 'English · PTE', title: 'Reading', duration: 20, minimum: '读一小段', minimumDuration: 5 },
+            { id: 'pte_writing', language: 'English · PTE', title: 'Writing', duration: 20, minimum: '写一个段落', minimumDuration: 5 },
+            { id: 'pte_vocabulary', language: 'English · PTE', title: 'Vocabulary', duration: 10, minimum: '复习 5 个词', minimumDuration: 5 },
+            { id: 'pte_mock', language: 'English · PTE', title: 'Mock Test', duration: 40, minimum: '做 1 道模考题', minimumDuration: 5 },
+            { id: 'jp_shadowing', language: '日本語', title: '发音 / Shadowing', duration: 10, minimum: '跟读 3 句', minimumDuration: 3 },
+            { id: 'jp_patterns', language: '日本語', title: '日常句型', duration: 10, minimum: '复用 1 个句型', minimumDuration: 3 },
+            { id: 'jp_vocabulary', language: '日本語', title: '词汇', duration: 10, minimum: '复习 5 个词', minimumDuration: 5 },
+            { id: 'jp_listening', language: '日本語', title: '听力输入', duration: 15, minimum: '听 5 分钟', minimumDuration: 5 },
+            { id: 'jp_speaking', language: '日本語', title: '开口练习', duration: 15, minimum: '说 3 句话', minimumDuration: 3 },
+            { id: 'jp_topic', language: '日本語', title: '简短对话主题', duration: 15, minimum: '回答 1 个问题', minimumDuration: 3 }
+        ];
         const FOCUS_MODES = ['deep_focus', 'normal', 'none'];
         const ACTIVITY_STATUSES = ['planned', 'in_progress', 'paused', 'completed', 'partial', 'not_completed', 'skipped', 'cancelled'];
 
@@ -846,6 +901,8 @@
             activity.todoSnapshot = activity.todoSnapshot || null;
             activity.exercise_library_id = activity.exercise_library_id || null;
             activity.exercise_video_url = activity.exercise_video_url || '';
+            activity.material_url = activity.material_url || '';
+            activity.language_practice_id = activity.language_practice_id || null;
             activity.note = activity.note || activity.notes || '';
             activity.actual_outcome = activity.actual_outcome || activity.actualOutcome || '';
             activity.createdAt = activity.createdAt || now;
@@ -898,6 +955,7 @@
             activity.status = status;
             activity.updatedAt = new Date().toISOString();
             syncBacklogMarkdownSubtask(activity, status === 'completed');
+            syncLanguagePractice(activity, status === 'completed');
             if (activity.backlog_id) addBacklogHistory(activity.backlog_id, { date: activity.date, type: 'focus_record', scheduleId: activity.id, title: activity.title, start: activity.actual_start, end: activity.actual_end, status });
         }
 
@@ -949,6 +1007,28 @@
             project.createdAt = project.createdAt || now;
             project.updatedAt = project.updatedAt || project.createdAt;
             return project;
+        }
+
+        function syncExerciseLibraryFromActivities() {
+            if (!Array.isArray(D.exerciseLibrary)) D.exerciseLibrary = [];
+            const seen = new Set(D.exerciseLibrary.map(project => String(project.title || '').trim().toLowerCase()).filter(Boolean));
+            D.activityData.records.filter(activity => activity.activity_type === 'exercise').forEach(activity => {
+                const key = String(activity.title || '').trim().toLowerCase();
+                if (!key || seen.has(key)) return;
+                const detail = getExerciseDetail(activity.id) || {};
+                D.exerciseLibrary.push(normalizeExerciseProject({
+                    title: activity.title,
+                    exercise_type: detail.exercise_type || '其他',
+                    default_duration: activity.planned_duration || activity.actual_duration || 0,
+                    links: [activity.exercise_video_url || detail.video_url || ''].filter(Boolean),
+                    preferred_period: detail.default_period || '',
+                    note: detail.exercise_note || activity.note || '',
+                    repeat_rule: detail.repeat_rule || 'none',
+                    status: 'active',
+                    migratedFromActivityId: activity.id
+                }));
+                seen.add(key);
+            });
         }
 
         function getBacklogSnapshot(item) {
@@ -1014,6 +1094,13 @@
                 bgSoft: 'bg-primary/20',
                 text: 'text-primary',
                 buttonText: 'text-primary'
+            },
+            language: {
+                label: '语言',
+                border: 'border-accent',
+                bgSoft: 'bg-accent/20',
+                text: 'text-accent',
+                buttonText: 'text-accent'
             },
             work: {
                 label: '科研',
@@ -1254,6 +1341,9 @@
             }
             if (!D.taskData || typeof D.taskData !== 'object') D.taskData = {};
             if (!D.journalData || typeof D.journalData !== 'object') D.journalData = {};
+            if (!D.languagePractice || typeof D.languagePractice !== 'object') D.languagePractice = { settings: {}, records: {} };
+            if (!D.languagePractice.settings) D.languagePractice.settings = {};
+            if (!D.languagePractice.records) D.languagePractice.records = {};
             if (!D.timeBlocks || typeof D.timeBlocks !== 'object') D.timeBlocks = {};
             if (!Array.isArray(D.habitConfig)) D.habitConfig = [];
             if (!D.habitRecords || typeof D.habitRecords !== 'object') D.habitRecords = {};
@@ -1309,6 +1399,7 @@
         }
 
         function initData() {
+            const snapshotCreated = createPreUpgradeSnapshot();
             D.checkinData = safeJSONParse(localStorage.getItem('checkinData'), {});
             D.phoneResistData = safeJSONParse(localStorage.getItem('phoneResistData'), { totalCount: 0, records: {} });
             D.fitnessData = safeJSONParse(localStorage.getItem('fitnessData'), { records: [] });
@@ -1316,6 +1407,7 @@
             D.exerciseDetails = safeJSONParse(localStorage.getItem('exerciseDetails'), []);
             D.exerciseLibrary = safeJSONParse(localStorage.getItem('exerciseLibrary'), []);
             D.exerciseLibraryMigrated = safeJSONParse(localStorage.getItem('exerciseLibraryMigrated'), false);
+            D.languagePractice = safeJSONParse(localStorage.getItem('languagePractice'), { settings: {}, records: {} });
             D.taskData = safeJSONParse(localStorage.getItem('taskData'), {});
             D.journalData = safeJSONParse(localStorage.getItem('journalData'), {});
             D.timeBlocks = safeJSONParse(localStorage.getItem('timeBlocks'), {});
@@ -1327,6 +1419,7 @@
             D.longTermTodos = safeJSONParse(localStorage.getItem('longTermTodos'), []);
             ensureRootData();
             migrateLegacyRecordsToActivities();
+            syncExerciseLibraryFromActivities();
             localStorage.setItem('activityData', JSON.stringify(D.activityData));
             localStorage.setItem('exerciseDetails', JSON.stringify(D.exerciseDetails));
             localStorage.setItem('exerciseLibrary', JSON.stringify(D.exerciseLibrary));
@@ -1334,6 +1427,13 @@
             localStorage.setItem('longTermTodos', JSON.stringify(D.longTermTodos));
             localStorage.setItem('todoData', JSON.stringify(D.todoData));
             ensureDateDataExists(getTodayStr());
+            const backupStatus = document.getElementById('backup-status');
+            if (backupStatus && snapshotCreated) backupStatus.textContent = '已有数据已保护 · 可导出备份';
+            const originNote = document.getElementById('storage-origin-note');
+            if (originNote && location.protocol === 'file:') {
+                originNote.textContent = '你正在使用本地文件版本。这里的数据不会自动出现在正式网站；请先点击“导出备份”，上线后在正式 Dashboard 点击“导入备份”。';
+                originNote.classList.remove('hidden');
+            }
         }
 
         function removeLegacySyncCredentials() {
@@ -1348,8 +1448,9 @@
             });
             return {
                 format: 'baixy-life-dashboard',
-                version: 7,
+                version: DASHBOARD_SCHEMA_VERSION,
                 exportedAt: new Date().toISOString(),
+                preUpgradeSnapshot: safeJSONParse(localStorage.getItem(PRE_UPGRADE_BACKUP_KEY), null),
                 data
             };
         }
@@ -1437,27 +1538,15 @@
         function updateSidebar() {
             const t = getTodayStr();
             ensureDateDataExists(t);
-
-            const cd = D.checkinData[t];
-            const mIn = document.getElementById('sb-m-in');
-            const aIn = document.getElementById('sb-a-in');
-            const eIn = document.getElementById('sb-e-in');
+            const sbWake = document.getElementById('sb-wake');
+            const sbTodo = document.getElementById('sb-todo');
             const sbFitness = document.getElementById('sb-fitness');
             const sbTask = document.getElementById('sb-task');
             const sbHabit = document.getElementById('sb-habit');
-
-            if (mIn) {
-                mIn.textContent = cd.morning.checkIn || '未打卡';
-                mIn.className = cd.morning.checkIn ? 'text-primary' : 'text-gray-300';
-            }
-            if (aIn) {
-                aIn.textContent = cd.afternoon.checkIn || '未打卡';
-                aIn.className = cd.afternoon.checkIn ? 'text-secondary' : 'text-gray-300';
-            }
-            if (eIn) {
-                eIn.textContent = cd.evening.checkIn || '未打卡';
-                eIn.className = cd.evening.checkIn ? 'text-accent' : 'text-gray-300';
-            }
+            if (sbWake) { sbWake.textContent = D.sleepData[t]?.wake || '未记录'; sbWake.className = D.sleepData[t]?.wake ? 'text-primary' : 'text-gray-300'; }
+            const todayTasks = getTodayTaskActivities(t);
+            const doneTasks = todayTasks.filter(item => item.status === 'completed').length;
+            if (sbTodo) sbTodo.textContent = `${doneTasks}/${todayTasks.length}`;
             if (sbFitness) {
                 const todayFitness = D.activityData.records.filter(record => record.date === t && record.activity_type === 'exercise');
                 const completed = todayFitness.filter(record => ['completed', 'partial'].includes(record.status)).length;
@@ -1471,23 +1560,31 @@
                 sbTask.title = currentTask ? currentTask.name : '';
             }
 
-            const tot = D.habitConfig.length;
-            let done = 0;
-            if (tot > 0 && D.habitRecords[t]) {
-                D.habitConfig.forEach(h => {
-                    if (D.habitRecords[t][h.id]) done++;
-                });
-            }
+            const tot = LANGUAGE_PRACTICES.length;
+            const done = LANGUAGE_PRACTICES.filter(item => D.languagePractice.records[t]?.[item.id]?.completed).length;
             const pct = tot === 0 ? 0 : Math.round((done / tot) * 100);
             if (sbHabit) {
                 sbHabit.textContent = `${pct}%`;
                 sbHabit.className = pct === 100 ? 'text-success' : pct > 0 ? 'text-success/70' : 'text-gray-300';
             }
+            const focus = D.activityData.records.filter(item => item.date === t && item.focus_mode === 'deep_focus' && ['completed', 'partial'].includes(item.status)).reduce((sum, item) => sum + item.actual_duration, 0);
+            const sbFocus = document.getElementById('sb-focus');
+            if (sbFocus) sbFocus.textContent = `${focus}m`;
+            const note = D.journalData[t]?.markdownBody || '';
+            const sbNote = document.getElementById('sb-note');
+            if (sbNote) { sbNote.textContent = note.trim() ? '已记录' : '未记录'; sbNote.className = note.trim() ? 'text-accent' : 'text-gray-300'; }
+            const summary = document.getElementById('daily-note-summary');
+            if (summary) summary.textContent = `${D.journalData[t]?.updatedAt ? `更新 ${new Date(D.journalData[t].updatedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · ` : ''}${note.replace(/^#+\s*/gm, '').replace(/- \[[ xX]\]\s*/g, '').trim().slice(0, 80) || '今天还没有记录'}`;
+            const dayStatus = document.getElementById('quick-day-status');
+            if (dayStatus) dayStatus.textContent = D.sleepData[t]?.dayStartedAt ? '今天已开始' : '今天尚未开始';
+            const firstFocus = D.activityData.records.filter(item => item.date === t && item.actual_start).sort((a,b) => a.actual_start.localeCompare(b.actual_start))[0];
+            const firstFocusStatus = document.getElementById('quick-first-focus');
+            if (firstFocusStatus) firstFocusStatus.textContent = firstFocus ? `首段 ${firstFocus.actual_start}` : '首段专注未开始';
         }
 
         // ================= 导航 =================
         function initNavigation() {
-            const sections = ['checkin', 'hourly', 'tasks', 'habits', 'journal', 'fitness', 'achievements', 'stats'];
+            const sections = ['hourly', 'tasks', 'fitness', 'habits', 'achievements', 'stats'];
 
             sections.forEach(sec => {
                 const btn = document.getElementById(`nav-${sec}`);
@@ -1513,6 +1610,7 @@
                     if (sec === 'achievements') renderAchievements();
                     if (sec === 'checkin') renderCheckinCalendar();
                     if (sec === 'fitness') renderFitness();
+                    if (sec === 'habits') renderHabitsForDate(document.getElementById('habit-date-picker').value);
                 });
             });
         }
@@ -1540,6 +1638,13 @@
                 saveData();
                 updateCheckinUI();
             });
+            document.getElementById('quick-wake')?.addEventListener('click', () => document.getElementById('btn-wake')?.click());
+            document.getElementById('quick-sleep')?.addEventListener('click', () => document.getElementById('btn-sleep')?.click());
+            document.getElementById('quick-start-day')?.addEventListener('click', () => {
+                const t = getTodayStr(); ensureDateDataExists(t); D.sleepData[t].dayStartedAt = new Date().toISOString(); saveData(); document.getElementById('nav-tasks')?.click();
+            });
+            document.getElementById('quick-energy')?.addEventListener('change', event => { const t = getTodayStr(); ensureDateDataExists(t); D.sleepData[t].energy = event.target.value; saveData(); });
+            document.getElementById('quick-energy').value = D.sleepData[getTodayStr()]?.energy || '';
 
             ['morning', 'afternoon', 'evening'].forEach(p => {
                 document.getElementById(`${p}-checkin`)?.addEventListener('click', () => {
@@ -2404,7 +2509,7 @@
                     alert('请填写完整时段信息');
                     return;
                 }
-                const typeMap = { focus: 'research', study: 'study', work: 'work', play: 'life', meal: 'life', rest: 'rest', waste: 'other' };
+                const typeMap = { focus: 'research', study: 'study', language: 'language', work: 'work', play: 'life', meal: 'life', rest: 'rest', waste: 'other' };
                 createActivity({ date, title: desc, activity_type: typeMap[cat] || 'other', focus_mode: cat === 'focus' ? 'deep_focus' : 'none', planned_start: start, planned_end: end, planned_duration: getDurationMinutes(start, end), status: 'planned', source: 'calendar', note: '' });
 
                 document.getElementById('tb-desc').value = '';
@@ -2456,7 +2561,7 @@
             const visibleBlocks = [
                 ...getActivitiesForDate(dateStr).map(activity => {
                     const times = getActivityTimes(activity);
-                    const categoryMap = { research: 'work', study: 'study', work: 'work', exercise: 'fitness', life: 'play', social: 'play', commute: 'other', rest: 'rest', other: 'other' };
+                    const categoryMap = { research: 'work', study: 'study', language: 'language', work: 'work', exercise: 'fitness', life: 'play', social: 'play', commute: 'other', rest: 'rest', other: 'other' };
                     return { ...activity, start: times.start, end: times.end, category: categoryMap[activity.activity_type] || 'study', desc: activity.title, backlogId: activity.backlog_id, readOnly: false };
                 }),
                 ...googleEvents.filter(event => !event.allDay).map(event => ({ ...event, readOnly: true }))
@@ -3105,11 +3210,11 @@
             });
             document.getElementById('new-todo-input').placeholder = isTomorrow ? '输入明日任务...' : '输入新任务...';
             document.getElementById('btn-add-todo').textContent = isTomorrow ? '加入明日' : '添加';
-            const typeLabels = { research: 'Research', study: 'Study', work: 'Work', exercise: 'Exercise', life: 'Life', other: 'Other' };
+            const typeLabels = { research: 'Research', study: 'Study', language: 'Language', work: 'Work', exercise: 'Exercise', life: 'Life', other: 'Other' };
             const tasks = getTodayTaskActivities(taskDate).sort((a, b) => (a.task_order - b.task_order) || String(a.createdAt).localeCompare(String(b.createdAt)));
             tasks.forEach(activity => {
                 const detail = activity.activity_type === 'exercise' ? getExerciseDetail(activity.id) : null;
-                const exerciseVideoUrl = activity.activity_type === 'exercise' ? (activity.exercise_video_url || detail?.video_url || '') : '';
+                const resourceUrl = activity.activity_type === 'exercise' ? (activity.exercise_video_url || detail?.video_url || '') : activity.material_url;
                 const typeClass = activity.activity_type === 'exercise' ? 'bg-success/15 text-green-700' : ['research', 'study'].includes(activity.activity_type) ? 'bg-secondary/10 text-secondary' : 'bg-gray-100 text-gray-600';
                 const statusLabel = { planned: '未开始', in_progress: '进行中', paused: '已暂停', completed: '已完成', skipped: '已跳过', cancelled: '已取消' }[activity.status] || activity.status;
                 const div = document.createElement('div');
@@ -3117,7 +3222,7 @@
                 div.innerHTML = `
                     <div class="grid grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto] gap-x-3 gap-y-1 items-center min-w-0">
                         <input type="checkbox" class="todo-chk appearance-none w-[18px] h-[18px] border-2 border-gray-300 rounded checked:bg-secondary checked:border-secondary cursor-pointer flex-shrink-0 disabled:opacity-40" ${activity.status === 'completed' ? 'checked' : ''} ${isTomorrow ? 'disabled title="明日到来后可执行"' : ''} data-id="${activity.id}">
-                        <div class="min-w-0"><div class="flex items-start gap-1.5 min-w-0"><button type="button" class="todo-title-expand min-w-0 flex-1 text-left font-bold text-sm leading-5 ${activity.status === 'completed' ? 'line-through text-gray-400' : 'text-textmain'} break-normal [overflow-wrap:normal]" title="${escapeHtml(activity.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:normal;" aria-expanded="false">${escapeHtml(activity.title)}</button>${exerciseVideoUrl ? `<a href="${escapeHtml(exerciseVideoUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-white flex-shrink-0" title="打开跟练视频"><i class="fa fa-link text-[10px]"></i><span class="sr-only">跟练链接</span></a>` : ''}</div><div class="flex flex-wrap items-center gap-x-1.5 gap-y-1 mt-0.5 text-[10px] font-bold leading-4"><span class="${typeClass} px-1.5 rounded">${typeLabels[activity.activity_type] || activity.activity_type}</span>${detail?.exercise_type ? `<span class="text-green-700">· ${escapeHtml(detail.exercise_type)}</span>` : ''}<span class="text-gray-500">· ${escapeHtml(statusLabel)}</span><span class="text-gray-500">· ${activity.priority === 'high' ? '高' : activity.priority === 'low' ? '低' : '中'}优先级</span>${activity.planned_duration ? `<span class="text-primary">· 计划 ${activity.planned_duration}m</span>` : ''}${activity.planned_start ? `<span class="text-primary">· ${activity.planned_start}–${activity.planned_end}</span>` : ''}${activity.note ? '<span class="text-gray-400" title="有备注">· <i class="fa fa-sticky-note-o"></i></span>' : ''}</div></div>
+                        <div class="min-w-0"><div class="flex items-start gap-1.5 min-w-0"><button type="button" class="todo-title-expand min-w-0 flex-1 text-left font-bold text-sm leading-5 ${activity.status === 'completed' ? 'line-through text-gray-400' : 'text-textmain'} break-normal [overflow-wrap:normal]" title="${escapeHtml(activity.title)}" style="display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;word-break:normal;" aria-expanded="false">${escapeHtml(activity.title)}</button>${resourceUrl ? `<a href="${escapeHtml(resourceUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-6 h-6 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-white flex-shrink-0" title="打开相关材料"><i class="fa fa-link text-[10px]"></i><span class="sr-only">相关链接</span></a>` : ''}</div><div class="flex flex-wrap items-center gap-x-1.5 gap-y-1 mt-0.5 text-[10px] font-bold leading-4"><span class="${typeClass} px-1.5 rounded">${typeLabels[activity.activity_type] || activity.activity_type}</span>${detail?.exercise_type ? `<span class="text-green-700">· ${escapeHtml(detail.exercise_type)}</span>` : ''}<span class="text-gray-500">· ${escapeHtml(statusLabel)}</span><span class="text-gray-500">· ${activity.priority === 'high' ? '高' : activity.priority === 'low' ? '低' : '中'}优先级</span>${activity.planned_duration ? `<span class="text-primary">· 计划 ${activity.planned_duration}m</span>` : ''}${activity.planned_start ? `<span class="text-primary">· ${activity.planned_start}–${activity.planned_end}</span>` : ''}${activity.note ? '<span class="text-gray-400" title="有备注">· <i class="fa fa-sticky-note-o"></i></span>' : ''}</div></div>
                         <div class="col-span-2 sm:col-span-1 flex flex-nowrap items-center justify-end gap-0.5 flex-shrink-0 sm:pl-2">
                             ${isTomorrow ? `<button class="todo-move-up text-gray-400 hover:text-secondary w-7 h-7 rounded-lg" data-id="${activity.id}" title="上移"><i class="fa fa-arrow-up text-xs"></i></button><button class="todo-move-down text-gray-400 hover:text-secondary w-7 h-7 rounded-lg" data-id="${activity.id}" title="下移"><i class="fa fa-arrow-down text-xs"></i></button>` : activity.status === 'in_progress' ? `<button class="todo-finish bg-success text-white px-2.5 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}"><i class="fa fa-stop mr-1"></i>完成</button><button class="todo-pause bg-gray-100 text-gray-600 w-7 h-7 rounded-lg" data-id="${activity.id}" title="暂停"><i class="fa fa-pause text-xs"></i></button>` : activity.status !== 'completed' ? `<button class="todo-play ${activity.activity_type === 'exercise' ? 'bg-success/15 text-green-700 hover:bg-success' : 'bg-secondary/10 text-secondary hover:bg-secondary'} hover:text-white px-2.5 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}"><i class="fa fa-play mr-1"></i>${activity.status === 'paused' ? '继续' : '开始'}</button>` : ''}
                             ${activity.activity_type === 'exercise' ? `<button class="todo-fitness-detail text-green-700 bg-success/10 hover:bg-success hover:text-white px-2 h-7 rounded-lg text-xs font-bold" data-id="${activity.id}" title="查看 / 补充健身详情"><i class="fa fa-heartbeat"></i></button>` : ''}
@@ -3145,6 +3250,7 @@
                         if (this.checked && item.status === 'in_progress') finishActivity(item);
                         else item.status = this.checked ? 'completed' : 'planned';
                         syncBacklogMarkdownSubtask(item, this.checked);
+                        syncLanguagePractice(item, this.checked);
                         item.updatedAt = new Date().toISOString();
                         if (item.backlog_id) addBacklogHistory(item.backlog_id, {
                             date: getTodayStr(), type: 'today_task', todoId: item.id, title: item.title,
@@ -3185,8 +3291,8 @@
                 const item = findActivity(btn.dataset.id); if (!item) return;
                 const title = prompt('任务标题', item.title);
                 if (title === null || !title.trim()) return;
-                const value = prompt('活动类型：research / study / work / exercise / life / other', item.activity_type);
-                if (!value || !['research','study','work','exercise','life','other'].includes(value.trim().toLowerCase())) return;
+                const value = prompt('活动类型：research / study / language / work / exercise / life / other', item.activity_type);
+                if (!value || !['research','study','language','work','exercise','life','other'].includes(value.trim().toLowerCase())) return;
                 const priority = prompt('优先级：high / medium / low', item.priority || 'medium');
                 if (priority === null || !['high','medium','low'].includes(priority.trim().toLowerCase())) return;
                 const note = prompt('备注（可留空）', item.note || '');
@@ -3257,9 +3363,9 @@
             const tl = document.getElementById('today-tasks-timeline');
             const emptyMsg = document.getElementById('empty-timeline-msg');
             const today = getTodayStr();
-            const schedule = getActivitiesForDate(today).sort((a, b) => getActivityTimes(a).start.localeCompare(getActivityTimes(b).start));
-            const typeLabels = { research: 'Research', study: 'Study', work: 'Work', exercise: 'Exercise', life: 'Life', social: 'Social', commute: 'Commute', rest: 'Rest', other: 'Other' };
-            const typeClasses = { research: 'text-secondary bg-secondary/10', study: 'text-primary bg-primary/10', work: 'text-gray-600 bg-gray-100', exercise: 'text-green-700 bg-success/20', life: 'text-accent bg-accent/10', social: 'text-accent bg-accent/10', commute: 'text-gray-500 bg-gray-100', rest: 'text-success bg-success/10', other: 'text-gray-500 bg-gray-100' };
+            const schedule = D.activityData.records.filter(item => item.date === today && item.status !== 'planned' && (item.actual_duration || item.status === 'in_progress')).sort((a, b) => String(getActivityTimes(a).start).localeCompare(String(getActivityTimes(b).start)));
+            const typeLabels = { research: 'Research', study: 'Study', language: 'Language', work: 'Work', exercise: 'Exercise', life: 'Life', social: 'Social', commute: 'Commute', rest: 'Rest', other: 'Other' };
+            const typeClasses = { research: 'text-secondary bg-secondary/10', study: 'text-primary bg-primary/10', language: 'text-accent bg-accent/10', work: 'text-gray-600 bg-gray-100', exercise: 'text-green-700 bg-success/20', life: 'text-accent bg-accent/10', social: 'text-accent bg-accent/10', commute: 'text-gray-500 bg-gray-100', rest: 'text-success bg-success/10', other: 'text-gray-500 bg-gray-100' };
             const completed = schedule.filter(item => ['completed', 'partial'].includes(item.status));
             const total = completed.reduce((sum, item) => sum + item.actual_duration, 0);
             const deep = completed.filter(item => item.focus_mode === 'deep_focus').reduce((sum, item) => sum + item.actual_duration, 0);
@@ -3287,7 +3393,7 @@
                         <div class="absolute -left-[33px] bg-secondary w-3.5 h-3.5 rounded-full border-2 border-white shadow-sm mt-1.5 z-10 group-hover:scale-125 transition-transform"></div>
                         <div class="bg-gray-50 hover:bg-white p-4 pr-28 rounded-xl border border-gray-100 shadow-sm transition-colors relative min-h-[104px]">
                             <div class="text-xs font-bold text-textmuted mb-2 flex flex-wrap items-center gap-2">
-                                <span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${times.start}–${times.end}${times.isActual ? '' : '（计划）'}</span>
+                                ${times.start && times.end ? `<span><i class="fa fa-clock-o mr-1 text-secondary/70"></i>${times.start}–${times.end}</span>` : ''}
                                 <span class="text-gray-600 bg-gray-100 px-2 py-0.5 rounded">${fmt(duration)}</span>
                                 <span class="text-gray-500 bg-gray-100 px-2 py-0.5 rounded">${escapeHtml(item.status || 'planned')}</span>
                             </div>
@@ -3328,83 +3434,173 @@
             }
         }
 
-        // ================= 习惯 =================
+        function syncLanguagePractice(activity, completed) {
+            if (!activity?.language_practice_id) return;
+            const date = activity.taskDate || activity.date || getTodayStr();
+            if (!D.languagePractice.records[date]) D.languagePractice.records[date] = {};
+            D.languagePractice.records[date][activity.language_practice_id] = { completed, completedAt: completed ? new Date().toISOString() : null, activityId: activity.id };
+        }
+
+        // ================= 语言练习 =================
         function initHabits() {
             const dp = document.getElementById('habit-date-picker');
             dp.value = getTodayStr();
             dp.addEventListener('change', e => renderHabitsForDate(e.target.value));
-
-            document.getElementById('btn-add-habit')?.addEventListener('click', () => {
-                const input = document.getElementById('new-habit-input');
-                const name = input.value.trim();
-                if (!name) return;
-
-                D.habitConfig.push({ id: `h_${Date.now()}`, name });
-                input.value = '';
-
-                saveData();
-                renderHabitsForDate(dp.value);
+            ['pte-target-score', 'pte-current-score', 'pte-mock-date', 'pte-mock-score', 'pte-next', 'jp-spoke-today', 'jp-topic', 'jp-notes'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (el.type === 'checkbox') el.checked = D.languagePractice.settings[id] === true;
+                else el.value = D.languagePractice.settings[id] || '';
+                el.addEventListener('change', () => { D.languagePractice.settings[id] = el.type === 'checkbox' ? el.checked : el.value; saveData(); });
             });
+            document.getElementById('language-low-pressure')?.addEventListener('change', () => renderHabitsForDate(dp.value));
 
             renderHabitsForDate(dp.value);
         }
 
+        function addLanguagePracticeToTasks(practice, dateStr) {
+            const existing = D.activityData.records.find(item => item.language_practice_id === practice.id && item.taskDate === dateStr && item.is_today_task);
+            if (existing) return false;
+            const lowPressure = document.getElementById('language-low-pressure')?.checked;
+            createActivity({ date: dateStr, taskDate: dateStr, title: `${practice.language} · ${lowPressure ? practice.minimum : practice.title}`, activity_type: 'language', focus_mode: 'normal', planned_duration: lowPressure ? practice.minimumDuration : practice.duration, status: 'planned', source: 'language', language_practice_id: practice.id, material_url: D.languagePractice.settings.materials?.[practice.id] || '', is_today_task: true, today_task_date: dateStr, task_order: getTodayTaskActivities(dateStr).length });
+            saveData();
+            return true;
+        }
+
         function renderHabitsForDate(dateStr) {
-            ensureDateDataExists(dateStr);
+            if (!D.languagePractice.records[dateStr]) D.languagePractice.records[dateStr] = {};
             const container = document.getElementById('habits-list-container');
             container.innerHTML = '';
-
-            D.habitConfig.forEach(h => {
-                const isDone = !!D.habitRecords[dateStr][h.id];
+            const lowPressure = document.getElementById('language-low-pressure')?.checked;
+            LANGUAGE_PRACTICES.forEach(practice => {
+                const isDone = !!D.languagePractice.records[dateStr][practice.id]?.completed;
+                const material = D.languagePractice.settings.materials?.[practice.id] || '';
                 const div = document.createElement('div');
-                div.className = 'flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm transition-colors';
+                div.className = 'flex flex-col sm:flex-row sm:items-center gap-3 justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm';
                 div.innerHTML = `
-                    <label class="flex items-center cursor-pointer flex-1 group">
-                        <div class="relative flex items-center justify-center w-6 h-6 mr-4">
-                            <input type="checkbox" class="habit-chk peer appearance-none w-6 h-6 border-2 border-gray-300 rounded-md checked:bg-success checked:border-success transition-all cursor-pointer" ${isDone ? 'checked' : ''} data-id="${h.id}">
+                    <label class="flex items-center cursor-pointer min-w-0 flex-1 group">
+                        <div class="relative flex items-center justify-center w-6 h-6 mr-3 flex-shrink-0">
+                            <input type="checkbox" class="habit-chk peer appearance-none w-6 h-6 border-2 border-gray-300 rounded-md checked:bg-success checked:border-success transition-all cursor-pointer" ${isDone ? 'checked' : ''} data-id="${practice.id}">
                             <i class="fa fa-check absolute text-white text-xs opacity-0 peer-checked:opacity-100 pointer-events-none"></i>
                         </div>
-                        <span class="text-lg font-bold text-textmain peer-checked:line-through peer-checked:text-gray-400 transition-all">${h.name}</span>
+                        <span class="min-w-0"><span class="block text-sm font-black text-textmain">${escapeHtml(practice.language)} · ${escapeHtml(practice.title)}</span><span class="block text-xs text-textmuted mt-0.5">${escapeHtml(lowPressure ? practice.minimum : `建议 ${practice.duration} 分钟`)}</span></span>
                     </label>
-                    <button class="delete-habit text-gray-300 hover:text-danger p-2" data-id="${h.id}"><i class="fa fa-trash"></i></button>
+                    <div class="flex flex-wrap gap-1.5 sm:justify-end"><button class="language-material px-2.5 py-1.5 rounded-lg text-xs font-bold ${material ? 'bg-primary/10 text-primary' : 'bg-gray-100 text-gray-500'}" data-id="${practice.id}"><i class="fa fa-link mr-1"></i>${material ? '材料' : '设材料'}</button><button class="language-add-task bg-secondary/10 text-secondary px-2.5 py-1.5 rounded-lg text-xs font-bold" data-id="${practice.id}" data-offset="0">加入今日</button><button class="language-add-task bg-accent/10 text-accent px-2.5 py-1.5 rounded-lg text-xs font-bold" data-id="${practice.id}" data-offset="1">加入明日</button></div>
                 `;
                 container.appendChild(div);
             });
+            const weekDates = Array.from({length: 7}, (_, index) => getTodayStr(-index));
+            const updateLanguageSummary = (prefix, elementId) => {
+                const ids = LANGUAGE_PRACTICES.filter(item => item.id.startsWith(prefix)).map(item => item.id);
+                const dates = Object.keys(D.languagePractice.records).filter(date => ids.some(id => D.languagePractice.records[date]?.[id]?.completed)).sort();
+                const weekly = weekDates.reduce((sum, date) => sum + (ids.some(id => D.languagePractice.records[date]?.[id]?.completed) ? 1 : 0), 0);
+                const el = document.getElementById(elementId); if (el) el.textContent = `本周 ${weekly} 次 · ${dates.length ? `最近 ${dates.at(-1)}` : '尚无最近练习'}`;
+            };
+            updateLanguageSummary('pte_', 'pte-week-summary');
+            updateLanguageSummary('jp_', 'jp-week-summary');
 
             container.querySelectorAll('.habit-chk').forEach(chk => {
                 chk.addEventListener('change', function () {
-                    D.habitRecords[dateStr][this.getAttribute('data-id')] = this.checked;
+                    const id = this.getAttribute('data-id');
+                    D.languagePractice.records[dateStr][id] = { completed: this.checked, completedAt: this.checked ? new Date().toISOString() : null };
                     saveData();
                     updateHabitProgress(dateStr);
                 });
             });
-
-            container.querySelectorAll('.delete-habit').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    if (!confirm('删除习惯？')) return;
-                    const id = this.getAttribute('data-id');
-                    D.habitConfig = D.habitConfig.filter(x => x.id !== id);
-                    saveData();
-                    renderHabitsForDate(dateStr);
-                });
-            });
+            container.querySelectorAll('.language-material').forEach(btn => btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                const existing = D.languagePractice.settings.materials?.[id] || '';
+                if (existing && confirm('打开当前练习材料？点击“取消”可编辑链接。')) { window.open(existing, '_blank', 'noopener'); return; }
+                const url = prompt('粘贴练习材料链接；留空可移除。', existing);
+                if (url === null) return;
+                if (!D.languagePractice.settings.materials) D.languagePractice.settings.materials = {};
+                D.languagePractice.settings.materials[id] = url.trim(); saveData(); renderHabitsForDate(dateStr);
+            }));
+            container.querySelectorAll('.language-add-task').forEach(btn => btn.addEventListener('click', () => {
+                const practice = LANGUAGE_PRACTICES.find(item => item.id === btn.dataset.id);
+                const target = getTodayStr(Number(btn.dataset.offset));
+                const added = addLanguagePracticeToTasks(practice, target);
+                btn.textContent = added ? '✓ 已加入' : '已在清单'; btn.classList.add('bg-success/20', 'text-green-700');
+            }));
 
             updateHabitProgress(dateStr);
         }
 
         function updateHabitProgress(dateStr) {
-            const tot = D.habitConfig.length;
-            let done = 0;
-
-            if (tot > 0 && D.habitRecords[dateStr]) {
-                D.habitConfig.forEach(h => {
-                    if (D.habitRecords[dateStr][h.id]) done++;
-                });
-            }
+            const tot = LANGUAGE_PRACTICES.length;
+            const done = LANGUAGE_PRACTICES.filter(item => D.languagePractice.records[dateStr]?.[item.id]?.completed).length;
 
             const pct = tot === 0 ? 0 : Math.round((done / tot) * 100);
             document.getElementById('habit-progress-text').textContent = `完成度 ${pct}%`;
             document.getElementById('habit-progress-bar').style.width = `${pct}%`;
+            updateSidebar();
+        }
+
+        // ================= Daily Note =================
+        const DAILY_NOTE_TEMPLATE = `# Daily Note - {{date}}
+
+## 今日简记
+
+## 情绪 / 身体
+
+## 学习 / 研究
+
+## 随笔
+
+## 明日接续
+- [ ] `;
+
+        function getDailyNote(date) {
+            const existing = D.journalData[date] || {};
+            if (!existing.markdownBody && (existing.proud || existing.change)) existing.markdownBody = `# Daily Note\n\n## 今天完成了什么\n${existing.proud || ''}\n\n## 明天想做什么\n- [ ] ${existing.change || ''}`;
+            if (!existing.markdownBody) existing.markdownBody = DAILY_NOTE_TEMPLATE.replace('{{date}}', date);
+            D.journalData[date] = existing;
+            return existing;
+        }
+
+        function parseDailyNoteChecklist(markdown) {
+            return String(markdown || '').split('\n').map((line, index) => { const match = line.match(/^\s*-\s*\[([ xX])\]\s+(.+)$/); return match ? { line: index, completed: match[1].toLowerCase() === 'x', title: match[2].trim() } : null; }).filter(Boolean);
+        }
+
+        function renderDailyNoteSubtasks(date) {
+            const container = document.getElementById('daily-note-subtasks');
+            const note = getDailyNote(date);
+            const tasks = parseDailyNoteChecklist(note.markdownBody);
+            container.innerHTML = tasks.length ? tasks.map(task => `<div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-white rounded-lg p-2 border"><span class="flex-1 text-xs ${task.completed ? 'line-through text-gray-400' : 'font-bold'}">${task.completed ? '✓ ' : '□ '}${escapeHtml(task.title)}</span>${task.completed ? '' : `<button class="daily-note-tomorrow text-accent bg-accent/10 px-2 py-1 rounded text-[10px] font-bold" data-line="${task.line}">加入明日</button><button class="daily-note-backlog text-secondary bg-secondary/10 px-2 py-1 rounded text-[10px] font-bold" data-line="${task.line}">加入 Backlog</button>`}</div>`).join('') : '<p class="text-xs text-textmuted">使用 - [ ] 写下可执行事项。</p>';
+            container.querySelectorAll('.daily-note-tomorrow').forEach(button => button.addEventListener('click', () => {
+                const task = tasks.find(item => item.line === Number(button.dataset.line));
+                const target = getTodayStr(1);
+                createActivity({ date: target, taskDate: target, title: task.title, activity_type: 'life', focus_mode: 'normal', status: 'planned', source: 'daily_note', is_today_task: true, today_task_date: target, task_order: getTodayTaskActivities(target).length, daily_note_date: date, daily_note_line: task.line });
+                saveData(); button.textContent = '✓ 已加入'; button.disabled = true;
+            }));
+            container.querySelectorAll('.daily-note-backlog').forEach(button => button.addEventListener('click', () => {
+                const task = tasks.find(item => item.line === Number(button.dataset.line));
+                D.longTermTodos.push(normalizeBacklogItem({ id: `lt_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, name: task.title, title: task.title, status: 'backlog', priority: 'medium', markdownBody: `## 来源\nDaily Note · ${date}\n\n## 下一步\n- [ ] ${task.title}` }));
+                saveData(); button.textContent = '✓ 已加入'; button.disabled = true;
+            }));
+        }
+
+        function openDailyNote(date = getTodayStr()) {
+            const note = getDailyNote(date);
+            document.getElementById('daily-note-heading').textContent = date;
+            document.getElementById('daily-note-modal').dataset.date = date;
+            document.getElementById('daily-note-markdown').value = note.markdownBody;
+            document.getElementById('daily-note-modal').classList.remove('hidden');
+            document.getElementById('daily-note-modal').classList.add('flex');
+            document.getElementById('daily-note-edit-tab').click();
+            renderDailyNoteSubtasks(date);
+        }
+
+        function initDailyNote() {
+            document.getElementById('open-daily-note')?.addEventListener('click', () => openDailyNote());
+            document.getElementById('quick-daily-note')?.addEventListener('click', () => {
+                const text = prompt('现在想记下什么？'); if (!text?.trim()) return;
+                const note = getDailyNote(getTodayStr()); note.markdownBody += `\n\n${text.trim()}`; note.updatedAt = new Date().toISOString(); saveData(); updateSidebar();
+            });
+            document.getElementById('close-daily-note')?.addEventListener('click', () => { const modal = document.getElementById('daily-note-modal'); modal.classList.add('hidden'); modal.classList.remove('flex'); });
+            document.getElementById('daily-note-edit-tab')?.addEventListener('click', () => { document.getElementById('daily-note-markdown').classList.remove('hidden'); document.getElementById('daily-note-preview').classList.add('hidden'); });
+            document.getElementById('daily-note-preview-tab')?.addEventListener('click', () => { document.getElementById('daily-note-preview').innerHTML = renderBacklogMarkdown(document.getElementById('daily-note-markdown').value); document.getElementById('daily-note-markdown').classList.add('hidden'); document.getElementById('daily-note-preview').classList.remove('hidden'); });
+            document.getElementById('save-daily-note')?.addEventListener('click', () => { const modal = document.getElementById('daily-note-modal'); const date = modal.dataset.date; const note = getDailyNote(date); note.markdownBody = document.getElementById('daily-note-markdown').value; note.updatedAt = new Date().toISOString(); saveData(); renderDailyNoteSubtasks(date); updateSidebar(); });
         }
 
         // ================= 复盘 =================
@@ -3770,38 +3966,16 @@
                 const d = getTodayStr(-i);
                 labels.push(d.slice(5));
 
-                const cDay = D.checkinData[d];
-                let tot = 0;
-                let qual = 0;
-
-                if (cDay) {
-                    ['morning', 'afternoon', 'evening'].forEach(p => {
-                        if (cDay[p].checkIn) {
-                            tot++;
-                            if (p === 'morning') mCount++;
-                            if (p === 'afternoon') aCount++;
-                            if (p === 'evening') eCount++;
-                            if (cDay[p].status.checkIn) qual++;
-                        }
-                        if (cDay[p].checkOut) {
-                            tot++;
-                            if (cDay[p].status.checkOut) qual++;
-                        }
-                    });
-                }
-
-                rateData.push(tot > 0 ? Math.round((qual / tot) * 100) : 0);
+                const dayActivities = D.activityData.records.filter(activity => activity.date === d);
+                mCount += dayActivities.filter(activity => activity.status === 'planned').length;
+                aCount += dayActivities.filter(activity => ['completed', 'partial'].includes(activity.status)).length;
+                eCount += dayActivities.filter(activity => ['skipped', 'cancelled', 'not_completed'].includes(activity.status)).length;
+                rateData.push((D.journalData[d]?.markdownBody || '').trim() ? 100 : 0);
 
                 const sDay = D.sleepData[d];
                 if (sDay) {
-                    if (sDay.wake) {
-                        if (sDay.wakeOk) wakeOk++;
-                        else wakeFail++;
-                    }
-                    if (sDay.sleep) {
-                        if (sDay.sleepOk) sleepOk++;
-                        else sleepFail++;
-                    }
+                    if (sDay.wake) wakeOk++;
+                    if (sDay.sleep) sleepOk++;
                 }
 
                 const focusM = D.activityData.records.filter(activity => activity.date === d && activity.focus_mode === 'deep_focus' && ['completed', 'partial'].includes(activity.status)).reduce((sum, activity) => sum + activity.actual_duration, 0);
@@ -3809,13 +3983,8 @@
 
                 fitnessData.push(D.activityData.records.filter(record => record.date === d && record.activity_type === 'exercise' && ['completed', 'partial'].includes(record.status)).reduce((sum, record) => sum + record.actual_duration, 0));
 
-                const totHabits = D.habitConfig.length;
-                let doneHabits = 0;
-                if (totHabits > 0 && D.habitRecords[d]) {
-                    D.habitConfig.forEach(h => {
-                        if (D.habitRecords[d][h.id]) doneHabits++;
-                    });
-                }
+                const totHabits = LANGUAGE_PRACTICES.length;
+                const doneHabits = LANGUAGE_PRACTICES.filter(item => D.languagePractice.records[d]?.[item.id]?.completed).length;
                 habitData.push(totHabits > 0 ? Math.round((doneHabits / totHabits) * 100) : 0);
             }
 
@@ -3838,8 +4007,7 @@
                 data: {
                     labels: ['起床目标', '睡觉目标'],
                     datasets: [
-                        { label: '按时达标(天)', data: [wakeOk, sleepOk], backgroundColor: '#a6cbb5', borderRadius: 4 },
-                        { label: '未达标(天)', data: [wakeFail, sleepFail], backgroundColor: '#e0a2a2', borderRadius: 4 }
+                        { label: '已记录(天)', data: [wakeOk, sleepOk], backgroundColor: '#a6cbb5', borderRadius: 4 }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
@@ -3849,7 +4017,7 @@
             charts.period = new Chart(document.getElementById('chart-checkin-period').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: ['上午', '下午', '晚上'],
+                    labels: ['计划中', '已完成', '跳过 / 取消'],
                     datasets: [{ data: [mCount, aCount, eCount], backgroundColor: ['#9fbcdb', '#bbaecc', '#eecba8'], borderRadius: 6 }]
                 },
                 options: { ...chartOpt, scales: { y: { beginAtZero: true } } }
@@ -3909,6 +4077,7 @@
             initTasks();
             initHabits();
             initJournal();
+            initDailyNote();
             initFitness();
             renderAchievements();
             initStats();
