@@ -575,17 +575,20 @@
                 </section>
 
                 <section id="achievements-section" class="soft-card p-8 mb-6 hidden">
-                    <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
-                        <h2 class="text-2xl font-black text-textmain flex items-center"><i class="fa fa-trophy mr-3 text-warning text-3xl"></i>成就殿堂</h2>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-7 border-b border-gray-100 pb-4">
+                        <div><h2 class="text-2xl font-black text-textmain flex items-center"><i class="fa fa-trophy mr-3 text-warning text-3xl"></i>成就殿堂</h2><p class="text-sm text-textmuted mt-2">围绕真实推进、专注、学习、运动与自我记录的成长反馈。</p></div>
                         <span class="bg-warning/20 text-warning px-4 py-1.5 rounded-full font-bold text-sm">已解锁 <span id="unlocked-count">0</span> / <span id="total-achievements-count">0</span></span>
                     </div>
 
-                    <div class="space-y-8">
-                        <div><h3 class="text-lg font-bold text-secondary mb-4 border-l-4 border-secondary pl-3">⏳ 专注与心流</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-focus"></div></div>
-                        <div><h3 class="text-lg font-bold text-primary mb-4 border-l-4 border-primary pl-3">🌅 作息与考勤</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-routine"></div></div>
-                        <div><h3 class="text-lg font-bold text-success mb-4 border-l-4 border-success pl-3">🌿 温和运动</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-fitness"></div></div>
-                        <div><h3 class="text-lg font-bold text-success mb-4 border-l-4 border-success pl-3">📖 沉淀与复盘</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-habit"></div></div>
-                        <div><h3 class="text-lg font-bold text-accent mb-4 border-l-4 border-accent pl-3">🥚 隐藏彩蛋</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="ach-grid-egg"></div></div>
+                    <div class="space-y-7">
+                        <div id="ach-unlocked-section" class="bg-warning/5 border border-warning/20 rounded-2xl p-5"><h3 class="text-lg font-black text-warning mb-4"><i class="fa fa-star mr-2"></i>已解锁</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="ach-grid-unlocked"></div><p id="ach-unlocked-empty" class="text-sm text-textmuted">第一个成长成就正在路上。</p></div>
+                        <div><h3 class="text-base font-black text-secondary mb-3 border-l-4 border-secondary pl-3">每日 ToDo 与任务推进</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="ach-grid-todo"></div></div>
+                        <div><h3 class="text-base font-black text-secondary mb-3 border-l-4 border-secondary pl-3">Deep Focus 与专注</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="ach-grid-focus"></div></div>
+                        <div><h3 class="text-base font-black text-primary mb-3 border-l-4 border-primary pl-3">研究与学术推进</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="ach-grid-research"></div></div>
+                        <div><h3 class="text-base font-black text-accent mb-3 border-l-4 border-accent pl-3">语言练习</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="ach-grid-language"></div></div>
+                        <div><h3 class="text-base font-black text-success mb-3 border-l-4 border-success pl-3">健身与身体状态</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="ach-grid-fitness"></div></div>
+                        <div><h3 class="text-base font-black text-primary mb-3 border-l-4 border-primary pl-3">Daily Note 与自我记录</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="ach-grid-note"></div></div>
+                        <details id="ach-legacy-section" class="border-t border-gray-100 pt-4"><summary class="cursor-pointer text-xs font-bold text-gray-400">Legacy / 旧版成就（<span id="legacy-achievement-count">0</span>）</summary><div id="ach-grid-legacy" class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3"></div></details>
                     </div>
                 </section>
 
@@ -1211,117 +1214,77 @@
             }
         };
 
-        const ACHIEVEMENTS_DB = [
-            { id: 'focus_100', cat: 'focus', name: '学术初探', desc: '累计专注时长达到 100 小时', icon: 'fa-book', color: 'secondary', condition: d => U.getTotalFocusMins(d) / 60 >= 100 },
-            { id: 'focus_500', cat: 'focus', name: '渐入佳境', desc: '累计专注时长达到 500 小时', icon: 'fa-graduation-cap', color: 'secondary', condition: d => U.getTotalFocusMins(d) / 60 >= 500 },
-            { id: 'focus_2000', cat: 'focus', name: '领域专家', desc: '累计专注时长达到 2,000 小时', icon: 'fa-diamond', color: 'secondary', condition: d => U.getTotalFocusMins(d) / 60 >= 2000 },
-            { id: 'focus_10000', cat: 'focus', name: '时间领主', desc: '累计专注时长达 10,000 小时', icon: 'fa-clock-o', color: 'secondary', condition: d => U.getTotalFocusMins(d) / 60 >= 10000 },
-            { id: 'flow_3h', cat: 'focus', name: '入定', desc: '单次专注任务不中断超过 3 小时', icon: 'fa-leaf', color: 'secondary', condition: d => U.getMaxSingleFocus(d) >= 180 },
-            { id: 'flow_5h', cat: 'focus', name: '忘我', desc: '单次专注任务不中断超过 5 小时', icon: 'fa-fire', color: 'secondary', condition: d => U.getMaxSingleFocus(d) >= 300 },
-            { id: 'block_12h', cat: 'focus', name: '板凳甘坐十年冷', desc: '单日记录的科研/学习时间超12小时', icon: 'fa-anchor', color: 'secondary', condition: d => U.getDailyWorkStudyMax(d) >= 720 },
-
-            { id: 'wake_7', cat: 'routine', name: '破晓之光', desc: '连续 7 天在 09:00 前起床', icon: 'fa-sun-o', color: 'primary', condition: d => U.getWakeStreak(d, 9) >= 7 },
-            { id: 'wake_30', cat: 'routine', name: '晨光裁决者', desc: '连续 30 天在 09:00 前起床', icon: 'fa-bolt', color: 'primary', condition: d => U.getWakeStreak(d, 9) >= 30 },
-            { id: 'wake_100', cat: 'routine', name: '日出同行人', desc: '累计 100 天在 08:00 前起床', icon: 'fa-coffee', color: 'primary', condition: d => Object.values(d.sleepData).filter(x => { if (!x.wake) return false; return parseInt(x.wake.split(':')[0], 10) < 8; }).length >= 100 },
-            { id: 'sleep_21', cat: 'routine', name: '发量守卫者', desc: '连续 21 天在 23:30 前睡觉', icon: 'fa-moon-o', color: 'primary', condition: d => U.getSleepStreak(d) >= 21 },
-            { id: 'checkin_3', cat: 'routine', name: '铁人三项', desc: '单日完美完成三个时段的工位打卡', icon: 'fa-check-circle', color: 'primary', condition: d => Object.values(d.checkinData).some(x => x.morning.checkIn && x.afternoon.checkIn && x.evening.checkIn) },
-
-            { id: 'fitness_10', cat: 'fitness', name: '轻松起步', desc: '累计完成 10 次居家运动', icon: 'fa-leaf', color: 'success', condition: d => getCompletedFitnessRecords().length >= 10 },
-            { id: 'fitness_30', cat: 'fitness', name: '渐成节奏', desc: '累计完成 30 次居家运动', icon: 'fa-heartbeat', color: 'success', condition: d => getCompletedFitnessRecords().length >= 30 },
-            { id: 'fitness_100', cat: 'fitness', name: '身体好朋友', desc: '累计完成 100 次居家运动', icon: 'fa-smile-o', color: 'success', condition: d => getCompletedFitnessRecords().length >= 100 },
-
-            { id: 'habit_100', cat: 'habit', name: '滴水穿石', desc: '任意一个每日习惯连续打卡满 100 天', icon: 'fa-tint', color: 'success', condition: d => U.getHabitMaxStreak(d) >= 100 },
-            { id: 'journal_30', cat: 'habit', name: '三省吾身', desc: '连续 30 天完成每日复盘', icon: 'fa-book', color: 'success', condition: d => U.getJournalStreak(d) >= 30 },
-            { id: 'journal_365', cat: 'habit', name: '学术日记本', desc: '累计写满 365 篇每日复盘', icon: 'fa-pencil', color: 'success', condition: d => Object.keys(d.journalData).filter(k => d.journalData[k].proud || d.journalData[k].change).length >= 365 },
-
-            { id: 'egg_owl', cat: 'egg', name: '科研伤肝', desc: '下班时间超过凌晨 02:00', icon: 'fa-heartbeat', color: 'accent', condition: d => Object.values(d.checkinData).some(x => { const o = x.evening.checkOut; if (!o) return false; const h = parseInt(o.split(':')[0], 10); return h >= 2 && h < 6; }) },
-            {
-                id: 'egg_robot',
-                cat: 'egg',
-                name: '薛定谔的周末',
-                desc: '连续 30 天没有任何"休息"或"娱乐"记录',
-                icon: 'fa-cogs',
-                color: 'accent',
-                condition: d => {
-                    const dates = [...new Set(d.activityData.records.map(activity => activity.date))].sort().reverse();
-                    let streak = 0;
-                    for (let i = 0; i < dates.length; i++) {
-                        if (dates[i] !== getTodayStr(-i)) break;
-                        const hasRest = d.activityData.records.some(activity => activity.date === dates[i] && ['rest', 'life'].includes(activity.activity_type));
-                        if (!hasRest) streak++;
-                        else break;
-                    }
-                    return streak >= 30;
-                }
-            }
-        ];
+        const LEGACY_ACHIEVEMENTS = {
+            focus_100: '学术初探', focus_500: '渐入佳境', focus_2000: '领域专家', focus_10000: '时间领主', flow_3h: '入定', flow_5h: '忘我', block_12h: '板凳甘坐十年冷',
+            wake_7: '破晓之光', wake_30: '晨光裁决者', wake_100: '日出同行人', sleep_21: '发量守卫者', checkin_3: '铁人三项',
+            fitness_10: '轻松起步（旧版）', fitness_30: '渐成节奏（旧版）', fitness_100: '身体好朋友（旧版）', habit_100: '滴水穿石', journal_30: '三省吾身', journal_365: '学术日记本', egg_owl: '科研伤肝', egg_robot: '薛定谔的周末'
+        };
 
         const U = {
-            getTotalFocusMins: d => d.activityData.records.filter(activity => activity.focus_mode === 'deep_focus' && ['completed', 'partial'].includes(activity.status)).reduce((sum, activity) => sum + activity.actual_duration, 0),
-            getMaxSingleFocus: d => Math.max(0, ...d.activityData.records.filter(activity => activity.focus_mode === 'deep_focus').map(activity => activity.actual_duration || 0)),
-            getDailyWorkStudyMax: d =>
-                Math.max(
-                    0,
-                    ...[...new Set(d.activityData.records.map(activity => activity.date))].map(date => d.activityData.records.filter(activity => activity.date === date && ['research', 'study', 'work'].includes(activity.activity_type)).reduce((sum, activity) => sum + (activity.actual_duration || activity.planned_duration || 0), 0))
-                ),
-            getWakeStreak: (d, h) => {
-                const dates = Object.keys(d.sleepData)
-                    .filter(k => {
-                        const w = d.sleepData[k].wake;
-                        if (!w) return false;
-                        return parseInt(w.split(':')[0], 10) < h;
-                    })
-                    .sort()
-                    .reverse();
-                let streak = 0;
-                for (let i = 0; i < dates.length; i++) {
-                    if (dates[i] === getTodayStr(-i) || dates[i] === getTodayStr(-i - 1)) streak++;
-                    else break;
-                }
-                return streak;
+            completed: d => d.activityData.records.filter(item => ['completed', 'partial'].includes(item.status)),
+            maxConsecutiveDates: dates => {
+                const sorted = [...new Set(dates.filter(Boolean))].sort(); let best = 0; let run = 0; let previous = null;
+                sorted.forEach(date => { const current = new Date(`${date}T12:00:00`); run = previous && Math.round((current - previous) / 86400000) === 1 ? run + 1 : 1; best = Math.max(best, run); previous = current; });
+                return best;
             },
-            getSleepStreak: d => {
-                const dates = Object.keys(d.sleepData)
-                    .filter(k => d.sleepData[k].sleepOk)
-                    .sort()
-                    .reverse();
-                let streak = 0;
-                for (let i = 0; i < dates.length; i++) {
-                    if (dates[i] === getTodayStr(-i) || dates[i] === getTodayStr(-i - 1)) streak++;
-                    else break;
-                }
-                return streak;
+            dailyMax: (items, predicate = () => true) => {
+                const totals = {}; items.filter(predicate).forEach(item => { totals[item.date] = (totals[item.date] || 0) + (Number(item.actual_duration) || 0); }); return Math.max(0, ...Object.values(totals));
             },
-            getHabitMaxStreak: d => {
-                if (d.habitConfig.length === 0) return 0;
-                let maxS = 0;
-                d.habitConfig.forEach(h => {
-                    const dates = Object.keys(d.habitRecords)
-                        .filter(k => d.habitRecords[k][h.id])
-                        .sort()
-                        .reverse();
-                    let streak = 0;
-                    for (let i = 0; i < dates.length; i++) {
-                        if (dates[i] === getTodayStr(-i) || dates[i] === getTodayStr(-i - 1)) streak++;
-                        else break;
-                    }
-                    if (streak > maxS) maxS = streak;
-                });
-                return maxS;
-            },
-            getJournalStreak: d => {
-                const dates = Object.keys(d.journalData)
-                    .filter(k => d.journalData[k].proud || d.journalData[k].change)
-                    .sort()
-                    .reverse();
-                let streak = 0;
-                for (let i = 0; i < dates.length; i++) {
-                    if (dates[i] === getTodayStr(-i) || dates[i] === getTodayStr(-i - 1)) streak++;
-                    else break;
-                }
-                return streak;
-            }
+            totalFocusMinutes: d => U.completed(d).filter(item => item.focus_mode === 'deep_focus').reduce((sum, item) => sum + (Number(item.actual_duration) || 0), 0),
+            completedTodoDates: d => U.completed(d).filter(item => item.is_today_task).map(item => item.taskDate || item.today_task_date || item.date),
+            tomorrowPlanningDates: d => d.activityData.records.filter(item => item.is_today_task && item.createdAt && (item.taskDate || item.today_task_date) > item.createdAt.slice(0, 10)).map(item => item.taskDate || item.today_task_date),
+            checkedBacklogCount: d => d.longTermTodos.reduce((sum, item) => sum + ((item.markdownBody || '').match(/^\s*-\s*\[[xX]\]\s+/gm) || []).length, 0),
+            maxCheckedBacklog: d => Math.max(0, ...d.longTermTodos.map(item => ((item.markdownBody || '').match(/^\s*-\s*\[[xX]\]\s+/gm) || []).length)),
+            archivedBacklogs: d => d.longTermTodos.filter(item => item.archived || item.status === 'completed'),
+            completedMatching: (d, pattern) => U.completed(d).filter(item => pattern.test(item.title || '')),
+            researchMilestones: d => U.archivedBacklogs(d).filter(item => /research|stage|ethic|paper|analysis|研究|论文|数据/i.test(`${item.name} ${item.category} ${item.markdownBody}`)),
+            languageCompleted: (d, predicate = () => true) => U.completed(d).filter(item => item.activity_type === 'language' && predicate(item)),
+            exerciseCompleted: (d, predicate = () => true) => U.completed(d).filter(item => item.activity_type === 'exercise' && predicate(item, getExerciseDetail(item.id) || {})),
+            noteEntries: d => Object.entries(d.journalData).filter(([, note]) => Boolean((note.markdownBody || '').trim() || note.proud || note.change)),
+            notesWithEmotion: d => U.noteEntries(d).filter(([, note]) => /(?:精神状态|身体状态|情绪关键词)：\s*[^\s#-]/.test(note.markdownBody || '')),
+            essayNotes: d => U.noteEntries(d).filter(([, note]) => { const match = (note.markdownBody || '').match(/##\s*随笔\s*\n([\s\S]*?)(?=\n##|$)/); return Boolean(match?.[1]?.trim()); })
         };
+
+        const achievement = (id, cat, module, name, desc, target, progress, icon, color) => ({ id, cat, module, name, desc, target, progress, icon, color });
+        const ACHIEVEMENTS_DB = [
+            achievement('todo_steady_3', 'todo', 'ToDo', '稳稳推进', '连续 3 天完成至少 1 个今日任务', 3, d => U.maxConsecutiveDates(U.completedTodoDates(d)), 'fa-check-square-o', 'secondary'),
+            achievement('todo_tomorrow_3', 'todo', 'ToDo', '明日有谱', '连续规划 3 个明日任务日', 3, d => U.maxConsecutiveDates(U.tomorrowPlanningDates(d)), 'fa-calendar-plus-o', 'secondary'),
+            achievement('backlog_subtasks_10', 'todo', 'Backlog', 'Backlog 清道夫', '累计完成 10 个 Backlog 子任务', 10, d => U.checkedBacklogCount(d), 'fa-list-ul', 'secondary'),
+            achievement('backlog_breakdown_5', 'todo', 'Backlog', '大项目拆解者', '同一个 Backlog 项目完成 5 个子任务', 5, d => U.maxCheckedBacklog(d), 'fa-sitemap', 'secondary'),
+            achievement('backlog_archive_1', 'todo', 'Backlog', '收尾的人', '归档第一个完整 Backlog 项目', 1, d => U.archivedBacklogs(d).length, 'fa-archive', 'secondary'),
+
+            achievement('focus_day_60', 'focus', 'Focus', '进入状态', '单日 Deep Focus 达到 60 分钟', 60, d => U.dailyMax(U.completed(d), item => item.focus_mode === 'deep_focus'), 'fa-hourglass-half', 'secondary'),
+            achievement('focus_research_120', 'focus', 'Research', '研究心流', '单日 Research Deep Focus 达到 120 分钟', 120, d => U.dailyMax(U.completed(d), item => item.focus_mode === 'deep_focus' && item.activity_type === 'research'), 'fa-flask', 'secondary'),
+            achievement('focus_streak_5', 'focus', 'Focus', '稳定输出', '连续 5 天留下 Deep Focus 记录', 5, d => U.maxConsecutiveDates(U.completed(d).filter(item => item.focus_mode === 'deep_focus' && item.actual_duration > 0).map(item => item.date)), 'fa-line-chart', 'secondary'),
+            achievement('focus_total_20', 'focus', 'Focus', '长线推进 · 20h', '累计 Deep Focus 达到 20 小时', 1200, d => U.totalFocusMinutes(d), 'fa-road', 'secondary'),
+            achievement('focus_total_50', 'focus', 'Focus', '长线推进 · 50h', '累计 Deep Focus 达到 50 小时', 3000, d => U.totalFocusMinutes(d), 'fa-road', 'secondary'),
+            achievement('focus_total_100', 'focus', 'Focus', '长线推进 · 100h', '累计 Deep Focus 达到 100 小时', 6000, d => U.totalFocusMinutes(d), 'fa-diamond', 'secondary'),
+
+            achievement('research_ethics', 'research', 'Research', 'Ethics Mover', '完成一次 ethics amendment 提交', 1, d => U.completedMatching(d, /ethic|伦理/i).length, 'fa-shield', 'primary'),
+            achievement('research_stage4', 'research', 'Research', 'Stage 4 Starter', '开始并完成一条 Stage 4 分析记录', 1, d => U.completedMatching(d, /stage\s*4|stage4/i).length, 'fa-play-circle', 'primary'),
+            achievement('research_cleaner', 'research', 'Research', 'Data Cleaner', '完成一次问卷或研究数据清理', 1, d => U.completedMatching(d, /data clean|cleaning|数据清理|问卷清理/i).length, 'fa-filter', 'primary'),
+            achievement('research_paper', 'research', 'Research', 'Paper Builder', '完成 paper / 论文初稿', 1, d => U.completedMatching(d, /paper.*draft|draft.*paper|论文初稿|初稿/i).length, 'fa-file-text-o', 'primary'),
+            achievement('research_supervisor', 'research', 'Research', 'Supervisor Loop', '完成一次导师反馈后的修改', 1, d => U.completedMatching(d, /supervisor|导师.*反馈|反馈.*修改|meeting feedback/i).length, 'fa-comments-o', 'primary'),
+            achievement('research_milestone', 'research', 'Research', 'Research Milestone', '归档一个研究阶段性成果', 1, d => U.researchMilestones(d).length, 'fa-flag-checkered', 'primary'),
+
+            achievement('pte_first', 'language', 'Language', 'PTE 起步', '完成第一次 PTE 练习', 1, d => U.languageCompleted(d, item => /pte_/i.test(item.language_practice_id || '') || /PTE/i.test(item.title)).length, 'fa-language', 'accent'),
+            achievement('pte_speaking_5', 'language', 'Language', 'Speaking Starter', '完成 5 次 PTE Speaking', 5, d => U.languageCompleted(d, item => item.language_practice_id === 'pte_speaking' || /PTE.*Speaking/i.test(item.title)).length, 'fa-microphone', 'accent'),
+            achievement('pte_mock_1', 'language', 'Language', 'Mock Test Logged', '记录第一次 PTE 模考', 1, d => (d.languagePractice.settings['pte-mock-score'] || U.languageCompleted(d, item => item.language_practice_id === 'pte_mock').length) ? 1 : 0, 'fa-pencil-square-o', 'accent'),
+            achievement('jp_speaking_1', 'language', 'Language', '日语开口', '完成第一次 Japanese Speaking 练习', 1, d => U.languageCompleted(d, item => /^jp_/.test(item.language_practice_id || '') || /日本語/.test(item.title)).length, 'fa-comment', 'accent'),
+            achievement('jp_shadowing_10', 'language', 'Language', '影子练习者', '完成 10 次 Japanese Shadowing', 10, d => U.languageCompleted(d, item => item.language_practice_id === 'jp_shadowing' || /shadowing|跟读/i.test(item.title)).length, 'fa-volume-up', 'accent'),
+            achievement('jp_sentences_10', 'language', 'Language', '会说一句了', '记录 10 个可复用日语句子', 10, d => String(d.languagePractice.settings['jp-notes'] || '').split(/[\n。.!！？]+/).filter(value => value.trim()).length, 'fa-quote-left', 'accent'),
+
+            achievement('exercise_10', 'fitness', 'Exercise', '身体朋友', '累计完成 10 次运动', 10, d => U.exerciseCompleted(d).length, 'fa-heart', 'success'),
+            achievement('exercise_week_3', 'fitness', 'Exercise', '稳定活动', '任意连续 7 天内完成 3 次运动', 3, d => { const dates = U.exerciseCompleted(d).map(item => item.date).sort(); return Math.min(3, Math.max(0, ...dates.map((date, index) => dates.slice(index).filter(next => (new Date(`${next}T12:00:00`) - new Date(`${date}T12:00:00`)) / 86400000 <= 6).length))); }, 'fa-calendar-check-o', 'success'),
+            achievement('exercise_stretch_5', 'fitness', 'Exercise', '拉伸救急', '完成 5 次轻量拉伸', 5, d => U.exerciseCompleted(d, (item, detail) => /拉伸|肩颈|stretch/i.test(`${item.title} ${detail.exercise_type}`)).length, 'fa-leaf', 'success'),
+            achievement('exercise_burn_7', 'fitness', 'Exercise', '脂肪燃烧', '完成 7 次腹肌或 HIIT 记录', 7, d => U.exerciseCompleted(d, (item, detail) => /腹|腰腹|hiit/i.test(`${item.title} ${detail.exercise_type}`)).length, 'fa-fire', 'success'),
+
+            achievement('note_streak_3', 'note', 'Daily Note', '留住今天', '连续 3 天写 Daily Note', 3, d => U.maxConsecutiveDates(U.noteEntries(d).map(([date]) => date)), 'fa-calendar', 'primary'),
+            achievement('note_total_10', 'note', 'Daily Note', '小小复盘', '累计写 10 篇 Daily Note', 10, d => U.noteEntries(d).length, 'fa-book', 'primary'),
+            achievement('note_tomorrow_1', 'note', 'Daily Note', '明日接续', '从 Daily Note checklist 加入明日规划', 1, d => d.activityData.records.filter(item => item.source === 'daily_note').length, 'fa-share', 'primary'),
+            achievement('note_emotion_10', 'note', 'Daily Note', '情绪可见', '记录 10 次情绪或身体状态', 10, d => U.notesWithEmotion(d).length, 'fa-eye', 'primary'),
+            achievement('note_essay_1', 'note', 'Daily Note', '随笔之门', '写下第一篇随笔型 Daily Note', 1, d => U.essayNotes(d).length, 'fa-pencil', 'primary')
+        ];
 
         // ================= 数据初始化 =================
         function ensureRootData() {
@@ -3893,7 +3856,8 @@
         function checkAchievements() {
             let hasNew = false;
             ACHIEVEMENTS_DB.forEach(ach => {
-                if (!D.unlockedAchievements.includes(ach.id) && ach.condition(D)) {
+                const progress = Math.max(0, Number(ach.progress(D)) || 0);
+                if (!D.unlockedAchievements.includes(ach.id) && progress >= ach.target) {
                     D.unlockedAchievements.push(ach.id);
                     showAchievementPopup(ach);
                     hasNew = true;
@@ -3919,38 +3883,49 @@
             setTimeout(() => p.classList.add('hidden'), 5500);
         }
 
+        function achievementProgressLabel(ach, current) {
+            if (ach.id.startsWith('focus_total_')) return `${Math.floor(current / 60)}h / ${Math.floor(ach.target / 60)}h`;
+            if (['focus_day_60', 'focus_research_120'].includes(ach.id)) return `${Math.round(current)}m / ${ach.target}m`;
+            return `${Math.min(Math.round(current), ach.target)} / ${ach.target}`;
+        }
+
+        function achievementCard(ach, unlocked = false) {
+            const current = Math.max(0, Number(ach.progress(D)) || 0);
+            const percentage = Math.min(100, Math.round((current / ach.target) * 100));
+            const colorConf = ACH_COLOR_MAP[ach.color] || ACH_COLOR_MAP.warning;
+            const status = unlocked ? '已解锁' : current > 0 ? '进行中' : '未解锁';
+            return `<article class="bg-white border ${unlocked ? colorConf.cardBorder : 'border-gray-100'} rounded-xl p-4 shadow-sm flex gap-3 min-w-0">
+                <div class="w-10 h-10 ${unlocked ? colorConf.popupBg : 'bg-gray-200'} rounded-full flex items-center justify-center text-white flex-shrink-0"><i class="fa ${unlocked ? ach.icon : 'fa-lock'}"></i></div>
+                <div class="min-w-0 flex-1"><div class="flex items-start justify-between gap-2"><div class="font-black text-sm text-textmain">${escapeHtml(ach.name)}</div><span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${unlocked ? 'bg-success/15 text-green-700' : current > 0 ? 'bg-warning/15 text-textmain' : 'bg-gray-100 text-gray-400'} whitespace-nowrap">${status}</span></div>
+                <div class="text-[11px] text-textmuted leading-4 mt-1">${escapeHtml(ach.desc)}</div>
+                <div class="flex items-center justify-between gap-2 mt-2"><span class="text-[9px] font-black ${colorConf.popupBg.replace('bg-', 'text-')} bg-gray-50 px-1.5 py-0.5 rounded">${escapeHtml(ach.module)}</span><span class="text-[10px] font-bold text-textmuted">${achievementProgressLabel(ach, current)}</span></div>
+                <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1.5"><div class="h-full ${unlocked ? 'bg-success' : colorConf.popupBg} rounded-full" style="width:${percentage}%"></div></div></div>
+            </article>`;
+        }
+
         function renderAchievements() {
-            ['focus', 'routine', 'fitness', 'habit', 'egg'].forEach(cat => {
+            ['todo', 'focus', 'research', 'language', 'fitness', 'note'].forEach(cat => {
                 const el = document.getElementById(`ach-grid-${cat}`);
                 if (el) el.innerHTML = '';
             });
-
-            document.getElementById('unlocked-count').textContent = D.unlockedAchievements.length;
+            const unlockedGrid = document.getElementById('ach-grid-unlocked');
+            const currentIds = new Set(ACHIEVEMENTS_DB.map(item => item.id));
+            const unlockedCurrent = D.unlockedAchievements.filter(id => currentIds.has(id));
+            document.getElementById('unlocked-count').textContent = unlockedCurrent.length;
             document.getElementById('total-achievements-count').textContent = ACHIEVEMENTS_DB.length;
+            const recentlyUnlocked = [...unlockedCurrent].reverse().map(id => ACHIEVEMENTS_DB.find(item => item.id === id)).filter(Boolean);
+            unlockedGrid.innerHTML = recentlyUnlocked.map(ach => achievementCard(ach, true)).join('');
+            document.getElementById('ach-unlocked-empty').classList.toggle('hidden', recentlyUnlocked.length > 0);
 
-            ACHIEVEMENTS_DB.forEach(ach => {
-                const isUn = D.unlockedAchievements.includes(ach.id);
-                const grid = document.getElementById(`ach-grid-${ach.cat}`);
-                if (!grid) return;
-
-                const colorConf = ACH_COLOR_MAP[ach.color] || ACH_COLOR_MAP.warning;
-                const cardClass = isUn
-                    ? `bg-white border-2 ${colorConf.cardBorder} shadow-md`
-                    : `bg-gray-50 border border-gray-100 opacity-60 grayscale`;
-                const iconWrapClass = isUn ? `${colorConf.popupBg}` : 'bg-gray-300';
-
-                grid.innerHTML += `
-                    <div class="${cardClass} rounded-2xl p-5 flex items-center transition-all">
-                        <div class="w-14 h-14 ${iconWrapClass} rounded-full flex items-center justify-center text-white text-xl mr-4 flex-shrink-0">
-                            <i class="fa ${isUn ? ach.icon : 'fa-lock'}"></i>
-                        </div>
-                        <div>
-                            <div class="font-black text-textmain text-lg">${ach.name}</div>
-                            <div class="text-xs font-bold text-textmuted mt-1 leading-relaxed">${ach.desc}</div>
-                        </div>
-                    </div>
-                `;
+            ['todo', 'focus', 'research', 'language', 'fitness', 'note'].forEach(cat => {
+                const grid = document.getElementById(`ach-grid-${cat}`); if (!grid) return;
+                const items = ACHIEVEMENTS_DB.filter(ach => ach.cat === cat && !D.unlockedAchievements.includes(ach.id)).sort((a, b) => (b.progress(D) / b.target) - (a.progress(D) / a.target));
+                grid.innerHTML = items.length ? items.map(ach => achievementCard(ach, false)).join('') : '<div class="text-sm text-textmuted bg-gray-50 rounded-xl p-4 md:col-span-2">这个模块的成就已经全部解锁。</div>';
             });
+
+            const legacy = D.unlockedAchievements.filter(id => !currentIds.has(id)).map(id => ({ id, name: LEGACY_ACHIEVEMENTS[id] || id }));
+            document.getElementById('legacy-achievement-count').textContent = legacy.length;
+            document.getElementById('ach-grid-legacy').innerHTML = legacy.length ? legacy.map(item => `<div class="bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs text-gray-500"><i class="fa fa-archive mr-2"></i>${escapeHtml(item.name)} <span class="float-right">旧版已解锁</span></div>`).join('') : '<div class="text-xs text-gray-400">没有旧版成就记录。</div>';
         }
 
         // ================= 图表 =================
@@ -4100,6 +4075,7 @@
             initJournal();
             initDailyNote();
             initFitness();
+            checkAchievements();
             renderAchievements();
             initStats();
             updateSidebar();
